@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>/rosetta/game2048.ml</title>
+<meta name="Generator" content="Vim/8.2">
+<meta name="plugin-version" content="vim8.1_v2">
+<style>
+pre { white-space:pre-wrap; font-family:monospace; color:#002000; background-color:#ffffaa; }
+pre { border:#aaccaa 1px solid; margin:4px; padding:2px 6px; }
+body { font-family:monospace; color:#000000; background-color:#ffffaa; }
+* { font-size: 1em; }
+.Type { color: #008000; text-decoration:none; }
+.Constant { color: #c00000; text-decoration:none; }
+.Special { color: #009020; font-weight: bold; }
+.Statement { color: #2080a0; font-weight: bold; }
+</style>
+</head>
+<body>
+<pre id='vimCodeElement'>
+let list_make x v =
+  let rec aux acc i =
+    <span class="Statement">if</span> i &lt;= <span class="Constant">0</span> then acc <span class="Statement">else</span> aux (v::acc) (i-<span class="Constant">1</span>)
+  in
+  aux [] x
+
+
+let pad_right n line =
+  let len = List.length line in
+  let x = n - len in
+  line @ (list_make x <span class="Constant">0</span>)
+
+
+let _move_left line =
+  let n = List.length line in
+  let line = List.filter ((&lt;&gt;) <span class="Constant">0</span>) line in
+  let rec aux acc = function
+  | x::y::tl -&gt;
+      <span class="Statement">if</span> x = y
+      then aux (x+y::acc) tl
+      <span class="Statement">else</span> aux (x::acc) (y::tl)
+  | x::[] -&gt;
+      aux (x::acc) []
+  | [] -&gt;
+      List.rev acc
+  in
+  pad_right n (aux [] line)
+
+
+let move_left grid =
+  List.map _move_left grid
+
+
+let move_right grid =
+  grid
+    |&gt; List.map List.rev
+    |&gt; List.map _move_left
+    |&gt; List.map List.rev
+
+
+let rec replace g n v =
+  match g with
+  | x::xs -&gt; <span class="Statement">if</span> n = <span class="Constant">0</span> then v::xs <span class="Statement">else</span> x::(replace xs (n-<span class="Constant">1</span>) v)
+  | [] -&gt; raise (Invalid_argument <span class="Constant">&quot;replace&quot;</span>)
+
+
+(* add a new value in a random cell containing zero *)
+let rec new_value grid =
+  let zeros = ref [] in
+  List.iteri (fun y line -&gt;
+    List.iteri (fun x v -&gt;
+      <span class="Statement">if</span> v = <span class="Constant">0</span> then zeros := (x, y) :: !zeros
+    ) line;
+  ) grid;
+  let n = List.length !zeros in
+  <span class="Statement">if</span> n = <span class="Constant">0</span> then raise Exit;
+  let x, y = List.nth !zeros (Random.<span class="Type">int</span> n) in
+  let v = <span class="Statement">if</span> Random.<span class="Type">int</span> <span class="Constant">10</span> = <span class="Constant">0</span> then <span class="Constant">4</span> <span class="Statement">else</span> <span class="Constant">2</span> in
+  let line = List.nth grid y in
+  let new_line = replace line x v in
+  replace grid y new_line
+
+
+(* turn counterclockwise *)
+let turn_ccw grid =
+  let y = List.length grid in
+  let x = List.length (List.nth grid <span class="Constant">0</span>) in
+  List.init x (fun i -&gt;
+    List.init y (fun j -&gt;
+      List.nth (List.nth grid j) (x-i-<span class="Constant">1</span>)
+    )
+  )
+
+
+(* turn clockwise *)
+let turn_cw grid =
+  let y = List.length grid in
+  let x = List.length (List.nth grid <span class="Constant">0</span>) in
+  List.init x (fun i -&gt;
+    List.init y (fun j -&gt;
+      List.nth (List.nth grid (y-j-<span class="Constant">1</span>)) (i)
+    )
+  )
+
+
+let move_up grid =
+  grid
+    |&gt; turn_ccw
+    |&gt; move_left
+    |&gt; turn_cw
+
+
+let move_down grid =
+  grid
+    |&gt; turn_cw
+    |&gt; move_left
+    |&gt; turn_ccw
+
+
+let display grid =
+  List.iter (fun line -&gt;
+    print_string <span class="Constant">&quot; [&quot;</span>;
+    line
+      |&gt; List.map (Printf.sprintf <span class="Constant">&quot;</span><span class="Special">%4d</span><span class="Constant">&quot;</span>)
+      |&gt; String.concat <span class="Constant">&quot;; &quot;</span>
+      |&gt; print_string;
+    print_endline <span class="Constant">&quot;]&quot;</span>
+  ) grid
+
+
+let () =
+  Random.self_init ();
+  let width =
+    try int_of_string Sys.argv.(<span class="Constant">1</span>)
+    with _ -&gt; <span class="Constant">4</span>
+  in
+  let line = list_make width <span class="Constant">0</span> in
+  let grid = list_make width line in
+
+  let grid = new_value grid in
+  let grid = new_value grid in
+
+  print_endline {|
+    s -&gt; left
+    f -&gt; right
+    e -&gt; up
+    d -&gt; down
+    q -&gt; quit
+  |};
+  let rec loop grid =
+    display grid;
+    let grid =
+      match read_line () with
+      | <span class="Constant">&quot;s&quot;</span> -&gt; move_left grid
+      | <span class="Constant">&quot;f&quot;</span> -&gt; move_right grid
+      | <span class="Constant">&quot;e&quot;</span> -&gt; move_up grid
+      | <span class="Constant">&quot;d&quot;</span> -&gt; move_down grid
+      | <span class="Constant">&quot;q&quot;</span> -&gt; exit <span class="Constant">0</span>
+      | _ -&gt; grid
+    in
+    let grid =
+      try new_value grid
+      with Exit -&gt;
+        print_endline <span class="Constant">&quot;Game Over&quot;</span>;
+        exit <span class="Constant">0</span>
+    in
+    loop grid
+  in
+  loop grid
+
+</pre>
+</body>
+</html>
