@@ -1,0 +1,113 @@
+<html>
+<head>
+<title>a cli calendar</title>
+<link href="../../icon/ocaml-icon.png" rel="shortcut icon" />
+<style type="text/css">
+body {
+  background:#CCC;
+  color:#555;
+}
+body > div {
+  padding:1em;
+}
+a {
+  color:#369;
+}
+a:hover {
+  color:#37A;
+  background:#DDD;
+}
+ul {
+  margin:0.2em 0 1.4em 0;
+}
+.grp {
+  border-top:1px solid #999;
+  border-left:1px solid #999;
+  width:68%;
+  margin-left:6%;
+  padding:0 1em 0.5em 1em;
+}
+.grp h2 {
+  font-size:1.1em;
+  padding:0;
+  margin:0;
+}
+ul li {
+  margin-bottom:0.9em;
+}
+#footer {
+  text-align:right;
+}
+#footer li {
+  display:inline;
+  list-style:none;
+  margin-left:3em;
+  font-size:small;
+}
+#logo {
+  text-align:right;
+  margin-top:2.4em;
+  border:0;
+}
+</style>
+</head>
+<body>
+
+<div style="border:0;">
+
+  <h2>Detri, a calendar for the console</h2>
+
+  <div class='grp'>
+    <p>Detri is a simple program with a command-line user interface written in OCaml
+      that displays a calendar into a console.</p>
+  </div>
+
+  <div class='grp'>
+    <p>There are several versions:</p>
+    <ul>
+      <li><a href="./detri/mini/">detri-mini</a>,
+	a minimal version, easier to extend and/or to read and understand the source code,</li>
+      <li><a href="./detri/">detri-std</a>,
+	can highlight important dates with colors.</li>
+      <li><a href="./detri/range/">detri-range</a>,
+	a variant that can highlight dates and ranges of days with a color.</li>
+      <li><a href="https://github.com/fccm/detri">detri-hub</a>,
+	gh's version where people can add issues.</li>
+      <li><a href="./detri/m/detrib2m.ml">detri-m</a>,
+        print w/ a markup language (.htm).</li>
+    </ul>
+  </div>
+
+ <!--
+  <div class='grp'>
+    <p>
+      Source code version-control:
+      <a href="https://github.com/fccm/detri">github.com/detri</a>
+    </p>
+  </div>
+ -->
+
+  <div class='grp'>
+    <p>This program is provided under the conditions described in this license file:<br />
+      - read the file <a href="./detri/range/LICENSE.txt">LICENSE.txt</a> for details.</p>
+  </div>
+
+</div>
+
+<div id="logo">
+  <a href="http://ocaml.org/" title="OCaml website"
+   ><img src="../../icon/ocaml-logo.png"
+     alt="The OCaml Language" style="border:none;" /></a>
+</div>
+
+<div id='footer'>
+  <ul>
+    <li>
+      <img border="0" src="../../icon/back.png" />
+      <a href="/">home</a></li>
+    <li>/ &nbsp; <a href="../../ocaml.html">my ocaml home</a></li>
+  </ul>
+</div>
+
+</body>
+</html>
