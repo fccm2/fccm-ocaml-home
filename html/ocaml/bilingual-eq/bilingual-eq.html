@@ -1,0 +1,129 @@
+<html>
+<head>
+<title>OCaml sources for the website Bilingual-eq</title>
+<link href="../../icon/ocaml-icon.png" rel="shortcut icon" />
+<style type="text/css">
+body {
+  background:#CCC;
+  color:#555;
+}
+body > div {
+  padding:0.4em 1em;
+}
+a {
+  color:#369;
+}
+a:hover {
+  color:#37A;
+  background:#DDD;
+}
+ul {
+  margin:0.2em 0 1.4em 0;
+}
+.grp {
+  border-top:1px solid #999;
+  border-left:1px solid #999;
+  width:68%;
+  margin-left:6%;
+  padding:0 1em 0.5em 1em;
+}
+.grp h2 {
+  font-size:1.1em;
+  padding:0;
+  margin:0;
+}
+ul li {
+  margin-bottom:0.9em;
+}
+#footer {
+  text-align:right;
+}
+#footer li {
+  display:inline;
+  list-style:none;
+  margin-left:3em;
+  font-size:small;
+}
+#logo {
+  text-align:right;
+  margin-top:5em;
+  border:0;
+}
+</style>
+</head>
+<body>
+
+
+<div style="border:0;">
+
+  <h2>Sources for the website Bilingual-eq</h2>
+
+  <div class='grp'>
+    <p>
+      OCaml sources for the website <a href="/bilingual-eq/">bilingual-eq</a>.
+    </p>
+    <p>
+      Just run <code>make opt</code> to compile the main generator.
+    </p>
+    <p>
+      This website was built using contents from the Wiktionary and WikiSource.
+    </p>
+    <p>
+      I'm extracting words equivalences from the wiktionary dump:<br />
+      - <a href="https://dumps.wikimedia.org/enwiktionary/latest/"
+          >wiktionary-dump/</a><br />
+      - <a href="https://dumps.wikimedia.org/enwiktionary/latest/enwiktionary-latest-pages-articles.xml.bz2"
+          >wiktionary-dump.xml.bz2</a><br />
+    </p>
+    <p>
+      The bilingual books are made from public domain books found on
+      <a href="https://en.wikisource.org/">wikiSource</a>.<br />
+      Making one bilingual book can be made in about one day to several weeks<br />
+      (or between half an hour and one hour by chapters).<br />
+      This current version of the web site currently uses 9 bilingual books,
+      included in the archive.
+    </p>
+    <p>
+      Then the pages content are generated using the 2 small scripts:<br />
+      - <code>mkpages.ml</code><br />
+      - <code>mkindices.ml</code><br />
+    </p>
+
+  </div>
+
+  <div class='grp'>
+    <p>Downloads:</p>
+    <ul><li>
+      <a href="./bilingual-eq-0.03.tar.gz">bilingual-eq-0.03.tar.gz</a></li>
+    </ul>
+  </div>
+
+  <div class='grp'>
+    <p>Results:</p>
+    <p>bilingual-eq:
+    <a href="http://decapode314.free.fr/bilingual-eq1/">1</a>,
+    <a href="http://decapode314.free.fr/bilingual-eq/" >2</a>,
+    <a href="http://decapode314.free.fr/bilingual-eq3/">3</a>
+    </p>
+  </div>
+
+</div>
+
+<!-- footer -->
+
+<div id="logo">
+  <a href="http://ocaml.org/" title="OCaml website"
+   ><img src="../../icon/ocaml-logo.png"
+     alt="The OCaml Language" style="border:none;" /></a>
+</div>
+
+<div id='footer'>
+  <ul>
+    <li><img border="0" src="../../icon/back.png" />
+      <a href="/">home</a></li>
+    <li>/ &nbsp; <a href="../../ocaml.html">my ocaml home</a></li>
+  </ul>
+</div>
+
+</body>
+</html>
