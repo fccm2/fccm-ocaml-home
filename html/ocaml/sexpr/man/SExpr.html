@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="man.html">
+<link rel="Up" href="man.html">
+<link title="SExpr" rel="Chapter" href="SExpr.html"><link title="Printing" rel="Section" href="#3_Printing">
+<title>SExpr</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a class="up" href="man.html" title="Index">Up</a>
+&nbsp;</div>
+<h1>Module <a href="type_SExpr.html">SExpr</a></h1>
+
+<pre><span id="MODULESExpr"><span class="keyword">module</span> SExpr</span>: <code class="code">sig</code> <a href="SExpr.html">..</a> <code class="code">end</code></pre><div class="info module top">
+<div class="info-desc">
+<p>This module is a very simple parsing library for S-expressions.</p>
+</div>
+</div>
+<hr width="100%">
+
+<pre><code><span id="TYPEsexpr"><span class="keyword">type</span> <code class="type"></code>sexpr</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTsexpr.Atom"><span class="constructor">Atom</span></span> <span class="keyword">of</span> <code class="type">string</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTsexpr.Expr"><span class="constructor">Expr</span></span> <span class="keyword">of</span> <code class="type"><a href="SExpr.html#TYPEsexpr">sexpr</a> list</code></code></td>
+
+</tr></table>
+
+<div class="info ">
+<div class="info-desc">
+<p>the type of S-expressions</p>
+</div>
+</div>
+
+
+<pre><span id="VALparse_string"><span class="keyword">val</span> parse_string</span> : <code class="type">string -&gt; <a href="SExpr.html#TYPEsexpr">sexpr</a> list</code></pre><div class="info ">
+<div class="info-desc">
+<p>parse from a string</p>
+</div>
+</div>
+
+<pre><span id="VALparse_ic"><span class="keyword">val</span> parse_ic</span> : <code class="type">Stdlib.in_channel -&gt; <a href="SExpr.html#TYPEsexpr">sexpr</a> list</code></pre><div class="info ">
+<div class="info-desc">
+<p>parse from an input channel</p>
+</div>
+</div>
+
+<pre><span id="VALparse_file"><span class="keyword">val</span> parse_file</span> : <code class="type">string -&gt; <a href="SExpr.html#TYPEsexpr">sexpr</a> list</code></pre><div class="info ">
+<div class="info-desc">
+<p>parse from a file</p>
+</div>
+</div>
+
+<pre><span id="VALparse"><span class="keyword">val</span> parse</span> : <code class="type">(unit -&gt; char option) -&gt; <a href="SExpr.html#TYPEsexpr">sexpr</a> list</code></pre><div class="info ">
+<div class="info-desc">
+<p>parse from a custom function, <code class="code">None</code> indicates the end of the flux</p>
+</div>
+</div>
+
+<pre><span id="TYPEinput_src"><span class="keyword">type</span> <code class="type"></code>input_src</span> = <code class="type">[ `File of string | `IC of Stdlib.in_channel | `String of string ]</code> </pre>
+<div class="info ">
+<div class="info-desc">
+<p>generic type for input</p>
+</div>
+</div>
+
+
+<pre><span id="VALparse_from"><span class="keyword">val</span> parse_from</span> : <code class="type"><a href="SExpr.html#TYPEinput_src">input_src</a> -&gt; <a href="SExpr.html#TYPEsexpr">sexpr</a> list</code></pre><div class="info ">
+<div class="info-desc">
+<p>parse from most kind of inputs</p>
+</div>
+</div>
+<h4 id="3_Printing">Printing</h4>
+<pre><span id="VALprint_sexpr"><span class="keyword">val</span> print_sexpr</span> : <code class="type"><a href="SExpr.html#TYPEsexpr">sexpr</a> list -&gt; unit</code></pre><div class="info ">
+<div class="info-desc">
+<p>a dump function for the type <code class="code">sexpr</code></p>
+</div>
+</div>
+
+<pre><span id="VALprint_sexpr_indent"><span class="keyword">val</span> print_sexpr_indent</span> : <code class="type"><a href="SExpr.html#TYPEsexpr">sexpr</a> list -&gt; unit</code></pre><div class="info ">
+<div class="info-desc">
+<p>same than <code class="code">print_sexpr</code> but with indentation</p>
+</div>
+</div>
+
+<pre><span id="VALstring_of_sexpr"><span class="keyword">val</span> string_of_sexpr</span> : <code class="type"><a href="SExpr.html#TYPEsexpr">sexpr</a> list -&gt; string</code></pre><div class="info ">
+<div class="info-desc">
+<p>convert an expression of type <code class="code">sexpr</code> into a string</p>
+</div>
+</div>
+
+<pre><span id="VALstring_of_sexpr_indent"><span class="keyword">val</span> string_of_sexpr_indent</span> : <code class="type"><a href="SExpr.html#TYPEsexpr">sexpr</a> list -&gt; string</code></pre><div class="info ">
+<div class="info-desc">
+<p>same than <code class="code">string_of_sexpr</code> but with indentation</p>
+</div>
+</div>
+</body></html>
