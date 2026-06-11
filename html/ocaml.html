@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>ocaml-prog</title>
+<link href="./ocaml-icon.png" rel="shortcut icon" />
+<style type="text/css">
+body {
+  background:#CCC;
+  color:#555;
+}
+a {
+  color:#369;
+}
+a:hover {
+  color:#37A;
+  background:#DDD;
+}
+h1 {
+  font-size:1.7em;
+  padding:0;
+  margin:0.4em 0 0.6em 2%;
+}
+.grp h2 {
+  font-size:1.2em;
+  padding:0 0 0.4em 0;
+  margin:0;
+  color:#555;
+}
+.grp h3 {
+  font-size:1.0em;
+  padding:0;
+  margin:0 0 0 3%;
+  color:#666;
+}
+.grp {
+  border-top:1px solid #888;
+  border-left:1px solid #888;
+  width:78%;
+  margin-left:5%;
+  padding:0 1em;
+  padding:0.3em 1em 0.1em 1em;
+  margin-bottom:0.6em;
+}
+ul {
+  margin:0.1em 0 0.8em 3%;
+}
+ul li {
+  margin:0.2em 0 0.4em 0;
+}
+</style>
+</head>
+<body>
+
+<div style="border:0;">
+
+  <h1>OCaml Programming</h1>
+
+  <div id="Docs" class="grp">
+    <h2>Documentations</h2>
+    <h3>About OCaml</h3>
+    <ul>
+      <li>
+        <strong><em>(in French / <span lang="fr">en Fran&ccedil;ais</span>)</em></strong>
+        <a href="./didacticiel-ocaml.html"
+         >an OCaml tutorial for beginners (in HTML)</a>
+        <span lang="fr">(Introduction &agrave; OCaml)</span>
+      </li>
+      <li>
+        <strong><em>(in English)</em></strong>
+        a tutorial about
+        <a href="./ocaml-c-interface.html"
+        >how to mix ocaml and C code, write ocaml interfaces to C functions</a>
+        <!--
+
+        <a href="./ocaml-wrapping-c.html"
+        >how to mix OCaml and C code, write ocaml interfaces to C functions (in HTML)</a>
+
+        Also available
+        <a href="./ocaml-wrapping-c.pdf">in (PDF)</a>.
+        -->
+      </li>
+      <!--
+      <li>
+        <strong><em>(in English)</em></strong>
+        a tutorial about how to use
+        <a href="./ocaml-ctypes.html">ocaml-ctypes</a>.
+      </li>
+      -->
+    </ul>
+
+    <h3>About OpenGL in OCaml</h3>
+    <ul>
+      <li><strong><em>(in English)</em></strong>
+        <a href="./GL/ocaml-opengl-howto.en.html">beginning with OpenGL in OCaml</a></li>
+      <li><strong><em>(en Fran&ccedil;ais)</em></strong>
+        <a href="./GL/ocaml-opengl-howto.html">les Bases d'OpenGL en OCaml</a></li>
+      <li><strong><em>(in English)</em></strong>
+        <a href="./GL/vertex_array.html">using OpenGL Vertex Arrays in OCaml</a></li>
+      <li><strong><em>(In English)</em></strong>
+        <a href="./GL/ocaml-opengl-howto-fc.html">foreward compatible OpenGL programming</a>
+      </li>
+    </ul>
+
+    <h3>OCaml Links</h3>
+    <ul>
+      <li>
+        <a href="https://rosettacode.org/wiki/Category:OCaml"
+          >ocaml category on rosetta-code</a>
+      </li>
+    </ul>
+
+    <h3>OCaml and ReScript</h3>
+    <ul>
+      <li>
+        Tutorials about how to make HTML5-Canvas games with OCaml:<br />
+        <ul style="margin-left:0.2em;">
+          <li>
+            <a href="/re/tut/ocaml-re-tut.html"
+              >with a simple snake game example</a><br />
+          </li>
+          <li>
+            <a href="/re/tut2/ocaml-re-tut.html"
+              >with a simple platformer game example</a><br />
+          </li>
+          <li>
+            <a href="/re/tut0/ocaml-re-tut-0.html"
+              >with a quick-start to make new games</a><br />
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <div id="SCM" class="grp">
+    <h2>My Git Repositories</h2>
+    <h3>github:</h3>
+    <ul>
+      <li><a href="https://github.com/fccm/">github.com/fccm/</a></li>
+      <li><a href="https://github.com/fccm2/">github.com/fccm2/</a></li>
+    </ul>
+  </div>
+
+  <div id="ocaml_libs" class="grp">
+    <h2>Pure OCaml libraries</h2>
+    <ul>
+      <li><a href="./ageom/">analytic geometry</a></li>
+      <li><a href="./funfields/">functional binary fields</a></li>
+      <li><a href="./timeline/">timeline functions</a></li>
+      <li><a href="./easing/">an easing lib</a></li>
+      <li><a href="./int-trigo/">trigo math with ints</a></li>
+      <li><a href="./sexpr/">s-expressions</a></li>
+      <li><a href="./mini-svg/">mini-svg module</a></li>
+      <li><a href="./DateLocale/">localisation for dates</a></li>
+    </ul>
+  </div>
+
+  <div id="Experimentations" class="grp">
+    <h2>Experimentations</h2>
+    <ul>
+      <li>
+        <a href="./enties/">enties: entities for game-dev in OCaml</a>
+        (early draft)
+      </li>
+      <li>
+        <a href="./xmlerr/">xmlerr: xml parsing with errors</a>
+        (in other words for parsing HTML)
+      </li>
+      <li>
+        <a href="./tristrip/">a triangle-strip maker</a>
+      </li>
+      <li>
+        <a href="./dbku/">a small toy database</a> (in very early state)
+        with a same interface than the <strong>Hashtbl</strong> module
+        (except the Hashtbl.create which has an additional parameter for the db name).
+      </li>
+    </ul>
+  </div>
+
+  <div id="WIPs" class="grp">
+    <h2>Drafts in Progress</h2>
+    <ul>
+      <li>
+        <a href="https://github.com/fccm/ocaml-cal-svg">SVG calendar generators</a>
+        (you can convert the SVG to PDF or another format, and print),
+        for already generated examples, you can go to
+        <a href="../cal/">the ./cal/ repository</a>.
+      </li>
+
+      <li><a href="https://github.com/fccm/ArteVOD"
+        >access videos from the Arte TV website</a> (Fork) <em>[Old, doesn't work anymore]</em></li>
+
+      <li><a href="./povray/">a basic ocaml interface for PovRay</a></li>
+
+      <li><a href="./XSSP.tar.lzma">XSSP</a></li>
+      <li><a href="./dummygame.tar.lzma">a dummy game</a></li>
+    </ul>
+  </div>
+
+  <div id="CLI" class="grp">
+    <h2>Command line utils</h2>
+    <ul>
+      <li><a href="./mltree/">mltree</a>,
+        a small implementation of the 'tree' command-line utility.</li>
+
+      <li><a href="./detri/">detri</a>, a calendar for the console.</li>
+
+      <!--
+      <li>A small <a href="./image-viewer.ml.html">full-screen image-viewer</a>
+        implemented in OpenGL</li>
+      -->
+
+      <li><a href="./ml-conjure/">ml-conjure</a> a conjure implementation written in OCaml.
+        <br />(A conjure is a high level scripting interface for ImageMagick)</li>
+    </ul>
+  </div>
+
+  <div id="Games" class="grp">
+    <h2>Mini-Games</h2>
+
+    <h3>Binkohp - 3D Mah-jong</h3>
+    <ul>
+      <li><a href="./GL/binkohp.html">Binkohp</a>
+          is a little game inspired by the Mah-jong and extended to 3D.</li>
+    </ul>
+    <h3>Rolling-Moon</h3>
+    <ul>
+      <li><a href="./chipmunk/rolling-moon.html">Rolling-Moon</a>
+          is a little game inspired by the SNES game "On The Ball"
+          (and its japaneese name was "CamelTry").
+      </li>
+    </ul>
+    <h3>Tetratta</h3>
+    <ul>
+      <li><a href="./Tetratta/">Tetratta</a>,
+        a little game similar to Chinese checkers, but with a 3D tetrahedral board.</li>
+    </ul>
+    <h3>Shmups</h3>
+    <ul>
+      <li><a href="./shmups/">ocaml-shmups</a>,
+        a basic shmup game, with several variations.</li>
+    </ul>
+  </div>
+
+  <div id="Interfaces" class="grp">
+    <h2>Accessing C libraries from OCaml</h2>
+
+    <h3>SFML</h3>
+    <ul>
+      <li><a href="SFML/">ocaml-sfml interface</a>
+        for game and multimedia programming.</li>
+    </ul>
+
+    <h3>Chipmunk</h3>
+    <ul>
+      <li><a href="./chipmunk/">OCaml interface for Chipmunk</a>, 2D physics.</li>
+    </ul>
+
+    <h3>ODE</h3>
+    <ul>
+      <li><a href="./ode/" >OCamlODE</a>:
+        ocaml interface for the <em>Open Dynamics Engine</em> (ODE),
+        a 3D physics engine.
+      </li>
+    </ul>
+
+    <h3>ClanLib</h3>
+    <ul>
+      <li><a href="./clanlib/">OCaml interface for ClanLib</a></li>
+    </ul>
+
+    <h3>SDL2</h3>
+    <ul>
+      <li><a href="./sdl2/">OCaml interface for SDL2</a></li>
+    </ul>
+
+    <h3>OpenGL</h3>
+    <ul>
+      <li><a href="./GL/">glMLite</a>, an opengl interface</li>
+    </ul>
+
+    <h3>ImageMagick</h3>
+    <ul>
+      <li><a href="./ImageMagick/">OCaml-ImageMagick interface</a> (deprecated)</li>
+      <li><a href="./Grinnm/">Grinnm</a> (a sandbox for a higher-level OCaml-libMagick UI)</li>
+    </ul>
+
+    <h3>GraphicsMagick</h3>
+    <ul>
+      <li><a href="./GraphicsMagick/">OCaml-GraphicsMagick interface</a></li>
+    </ul>
+
+    <h3>X11 programming</h3>
+    <ul>
+      <li>The beginning of an <a href="./Xlib/" >Xlib interface for OCaml</a> (with GLX)</li>
+      <!--
+      <li>The beginning of an <a href="./demox/">X demo (in OCaml)</a></li>
+      -->
+    </ul>
+
+    <h3>Fam library</h3>
+    <ul>
+      <li>Basic interface to the library fam <a href="./fam/">ocaml-fam</a></li>
+    </ul>
+
+    <h3>Lib Lzma</h3>
+    <ul>
+      <li><a href="./lzma/"
+         >OCaml interface for the Lzma lib</a></li>
+    </ul>
+
+    <h3>Ming</h3>
+    <ul>
+      <!--
+      <li>The first attempt to make a <a href="./Ming/">Ming interface</a> (not usable)</li>
+      -->
+      <li>To create Flash contents from OCaml, here is a <a href="./ming/">Ming interface</a>
+        (in pre-alpha state)</li>
+    </ul>
+
+    <h3>Allegro</h3>
+    <ul>
+      <li><a href="./Allegro/">OCaml-Allegro interface</a> for game and multimedia programming.</li>
+    </ul>
+  </div>
+
+  <div id="CGI" class="grp">
+    <h2>Projects in web context (with CGI)</h2>
+    <ul>
+      <li><a href="./OFC/">ocaml-ofc</a>, an OCaml interface for Open Flash Chart 2.</li>
+
+      <li><a href="./smtp-mail/">smtp-mail</a>,
+        an OCaml library implementing part of the SMTP protocol</li>
+
+      <li>
+        <a href="./wikiLagune/wikiLagune.20061027-08.18.tgz">wikiLagune</a>
+        is a very basic Wiki
+        <!--
+        <br />
+        <small>be warn that this wiki is NOT SECURE,
+          some pages have already been DELETED and the associated history</small>
+        -->
+      </li>
+
+      <li><a href="./graccota/">graccota</a> (GRAC Corpus Tagger)</li>
+
+      <li><a href="./bilingual-eq/">bilingual-eq</a> sources for the web-site "bilingual-eq"</li>
+
+      <li><a href="./download/fgx-0.1.tar.gz">free-creations</a>
+        was the beginning of a project to index free creations available on the web,
+        and to provide a web interface to browse these.
+      </li>
+    </ul>
+  </div>
+
+  <div id="Packaging" class="grp">
+    <h2>Packaging</h2>
+    <ul>
+      <li>
+        <a href="trans-pkg">trans-pkg</a>
+        was a set of links to the ocaml packages for different Linux-distros.
+      </li>
+      <li>
+        List of ocaml packages that I was co-maintaining with malo:<br />
+        <pre style='background-color:#DDD'
+> curl -s http://pkgsubmit.mageia.org/data/maintdb.txt | \
+   grep -E '(blue_prawn|ocaml)' | sed 's/ .*//'</pre>
+      </li>
+    </ul>
+  </div>
+
+  <div id="Geekish" class="grp">
+    <h2>Geekish</h2>
+    <ul>
+      <li><a href="./brainfuck.ml.html">a brainfuck interpreter</a></li>
+    </ul>
+  </div>
+
+</div>
+
+<div style="margin-top:3em; border:0;">
+  <a href="http://ocaml.org/" title="OCaml website"
+    ><img src="./ocaml-logo.png"
+       alt="The OCaml Language" style="border:none;" /></a>
+  <br />
+  <img border="0" src="./back-icon.gif" />
+    <a href="/">home</a>
+  / 
+  <img border="0" src="./img/next.gif" />
+    <a href="./ocaml2.html">next</a>
+</div>
+
+</body>
+</html>
