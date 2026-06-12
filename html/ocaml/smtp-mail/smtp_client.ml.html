@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>smtp_client.ml</title>
+<meta name="Generator" content="Vim/7.2" />
+<meta http-equiv="content-type" content="text/html; charset=utf8" />
+<style type="text/css">
+.PreProc { color: #8080ff; font-weight: bold; }
+.Cst { color: #ff40ff; font-weight: bold; }
+pre { font-family: monospace; color: #ffffff; background-color: #000000; border: 1px #666 solid; padding: 0.3em 0.4em; }
+body { font-family: monospace; color: #ffffff; background-color: #000000; padding: 0.6em 8.0em 0.6em 1.2em; }
+.Stt { color: #ffff00; font-weight: bold; }
+</style>
+</head>
+<body>
+<pre>
+<span class="Stt">let</span> h <span class="Stt">=</span> <span class="PreProc">Smtp</span>.connect <span class="Cst">&quot;smtp.gmail.fr&quot;</span><span class="Stt">;;</span>
+<span class="PreProc">Smtp</span>.helo h <span class="Cst">&quot;hostname&quot;</span><span class="Stt">;;</span>
+<span class="PreProc">Smtp</span>.mail h <span class="Cst">&quot;&lt;john.smith@example.com&gt;&quot;</span><span class="Stt">;;</span>
+<span class="PreProc">Smtp</span>.rcpt h <span class="Cst">&quot;&lt;john-doe@example.com&gt;&quot;</span><span class="Stt">;;</span>
+<span class="Stt">let</span> email_header <span class="Stt">=</span> <span class="Cst">&quot;\</span>
+<span class="Cst">From: John Smith &lt;john.smith@example.com&gt;</span>
+<span class="Cst">To: John Doe &lt;john-doe@example.com&gt;</span>
+<span class="Cst">Subject: hello&quot;</span><span class="Stt">;;</span>
+<span class="Stt">let</span> email_msg <span class="Stt">=</span> <span class="Cst">&quot;Hello, How are you?&quot;</span><span class="Stt">;;</span>
+<span class="PreProc">Smtp</span>.data h <span class="Stt">(</span>email_header <span class="Stt">^</span> <span class="Cst">&quot;\r\n\r\n&quot;</span> <span class="Stt">^</span> email_msg<span class="Stt">)</span><span class="Stt">;;</span>
+<span class="PreProc">Smtp</span>.quit h<span class="Stt">;;</span>
+</pre>
+</body>
+</html>

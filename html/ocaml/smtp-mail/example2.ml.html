@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>example2.ml</title>
+<meta name="Generator" content="Vim/7.3" />
+<meta name="plugin-version" content="vim7.3_v6" />
+<meta name="syntax" content="ocaml" />
+<meta name="settings" content="use_css,use_xhtml" />
+<style type="text/css">
+pre { font-family: monospace; color: #ffffff; background-color: #000000; }
+body { font-family: monospace; color: #ffffff; background-color: #000000; }
+pre { border: 1px #666 solid; padding: 0.3em 0.4em; }
+body { padding: 1em 3em; }
+.PreProc { color: #8080ff; font-weight: bold; }
+.Constant { color: #ff40ff; font-weight: bold; }
+.Statement { color: #ffff00; font-weight: bold; }
+</style>
+</head>
+<body>
+<pre>
+<span class="Statement">let</span> <span class="Constant">()</span> <span class="Statement">=</span>
+  <span class="Statement">let</span> zz <span class="Statement">=</span> <span class="Statement">new</span> <span class="PreProc">Mail</span>.mail <span class="Statement">in</span>
+    zz#set_from <span class="Constant">&quot;mail@mydomain&quot;</span>
+  <span class="Statement">;</span> zz#set_rcpt <span class="Constant">&quot;mail@yourdomain&quot;</span>
+  <span class="Statement">;</span> zz#set_subject <span class="Constant">&quot;a message&quot;</span>
+  <span class="Statement">;</span> zz#set_server <span class="Constant">&quot;smtp.mydomain&quot;</span>
+  <span class="Statement">;</span> zz#send
+  <span class="Statement">;;</span>
+</pre>
+</body>
+</html>
