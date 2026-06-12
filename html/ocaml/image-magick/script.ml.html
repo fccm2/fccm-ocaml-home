@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>example_01.ml</title>
+<meta name="Generator" content="Vim/8.1">
+<meta name="plugin-version" content="vim8.1_v1">
+<meta name="syntax" content="ocaml">
+<meta name="settings" content="use_css,pre_wrap,no_foldcolumn,expand_tabs,prevent_copy=">
+<meta name="colorscheme" content="none">
+<style type="text/css">
+<!--
+pre { white-space: pre-wrap; font-family: monospace; color: #000000; background-color: #dddddd; }
+body { font-family: monospace; color: #000000; background-color: #dadada; }
+pre { border: 1px solid #bbbbbb; padding: 0.2em 0.4em; }
+* { font-size: 1em; }
+.Comment { color: #8080ff; }
+.Identifier { color: #008080; }
+.Constant { color: #c00000; }
+.Statement { color: #af5f00; }
+.PreProc { color: #c000c0; }
+-->
+</style>
+</head>
+<body>
+<pre id='vimCodeElement'>
+<span class="PreProc">#load</span> <span class="Constant">&quot;magick.cma&quot;</span> <span class="Statement">;;</span>
+<span class="Statement">open</span> <span class="PreProc">Magick</span> <span class="Statement">;;</span>
+<span class="Statement">open</span> <span class="PreProc">Imper</span> <span class="Statement">;;</span>
+
+
+<span class="Statement">let</span> argc <span class="Statement">=</span> <span class="PreProc">Array</span>.length <span class="PreProc">Sys</span>.argv <span class="Statement">in</span>
+  <span class="Statement">if</span> <span class="Statement">(</span>argc &lt; <span class="Constant">2</span><span class="Statement">)</span> <span class="Statement">then</span> <span class="Statement">begin</span>
+    prerr_endline<span class="Statement">(</span><span class="Constant">&quot;Usage:\n&quot;</span> ^ <span class="PreProc">Sys</span>.argv.<span class="Statement">(</span><span class="Constant">0</span><span class="Statement">)</span> ^ <span class="Constant">&quot; &lt;black &amp; white image file&gt;&quot;</span><span class="Statement">)</span><span class="Statement">;</span>
+    exit <span class="Constant">1</span>
+  <span class="Statement">end</span>
+<span class="Statement">;;</span>
+
+
+<span class="Statement">let</span> <span class="Constant">()</span> <span class="Statement">=</span>
+  <span class="Statement">let</span> t_img <span class="Statement">=</span> read_image <span class="PreProc">Sys</span>.argv.<span class="Statement">(</span><span class="Constant">1</span><span class="Statement">)</span> <span class="Statement">in</span>
+  <span class="Statement">let</span> u_img <span class="Statement">=</span> clone_image t_img <span class="Statement">in</span>
+
+  print_endline <span class="Constant">&quot; Here is the original image&quot;</span><span class="Statement">;</span>
+  display t_img<span class="Statement">;</span>
+
+  blur  u_img  <span class="Constant">2.4</span> <span class="Constant">()</span><span class="Statement">;</span>
+  modulate  u_img <span class="Statement">~</span><span class="Identifier">brightness</span>:<span class="Constant">70</span> <span class="Constant">()</span><span class="Statement">;</span>
+  negate  u_img <span class="Constant">()</span><span class="Statement">;</span>
+
+  print_endline <span class="Constant">&quot; Intermediate processing&quot;</span><span class="Statement">;</span>
+  display  u_img<span class="Statement">;</span>
+
+  blur  t_img <span class="Constant">0.3</span> <span class="Constant">()</span><span class="Statement">;</span>  <span class="Comment">(* smooth the path a little *)</span>
+  roll  u_img <span class="Constant">2</span> <span class="Constant">1</span><span class="Statement">;</span>
+  composite_image  t_img u_img <span class="Constant">Lighten</span> <span class="Constant">()</span><span class="Statement">;</span>
+
+  print_endline <span class="Constant">&quot; Here is the result\n&quot;</span><span class="Statement">;</span>
+  display  t_img<span class="Statement">;</span>
+<span class="Statement">;;</span>
+
+</pre>
+</body>
+</html>
+<!-- vim: set foldmethod=manual : -->
