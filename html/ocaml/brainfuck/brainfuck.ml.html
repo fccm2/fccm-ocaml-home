@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+ "http://www.w3.org/TR/html4/strict.dtd">
+<?xml version="1.0"?>
+<html>
+<head>
+<title>brainfuck.ml : a Brainfuck interpreter written in OCaml</title>
+<link href="./ocaml-icon.png" rel="shortcut icon" />
+<meta name="Generator" content="Vim/6.3"/>
+<meta http-equiv="content-type" content="text/html; charset=utf8"/>
+<style type="text/css">
+<!--
+body { color: #ffffff; background-color: #000000; }
+pre { color: #ffffff; background-color: #000000; border: 1px solid #555; }
+.PreProc { color: #8080ff; font-weight: bold; }
+.Const { color: #ff40ff; font-weight: bold; }
+.Ident { color: #00ffff; font-weight: bold; }
+.Stat { color: #ffff00; font-weight: bold; }
+.Com { color: #00ffff; font-weight: bold; }
+-->
+</style>
+</head>
+<body>
+<pre>
+<span class="Com">(* Copyright (C) 2006, 2007  Florent Monnier</span>
+<span class="Com">   This little script is a brainfuck interpreter written in OCaml</span>
+
+<span class="Com"> This software is provided "AS-IS", without any express or implied warranty.</span>
+<span class="Com"> In no event will the authors be held liable for any damages arising from</span>
+<span class="Com"> the use of this software.</span>
+
+<span class="Com"> Permission is granted to anyone to use this software for any purpose,</span>
+<span class="Com"> including commercial applications, and to alter it and redistribute it</span>
+<span class="Com"> freely. *)</span>
+
+<span class="Com">(* utils *)</span>
+
+<span class="Stat">let</span> printc c <span class="Stat">=</span>
+  print_char <span class="Stat">(</span>char_of_int c<span class="Stat">)</span>
+
+<span class="Stat">let</span> dump buf acc <span class="Stat">=</span>
+  print_newline <span class="Const">()</span><span class="Stat">;</span>
+  <span class="PreProc">List</span>.iter <span class="Stat">(fun</span> d <span class="Stat">-&gt;</span>
+    <span class="PreProc">Printf</span>.printf <span class="Const">&quot; %3d\n&quot;</span> d
+  <span class="Stat">)</span> <span class="Stat">(</span><span class="PreProc">List</span>.rev_append acc buf<span class="Stat">)</span><span class="Stat">;</span>
+  print_newline <span class="Const">()</span>
+
+<span class="Stat">let</span> get_char <span class="Const">()</span> <span class="Stat">=</span>
+  int_of_char <span class="Stat">(</span>input_char stdin<span class="Stat">)</span>
+
+<span class="Stat">let</span> slide_left <span class="Stat">~</span><span class="Ident">buf</span> <span class="Stat">~</span><span class="Ident">acc</span> <span class="Stat">=</span>
+  <span class="Stat">match</span> acc <span class="Stat">with</span>
+  <span class="Stat">|</span> <span class="Const">[]</span> <span class="Stat">-&gt;</span> <span class="Stat">(</span><span class="Const">0</span><span class="Stat">::</span>buf, <span class="Const">[]</span><span class="Stat">)</span>
+  <span class="Stat">|</span> h<span class="Stat">::</span>t <span class="Stat">-&gt;</span> <span class="Stat">(</span>h<span class="Stat">::</span>buf, t<span class="Stat">)</span>
+
+<span class="Stat">let</span> slide_right <span class="Stat">~</span><span class="Ident">buf</span> <span class="Stat">~</span><span class="Ident">acc</span> <span class="Stat">=</span>
+  <span class="Stat">match</span> buf <span class="Stat">with</span>
+  <span class="Stat">|</span> <span class="Const">[]</span> <span class="Stat">-&gt;</span> <span class="Stat">([</span><span class="Const">0</span><span class="Stat">]</span>, acc<span class="Stat">)</span>
+  <span class="Stat">|</span> h<span class="Stat">::</span><span class="Const">[]</span> <span class="Stat">-&gt;</span> <span class="Stat">([</span><span class="Const">0</span><span class="Stat">]</span>, h<span class="Stat">::</span>acc<span class="Stat">)</span>
+  <span class="Stat">|</span> h<span class="Stat">::</span>t <span class="Stat">-&gt;</span> <span class="Stat">(</span>t, h<span class="Stat">::</span>acc<span class="Stat">)</span>
+
+<span class="Com">(* interpreter *)</span>
+<span class="Stat">let</span> parse_brainfuck <span class="Stat">~</span><span class="Ident">code</span> <span class="Stat">=</span>
+  <span class="Stat">let</span> <span class="Stat">rec</span> rewind i n <span class="Stat">=</span>
+    <span class="Stat">if</span> i <span class="Stat">&lt;</span> <span class="Const">0</span> <span class="Stat">then</span> failwith <span class="Const">&quot;open bracket missing&quot;</span> <span class="Stat">else</span>
+    <span class="Stat">match</span> code.<span class="Stat">[</span>i<span class="Stat">]</span> <span class="Stat">with</span>
+    <span class="Stat">|</span> <span class="Const">']'</span> <span class="Stat">-&gt;</span> rewind <span class="Stat">(</span>pred i<span class="Stat">)</span> <span class="Stat">(</span>succ n<span class="Stat">)</span>
+    <span class="Stat">|</span> <span class="Const">'['</span> <span class="Stat">-&gt;</span> <span class="Stat">if</span> n <span class="Stat">=</span> <span class="Const">0</span> <span class="Stat">then</span> succ i <span class="Stat">else</span> rewind <span class="Stat">(</span>pred i<span class="Stat">)</span> <span class="Stat">(</span>pred n<span class="Stat">)</span>
+    <span class="Stat">|</span> <span class="Stat">_</span> <span class="Stat">-&gt;</span> rewind <span class="Stat">(</span>pred i<span class="Stat">)</span> n
+  <span class="Stat">in</span>
+  <span class="Stat">let</span> len <span class="Stat">=</span> <span class="PreProc">String</span>.length code <span class="Stat">in</span>
+  <span class="Stat">let</span> <span class="Stat">rec</span> parse i <span class="Stat">~</span><span class="Ident">buf</span> <span class="Stat">~</span><span class="Ident">acc</span> <span class="Stat">=</span>
+    <span class="Stat">if</span> i <span class="Stat">&lt;</span> len <span class="Stat">then</span>
+    <span class="Stat">match</span> code.<span class="Stat">[</span>i<span class="Stat">]</span>, buf <span class="Stat">with</span>
+    <span class="Stat">|</span> <span class="Stat">_</span>, <span class="Const">[]</span> <span class="Stat">-&gt;</span> failwith <span class="Const">&quot;Empty buffer&quot;</span>
+    <span class="Stat">|</span> <span class="Const">'+'</span>, h<span class="Stat">::</span>t <span class="Stat">-&gt;</span> parse <span class="Stat">(</span>succ i<span class="Stat">)</span> <span class="Stat">~</span><span class="Ident">buf</span>:<span class="Stat">(</span>succ h<span class="Stat">::</span>t<span class="Stat">)</span> <span class="Stat">~</span><span class="Ident">acc</span>
+    <span class="Stat">|</span> <span class="Const">'-'</span>, h<span class="Stat">::</span>t <span class="Stat">-&gt;</span> parse <span class="Stat">(</span>succ i<span class="Stat">)</span> <span class="Stat">~</span><span class="Ident">buf</span>:<span class="Stat">(</span>pred h<span class="Stat">::</span>t<span class="Stat">)</span> <span class="Stat">~</span><span class="Ident">acc</span>
+    <span class="Stat">|</span> <span class="Const">','</span>, h<span class="Stat">::</span>t <span class="Stat">-&gt;</span> parse <span class="Stat">(</span>succ i<span class="Stat">)</span> <span class="Stat">~</span><span class="Ident">buf</span>:<span class="Stat">(</span>get_char<span class="Const">()</span><span class="Stat">::</span>t<span class="Stat">)</span> <span class="Stat">~</span><span class="Ident">acc</span>
+    <span class="Stat">|</span> <span class="Const">']'</span>, h<span class="Stat">::</span>t <span class="Stat">-&gt;</span>
+        <span class="Stat">if</span> h <span class="Stat">=</span> <span class="Const">0</span> <span class="Stat">then</span> parse <span class="Stat">(</span>succ i<span class="Stat">)</span> <span class="Stat">~</span><span class="Ident">buf</span> <span class="Stat">~</span><span class="Ident">acc</span>
+        <span class="Stat">else</span> parse <span class="Stat">(</span>rewind <span class="Stat">(</span>pred i<span class="Stat">) <span class="Const">0</span>)</span> <span class="Stat">~</span><span class="Ident">buf</span> <span class="Stat">~</span><span class="Ident">acc</span>
+    <span class="Stat">|</span> <span class="Const">'.'</span>, h<span class="Stat">::</span>t <span class="Stat">-&gt;</span> printc h<span class="Stat">;</span>  parse <span class="Stat">(</span>succ i<span class="Stat">)</span> <span class="Stat">~</span><span class="Ident">buf</span> <span class="Stat">~</span><span class="Ident">acc</span>
+    <span class="Stat">|</span> <span class="Const">'#'</span>, <span class="Stat">_</span> <span class="Stat">-&gt;</span> dump buf acc<span class="Stat">;</span> parse <span class="Stat">(</span>succ i<span class="Stat">)</span> <span class="Stat">~</span><span class="Ident">buf</span> <span class="Stat">~</span><span class="Ident">acc</span>
+    <span class="Stat">|</span> <span class="Const">'&gt;'</span>, <span class="Stat">_</span> <span class="Stat">-&gt;</span> <span class="Stat">let</span> <span class="Stat">(</span>buf, acc<span class="Stat">)</span> <span class="Stat">=</span> slide_right <span class="Stat">~</span><span class="Ident">buf</span> <span class="Stat">~</span><span class="Ident">acc</span> <span class="Stat">in</span> parse <span class="Stat">(</span>succ i<span class="Stat">)</span> <span class="Stat">~</span><span class="Ident">buf</span> <span class="Stat">~</span><span class="Ident">acc</span>
+    <span class="Stat">|</span> <span class="Const">'&lt;'</span>, <span class="Stat">_</span> <span class="Stat">-&gt;</span> <span class="Stat">let</span> <span class="Stat">(</span>buf, acc<span class="Stat">)</span> <span class="Stat">=</span> slide_left  <span class="Stat">~</span><span class="Ident">buf</span> <span class="Stat">~</span><span class="Ident">acc</span> <span class="Stat">in</span> parse <span class="Stat">(</span>succ i<span class="Stat">)</span> <span class="Stat">~</span><span class="Ident">buf</span> <span class="Stat">~</span><span class="Ident">acc</span>
+    <span class="Stat">|</span> <span class="Stat">_</span>,<span class="Stat">_</span> <span class="Stat">-&gt;</span> parse <span class="Stat">(</span>succ i<span class="Stat">)</span> <span class="Stat">~</span><span class="Ident">buf</span> <span class="Stat">~</span><span class="Ident">acc</span>
+  <span class="Stat">in</span>
+  parse <span class="Const">0</span> <span class="Stat">~</span><span class="Ident">buf</span>:<span class="Stat">[</span><span class="Const">0</span><span class="Stat">]</span> <span class="Stat">~</span><span class="Ident">acc</span>:<span class="Const">[]</span>
+
+<span class="Com">(* main *)</span>
+<span class="Stat">let</span> <span class="Const">()</span> <span class="Stat">=</span>
+  <span class="Stat">let</span> code <span class="Stat">=</span> <span class="Const">&quot;           &gt;+++++++</span>
+<span class="Const">     [&lt;++++++++++++&gt;-]   &lt;+++.&gt;+++</span>
+<span class="Const">     [&lt;++++++&gt;-]         &lt;.+++..-.++++.--..--------.+++++++++.&gt;++++++</span>
+<span class="Const">     [&lt;-------------&gt;-]  &lt;.&gt;++++++++</span>
+<span class="Const">     [&lt;+++++++++&gt;-]      &lt;+.+++++.&gt;++++++</span>
+<span class="Const">     [&lt;-------------&gt;-]  &lt;.&gt;++++++</span>
+<span class="Const">     [&lt;+++++++++++&gt;-]    &lt;++.+.+++++++++++++.&gt;+++++++++</span>
+<span class="Const">     [&lt;---------&gt;-]      &lt;-.&gt;+++++++</span>
+<span class="Const">     [&lt;++++++++++++&gt;-]   &lt;+++.--.-------.----------.+.+++++++++++++.&gt;++++</span>
+<span class="Const">     [&lt;----&gt;-]           &lt;.-.&gt;++++</span>
+<span class="Const">     [&lt;++++&gt;-]           &lt;+.-------------.+++++++++.&gt;++++++</span>
+<span class="Const">     [&lt;-------------&gt;-]  &lt;.&gt;+++++</span>
+<span class="Const">     [&lt;+++++++++++&gt;-]    &lt;.++++++++++++++.+++++++.++++++++.&gt;+++++++</span>
+<span class="Const">     [&lt;------------&gt;-]   &lt;.&gt;++++++</span>
+<span class="Const">     [&lt;+++++++++++&gt;-]    &lt;++.+.+++++++++++++.&gt;+++++++++</span>
+<span class="Const">     [&lt;---------&gt;-]      &lt;-.&gt;++++++</span>
+<span class="Const">     [&lt;++++++++&gt;-]       &lt;.&gt;++++</span>
+<span class="Const">     [&lt;++++++++&gt;-]       &lt;++.---.--------.+++++++++++.&gt;++++</span>
+<span class="Const">     [&lt;----&gt;-]           &lt;-.++++++++++++..----.----.+++++++++++++.+.---.++.&gt;++++</span>
+<span class="Const">     [&lt;----&gt;-]           &lt;-.++.+++++.---.&gt;++++++</span>
+<span class="Const">     [&lt;-----------&gt;-]    &lt;---.&gt;++++</span>
+<span class="Const">     [&lt;++++++++&gt;-]       &lt;++.&gt;++++++</span>
+<span class="Const">     [&lt;++++++++&gt;-]       &lt;.&gt;++++</span>
+<span class="Const">     [&lt;----&gt;-]           &lt;-.++++++++.+++++.--------.+++++++++++++++.&gt;+++</span>
+<span class="Const">     [&lt;------&gt;-]         &lt;.++++++++.&gt;++++++++</span>
+<span class="Const">     [&lt;------------&gt;-]   &lt;-. &quot;</span>
+  <span class="Stat">in</span>
+  <span class="Stat">let</span> code <span class="Stat">=</span> <span class="Const">&quot;</span>
+<span class="Const">      ++++++++++[&gt;+++++++&gt;++++++++++&gt;+++&gt;+&lt;&lt;&lt;&lt;-]</span>
+<span class="Const">      &gt;++.&gt;+.+++++++..+++.&gt;++.&lt;&lt;+++++++++++++++.&gt;.+++.------.--------.&gt;+.&gt;. &quot;</span>
+  <span class="Stat">in</span>
+  parse_brainfuck <span class="Stat">~</span><span class="Ident">code</span>
+
+</pre>
+</body>
+</html>
+<!-- vim:cindent sw=2 sts=2 ts=2 et fdm=marker
+-->
