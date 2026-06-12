@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="man.html">
+<link rel="next" href="ITimed.html">
+<link rel="Up" href="man.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="FTimed" rel="Chapter" href="FTimed.html">
+<link title="ITimed" rel="Chapter" href="ITimed.html">
+<link title="IpTimed" rel="Chapter" href="IpTimed.html"><link title="Timeline types" rel="Section" href="#3_Timelinetypes">
+<link title="Timeline functions" rel="Section" href="#3_Timelinefunctions">
+<link title="Labeled functions" rel="Section" href="#3_Labeledfunctions">
+<title>FTimed</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a class="up" href="man.html" title="Index">Up</a>
+&nbsp;<a class="post" href="ITimed.html" title="ITimed">Next</a>
+</div>
+<h1>Module <a href="type_FTimed.html">FTimed</a></h1>
+
+<pre><span id="MODULEFTimed"><span class="keyword">module</span> FTimed</span>: <code class="code">sig</code> <a href="FTimed.html">..</a> <code class="code">end</code></pre><div class="info module top">
+<div class="info-desc">
+<p>Timeline</p>
+</div>
+</div>
+<hr width="100%">
+<h4 id="3_Timelinetypes">Timeline types</h4>
+<pre><span id="TYPEtime"><span class="keyword">type</span> <code class="type"></code>time</span> = <code class="type">float</code> </pre>
+
+
+<pre><code><span id="TYPEanimated"><span class="keyword">type</span> <code class="type">('a, 'b)</code> animated</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTanimated.From"><span class="constructor">From</span></span> <span class="keyword">of</span> <code class="type"><a href="FTimed.html#TYPEtime">time</a> * 'a</code></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+<div class="info-desc">
+<p><code class="code">From (t, v)</code> after time <code class="code">t</code> is reach (and before next timeline chunk)
+        the returned value will be <code class="code">v</code></p>
+</div>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTanimated.Evol"><span class="constructor">Evol</span></span> <span class="keyword">of</span> <code class="type"><a href="FTimed.html#TYPEtime">time</a> * <a href="FTimed.html#TYPEtime">time</a> * (<a href="FTimed.html#TYPEtime">time</a> -> 'b -> 'a) * 'b</code></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+<div class="info-desc">
+<p><code class="code">Evol (t1, t2, f, d)</code> when <code class="code">t</code> is between <code class="code">t1</code> and <code class="code">t2</code> the value is the result of
+        <code class="code">f t d</code></p>
+</div>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr></table>
+
+<div class="info ">
+<div class="info-desc">
+<p>The type <code class="code">'a</code> is the output.</p>
+
+<p>The type <code class="code">'b</code> is a parameter for the function <code class="code">f</code> that
+    make the evolution over the input time.</p>
+</div>
+</div>
+
+
+<pre><code><span id="TYPEtimed"><span class="keyword">type</span> <code class="type">('a, 'b)</code> timed</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTtimed.Static"><span class="constructor">Static</span></span> <span class="keyword">of</span> <code class="type">'a</code></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+<div class="info-desc">
+<p>with <code class="code">Static v</code> the returned value will always be <code class="code">v</code></p>
+</div>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTtimed.Animated"><span class="constructor">Animated</span></span> <span class="keyword">of</span> <code class="type">('a, 'b) <a href="FTimed.html#TYPEanimated">animated</a> list</code></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+<div class="info-desc">
+<p><code class="code">Animated anim_chunks</code> the animation chunks have to be correctly sorted</p>
+</div>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr></table>
+
+
+<h4 id="3_Timelinefunctions">Timeline functions</h4>
+<pre><span id="VALval_at"><span class="keyword">val</span> val_at</span> : <code class="type"><a href="FTimed.html#TYPEtime">time</a> -> ('a, 'b) <a href="FTimed.html#TYPEanimated">animated</a> list -> 'a</code></pre>
+<pre><span id="VALget_val"><span class="keyword">val</span> get_val</span> : <code class="type"><a href="FTimed.html#TYPEtime">time</a> -> ('a, 'b) <a href="FTimed.html#TYPEtimed">timed</a> -> 'a</code></pre>
+<pre><span id="VALfinished"><span class="keyword">val</span> finished</span> : <code class="type"><a href="FTimed.html#TYPEtime">time</a> -> ('a, 'b) <a href="FTimed.html#TYPEanimated">animated</a> list -> bool</code></pre><h4 id="3_Labeledfunctions">Labeled functions</h4>
+<pre><span id="MODULELabels"><span class="keyword">module</span> <a href="FTimed.Labels.html">Labels</a></span>: <code class="code">sig</code> <a href="FTimed.Labels.html">..</a> <code class="code">end</code></pre></body></html>

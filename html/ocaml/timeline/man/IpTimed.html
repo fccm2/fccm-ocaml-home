@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="man.html">
+<link rel="previous" href="ITimed.html">
+<link rel="Up" href="man.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="FTimed" rel="Chapter" href="FTimed.html">
+<link title="ITimed" rel="Chapter" href="ITimed.html">
+<link title="IpTimed" rel="Chapter" href="IpTimed.html"><link title="Timeline types" rel="Section" href="#3_Timelinetypes">
+<link title="Timeline functions" rel="Section" href="#3_Timelinefunctions">
+<link title="Labeled functions" rel="Section" href="#3_Labeledfunctions">
+<title>IpTimed</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="ITimed.html" title="ITimed">Previous</a>
+&nbsp;<a class="up" href="man.html" title="Index">Up</a>
+&nbsp;</div>
+<h1>Module <a href="type_IpTimed.html">IpTimed</a></h1>
+
+<pre><span id="MODULEIpTimed"><span class="keyword">module</span> IpTimed</span>: <code class="code">sig</code> <a href="IpTimed.html">..</a> <code class="code">end</code></pre><div class="info module top">
+<div class="info-desc">
+<p>Timeline</p>
+</div>
+</div>
+<hr width="100%">
+<h4 id="3_Timelinetypes">Timeline types</h4>
+<pre><span id="TYPEtime"><span class="keyword">type</span> <code class="type"></code>time</span> = <code class="type">int</code> </pre>
+
+
+<pre><span id="TYPEanimated"><span class="keyword">type</span> <code class="type">('a, 'b)</code> animated</span> = <code class="type">[ `Evol of<br>           <a href="IpTimed.html#TYPEtime">time</a> * <a href="IpTimed.html#TYPEtime">time</a> *<br>           (<a href="IpTimed.html#TYPEtime">time</a> -> <a href="IpTimed.html#TYPEtime">time</a> -> <a href="IpTimed.html#TYPEtime">time</a> -> 'b -> 'a) * 'b<br>       | `From of <a href="IpTimed.html#TYPEtime">time</a> * 'a ]</code> </pre>
+<div class="info ">
+<div class="info-desc">
+<p>The type <code class="code">'a</code> is the output.</p>
+
+<p>The type <code class="code">'b</code> is a parameter for the function <code class="code">f</code> that
+    make the evolution over the input time.</p>
+</div>
+</div>
+
+
+<pre><span id="TYPEtimed"><span class="keyword">type</span> <code class="type">('a, 'b)</code> timed</span> = <code class="type">[ `Animated of ('a, 'b) <a href="IpTimed.html#TYPEanimated">animated</a> list | `Static of 'a ]</code> </pre>
+
+<h4 id="3_Timelinefunctions">Timeline functions</h4>
+<pre><span id="VALval_at"><span class="keyword">val</span> val_at</span> : <code class="type"><a href="IpTimed.html#TYPEtime">time</a> -> ('a, 'b) <a href="IpTimed.html#TYPEanimated">animated</a> list -> 'a</code></pre>
+<pre><span id="VALget_val"><span class="keyword">val</span> get_val</span> : <code class="type"><a href="IpTimed.html#TYPEtime">time</a> -> ('a, 'b) <a href="IpTimed.html#TYPEtimed">timed</a> -> 'a</code></pre>
+<pre><span id="VALfinished"><span class="keyword">val</span> finished</span> : <code class="type"><a href="IpTimed.html#TYPEtime">time</a> -> ('a, 'b) <a href="IpTimed.html#TYPEanimated">animated</a> list -> bool</code></pre><h4 id="3_Labeledfunctions">Labeled functions</h4>
+<pre><span id="MODULELabels"><span class="keyword">module</span> <a href="IpTimed.Labels.html">Labels</a></span>: <code class="code">sig</code> <a href="IpTimed.Labels.html">..</a> <code class="code">end</code></pre></body></html>
