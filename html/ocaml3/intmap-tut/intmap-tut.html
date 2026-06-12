@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>interval-mapping-schema</title>
+<meta name="license" content="gnu/fdl" />
+<meta name="auhtor" content="f.monnier, 2025-11-06" />
+<style>.red-circ { border:1px solid #f00; }
+pre { border:1px solid #000; margin-right:28%; }</style>
+</head>
+<body>
+<h1>interval-mapping-schema-tutorial</h1>
+
+<p>How to create a schema for the
+<a href="/ocaml2/tut/interv.html">interval-mapping</a>
+tutorial.</p>
+
+<p>First we define the area, a quiet width ratio:</p>
+
+<pre>let () =
+  let svg = Svg.new_svg_document ~width:480 ~height:180 () in
+
+  Svg.finish_svg svg;
+  Svg.print_svg_document svg;
+;;</pre>
+
+<p>We define a white background, and place two lines:</p>
+
+<pre>let () =
+  let svg = Svg.new_svg_document ~width:480 ~height:180 () in
+
+  Svg.add_rect svg
+    ~x:0 ~y:0
+    ~width:480
+    ~height:180
+    ~fill:"#fff"
+    ~stroke:"#000"
+    ~stroke_width:2.0
+   ()
+   ;
+
+  Svg.add_line svg
+    ~x1:45   ~y1:45
+    ~x2:410  ~y2:45
+    ~stroke:"#000"
+    ~stroke_width:1.0
+   ()
+   ;
+
+  Svg.add_line svg
+    ~x1:45   ~y1:135
+    ~x2:370  ~y2:135
+    ~stroke:"#000"
+    ~stroke_width:1.0
+   ()
+   ;
+
+  Svg.finish_svg svg;
+  Svg.print_svg_document svg;
+;;</pre>
+
+<p>Here what we get:</p>
+
+<img src="./intmap-1.png" />
+
+<p>We then plase a first line on the left:</p>
+
+<pre>  Svg.add_line svg
+    ~x1:45   ~y1:45
+    ~x2:45   ~y2:135
+    ~stroke:"#000"
+    ~stroke_width:1.0
+   ()
+   ;</pre>
+
+<p>based on the left points of the two vertical
+lines.</p>
+
+<img src="./intmap-2.png" />
+
+<p>Then we move by five, to create an intersection:</p>
+
+<pre>  Svg.add_line svg
+    ~x1:50   ~y1:40
+    ~x2:50   ~y2:140
+    ~stroke:"#000"
+    ~stroke_width:1.0
+   ()
+   ;</pre>
+
+<img src="./intmap-3.png" />
+
+<p>If we zoom at the intersection w/ gimp:</p>
+
+<img class="red-circ" src="./inter.png" />
+
+<p>we think that maybe we need to add a full
+opacity, maybe they changed the default, for
+the opacity?</p>
+
+<pre>    ~stroke_opacity:1.0</pre>
+
+<p>But: No! This is because the coordinates
+are grid alined!</p>
+
+<p>I thought it will point the middle of the
+pixel.</p>
+
+<p>Then we switch to the <code>Float.</code>
+module, to have the <code>float</code> equivalent
+of <code>add_line</code>.</p>
+
+<img src="./intmap-4.png" /><a href="./intmapf.ml">intmapf.ml</a>
+
+<p>But then we realize, the initial result was
+not that bad.</p>
+
+<img src="./intmap-5.png" />
+
+<p>We can now just add the circles:</p>
+
+<pre>  Svg.add_circle svg
+    ~cx:120.0
+    ~cy:45.0
+    ~r:5.6
+    ~fill:"none"
+    ~stroke:"#000"
+    ~stroke_width:1.5
+   ()
+   ;</pre>
+
+<img src="./intmap-6.png" />
+
+<img src="./intmap-7.png" />
+
+<p>Here is the result.</p>
+
+<ul>
+<li><a href="./intmap-7.ml">intmap-7.ml</a></li>
+<li><a href="./intmap-7.svg">intmap-7.svg</a></li>
+</ul>
+
+</body>
+</html>
