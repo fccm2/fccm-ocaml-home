@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>video-tut</title>
+<meta name="keywords" content="tutorial, music-video, tutorial-video, lyrics-video, demo-video, presentation-video" />
+<meta name="description" content="How to make a video with mini-svg, pov-bind, gegl-ocaml, mgk-gen, or mgk-cmd." />
+<meta name="auhtor" content="Florent Monnier, 2025" />
+<meta name="license" content="fdl, cc-by-sa_2.5 OR Later, spdx:Any" />
+<style>
+pre { background:#eee; }
+body { padding-right:20%; min-width:340px; }
+</style>
+</head>
+<body>
+<h1>video-tut</h1>
+<h2>makeing-a-video-tutorial w/ mini-svg or pov-bind.</h2>
+<p>How to make a music-video, lyrics-video, or any kind of video,
+with <a href="/ocaml/mini-svg3/">mini-svg:</a></p>
+<p>You can create all the frames, at 24 or 25 fps, and join them
+all, with ffmpeg, or mencoder.</p>
+<hr />
+<h2>scripts</h2>
+<p>Convert the <code>*.png</code> frames with <code>mencoder</code>:</p>
+<pre>mencoder mf://*.png -mf w=427:h=240:fps=25:type=png -ovc lavc \
+    -lavcopts vcodec=mpeg4:mbd=2:trell \
+    -audiofile audio.mp3 \
+    -oac copy -o output.avi</pre>
+<hr />
+<p><code>inkshell.sh</code>:</p>
+<pre>TMPDIR="/tmp/lyrics.temp"
+
+(for i in `seq 0 2000`; do
+   j=`printf "%04d" $i`;
+   echo $TMPDIR/ly-$j.svg --export-png=$TMPDIR/ly-$j.png;
+ done) | \
+ DISPLAY= inkscape --shell</pre>
+<hr />
+<p><code>extract-audio.sh</code>:</p>
+<pre>file="$1"
+mencoder "${file}" -of rawaudio -oac mp3lame -ovc copy -o "${file%.*}.mp3"</pre>
+</body>
+</html>
