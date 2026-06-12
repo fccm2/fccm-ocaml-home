@@ -1,0 +1,1889 @@
+Content-Type: text/html
+
+<?xml version='1.0' encoding='iso-8859-1' ?>
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN'
+    'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>
+<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en' lang='en'>
+<head>
+<title>Graccota - GRAC Corpus Tagger</title>
+<link rev='made' href='mailto:fmonnier@linux-nantes.fr.eu.org' />
+<meta name='keywords' content='GRAC Corpus Tagger correcteur grammatical Graccota' />
+<meta name='encoding' content='iso-8859-1' />
+<meta name='description' content='GRAC Corpus Tagger' />
+
+<style type='text/css'>
+body{ background:#666;}
+acronym{ text-decoration:none;}
+#_grac  { color:#66F}
+#_corpus{ color:#DE4}
+#_tagger{ color:#E21}
+#_graccota{ text-shadow: -1px 2px 5px #111;}
+#sentence{ font-size:1.2em; line-height: 2em; background:#999; border: 1px solid #CCC;}
+#by{ font-size:small; font-style:italic;}
+#words{}
+._word{ float:left; border:1px solid #777; background:#6E6E6E;}
+._word, ._word span{ margin: 3px; font-size:1.1em;}
+._word{ text-align:center;}
+select{ height:20px; font-size:xx-small; color:#000; background-color:#4B5;}
+input{ color:#000; background-color:#F63; font-weight:bold;}
+fieldset{ border:1px solid #777; background:#5D5D5D;}
+legend{ color: #888;}
+small{ font-size: xx-small;}
+#bench{ font-size: xx-small; color:#444;}
+#grammar_abbr{ height:400px; overflow:auto; border:1px solid #777; text-align:center;}
+.css_table tr td{ border:2px solid #777;}
+.css_table tr td._desc_categ{ border:1px solid #555; background:#5D5D5D; color:#F63; font-weight:bold; padding-left:1.2em;}
+.css_table{ border:2px solid #444; margin-left:auto; margin-right:auto; text-align:left; margin-top:0.8em; margin-bottom:2.2em;}
+</style>
+</head>
+<body>
+<h1 id='_graccota'><acronym title='GRAC Corpus Tagger'><span id='_grac'>GRAC</span><span id='_corpus'>CO</span><span id='_tagger'>TA</span></acronym></h1>
+<div>
+<span id='sentence'>Leia est très belle, mais elle a des verues plein les pieds.</span>
+<div id='by'>Yann Solo</div>
+</div>
+<hr style='display:none;' />
+<form action='./graccota' method='post'><div>
+  <input type='hidden' name='key' value='da57ead0ebfec38790597d5e9e2d5a33' />
+   <fieldset>
+     <div id='words'>
+ <div class='_word'><span>Leia</span><br />
+       <select name='w0' id='e0'>
+          <option value='NA'></option>
+ <optgroup label='Auxiliaires'>
+	<option value='AUXA1'>AUX-av-1-sing</option>
+	<option value='AUXA2'>AUX-av-2-sing</option>
+	<option value='AUXA3'>AUX-av-3-sing</option>
+	<option value='AUXA4'>AUX-av-1-plur</option>
+	<option value='AUXA5'>AUX-av-2-plur</option>
+	<option value='AUXA6'>AUX-av-3-plur</option>
+	<option value='NA'></option>
+	<option value='AUXA'>AUX-av-inf</option>
+	<option value='AUXE'>AUX-etr-inf</option>
+	<option value='NA'></option>
+	<option value='AUXE4'>AUX-etr-1-sing</option>
+	<option value='AUXE5'>AUX-etr-2-sing</option>
+	<option value='AUXE6'>AUX-etr-3-sing</option>
+	<option value='AUXE1'>AUX-etr-1-plur</option>
+	<option value='AUXE2'>AUX-etr-2-plur</option>
+	<option value='AUXE3'>AUX-etr-3-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='D&eacute;terminant'>
+	<option value='DETRMS'>DET-masc-sing</option>
+	<option value='DETRMP'>DET-masc-plur</option>
+	<option value='DETRFS'>DET-fem-sing</option>
+	<option value='DETRFP'>DET-fem-plur</option>
+	<option value='NA'></option>
+	<option value='DINTMS'>DET-masc-sing-indef</option>
+	<option value='DINTMP'>DET-masc-plur-indef</option>
+	<option value='DINTFS'>DET-fem-sing-indef</option>
+	<option value='DINTFP'>DET-fem-plur-indef</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Verbe Principal'>
+	<option value='VINF'>VERB-inf</option>
+	<option value='NA'></option>
+	<option value='VERB1'>VERB-1-sing</option>
+	<option value='VERB2'>VERB-2-sing</option>
+	<option value='VERB3'>VERB-3-sing</option>
+	<option value='VERB4'>VERB-1-plur</option>
+	<option value='VERB5'>VERB-2-plur</option>
+	<option value='VERB6'>VERB-3-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adverbes'>
+	<option value='NE'>ADV-ne</option>
+	<option value='PAS'>ADV-pas</option>
+	<option value='ADVE'>ADV</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adjectif'>
+	<option value='ADJEMS'>ADJ-masc-sing</option>
+	<option value='ADJEMP'>ADJ-masc-plur</option>
+	<option value='ADJEFS'>ADJ-fem-sing</option>
+	<option value='ADJEFP'>ADJ-fem-plur</option>
+	<option value='NA'></option>
+	<option value='ADJIFS'>ADJ-masc-sing-indef</option>
+	<option value='ADJIFP'>ADJ-masc-plur-indef</option>
+	<option value='ADJIMS'>ADJ-fem-sing-indef</option>
+	<option value='ADJIMP'>ADJ-fem-plur-indef</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adposition'>
+	<option value='PAU'>P-au</option>
+	<option value='PAUX'>P-aux</option>
+	<option value='PDEA'>P-de-a</option>
+	<option value='PREPMS'>P-ms</option>
+	<option value='PDES'>P-des</option>
+	<option value='PREP'>P</option>
+ </optgroup>
+ <optgroup label='Participe pass&eacute;'>
+	<option value='PPASMS'>PP-masc-sing</option>
+	<option value='PPASMP'>PP-masc-plur</option>
+	<option value='PPASFS'>PP-fem-sing</option>
+	<option value='PPASFP'>PP-fem-plur</option>
+ </optgroup>
+ <optgroup label='Pronoms'>
+	<option value='PPOBMS'>PRO-pers-masc-sing</option>
+	<option value='PPOBMP'>PRO-pers-masc-plur</option>
+	<option value='PPOBFS'>PRO-pers-fem-sing</option>
+	<option value='PPOBFP'>PRO-pers-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PPER3M'>PRO-pers-3p-masc-sing</option>
+	<option value='PPER6M'>PRO-pers-3p-masc-plur</option>
+	<option value='PPER3F'>PRO-pers-3p-fem-sing</option>
+	<option value='PPER6F'>PRO-pers-3p-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PPER1'>PRO-pers-1p-sing</option>
+	<option value='PPER4'>PRO-pers-1p-plur</option>
+	<option value='PPER2'>PRO-pers-2p-sing</option>
+	<option value='PPER5'>PRO-pers-2p-plur</option>
+	<option value='NA'></option>
+	<option value='PINDMS'>PRO-ind-masc-sing</option>
+	<option value='PINDMP'>PRO-ind-masc-plur</option>
+	<option value='PINDFS'>PRO-ind-fem-sing</option>
+	<option value='PINDFP'>PRO-ind-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PRELMS'>PRO-rel-masc-sing</option>
+	<option value='PRELMP'>PRO-rel-masc-plur</option>
+	<option value='PRELFS'>PRO-rel-fem-sing</option>
+	<option value='PRELFP'>PRO-rel-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PREFMS'>PRO-refl-masc-sing</option>
+	<option value='PREFMP'>PRO-refl-masc-plur</option>
+	<option value='PREFFS'>PRO-refl-fem-sing</option>
+	<option value='PREFFP'>PRO-refl-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PSMS'>PRO-poss-masc-sing</option>
+	<option value='PSMP'>PRO-poss-masc-plur</option>
+	<option value='PSFS'>PRO-poss-fem-sing</option>
+	<option value='PSFP'>PRO-poss-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PDETMS'>PRO-demon-masc-sing</option>
+	<option value='PDETMP'>PRO-demon-masc-plur</option>
+	<option value='PDETFS'>PRO-demon-fem-sing</option>
+	<option value='PDETFP'>PRO-demon-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PINTMS'>PRO-int-masc-sing</option>
+	<option value='PINTMP'>PRO-int-masc-plur</option>
+	<option value='PINTFS'>PRO-int-fem-sing</option>
+	<option value='PINTFP'>PRO-int-fem-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Substantif'>
+	<option value='SUBSMS'>SUBST-masc-sing</option>
+	<option value='SUBSMP'>SUBST-masc-plur</option>
+	<option value='SUBSFS'>SUBST-fem-sing</option>
+	<option value='SUBSFP'>SUBST-fem-plur</option>
+ </optgroup>
+ <optgroup label='Divers'>
+	<option value='NPRO'>NOM-pr</option>
+	<option value='X'>X</option>
+	<option value='CSUB'>CONJ-sub</option>
+	<option value='CCOO'>CONJ-coord</option>
+	<option value='CHIF'>NUM</option>
+	<option value='PPRE'>PART-pres</option>
+ </optgroup>
+       </select>
+</div>
+ <div class='_word'><span>est</span><br />
+       <select name='w1' id='e1'>
+          <option value='NA'></option>
+ <optgroup label='Auxiliaires'>
+	<option value='AUXA1'>AUX-av-1-sing</option>
+	<option value='AUXA2'>AUX-av-2-sing</option>
+	<option value='AUXA3'>AUX-av-3-sing</option>
+	<option value='AUXA4'>AUX-av-1-plur</option>
+	<option value='AUXA5'>AUX-av-2-plur</option>
+	<option value='AUXA6'>AUX-av-3-plur</option>
+	<option value='NA'></option>
+	<option value='AUXA'>AUX-av-inf</option>
+	<option value='AUXE'>AUX-etr-inf</option>
+	<option value='NA'></option>
+	<option value='AUXE4'>AUX-etr-1-sing</option>
+	<option value='AUXE5'>AUX-etr-2-sing</option>
+	<option value='AUXE6'>AUX-etr-3-sing</option>
+	<option value='AUXE1'>AUX-etr-1-plur</option>
+	<option value='AUXE2'>AUX-etr-2-plur</option>
+	<option value='AUXE3'>AUX-etr-3-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='D&eacute;terminant'>
+	<option value='DETRMS'>DET-masc-sing</option>
+	<option value='DETRMP'>DET-masc-plur</option>
+	<option value='DETRFS'>DET-fem-sing</option>
+	<option value='DETRFP'>DET-fem-plur</option>
+	<option value='NA'></option>
+	<option value='DINTMS'>DET-masc-sing-indef</option>
+	<option value='DINTMP'>DET-masc-plur-indef</option>
+	<option value='DINTFS'>DET-fem-sing-indef</option>
+	<option value='DINTFP'>DET-fem-plur-indef</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Verbe Principal'>
+	<option value='VINF'>VERB-inf</option>
+	<option value='NA'></option>
+	<option value='VERB1'>VERB-1-sing</option>
+	<option value='VERB2'>VERB-2-sing</option>
+	<option value='VERB3'>VERB-3-sing</option>
+	<option value='VERB4'>VERB-1-plur</option>
+	<option value='VERB5'>VERB-2-plur</option>
+	<option value='VERB6'>VERB-3-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adverbes'>
+	<option value='NE'>ADV-ne</option>
+	<option value='PAS'>ADV-pas</option>
+	<option value='ADVE'>ADV</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adjectif'>
+	<option value='ADJEMS'>ADJ-masc-sing</option>
+	<option value='ADJEMP'>ADJ-masc-plur</option>
+	<option value='ADJEFS'>ADJ-fem-sing</option>
+	<option value='ADJEFP'>ADJ-fem-plur</option>
+	<option value='NA'></option>
+	<option value='ADJIFS'>ADJ-masc-sing-indef</option>
+	<option value='ADJIFP'>ADJ-masc-plur-indef</option>
+	<option value='ADJIMS'>ADJ-fem-sing-indef</option>
+	<option value='ADJIMP'>ADJ-fem-plur-indef</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adposition'>
+	<option value='PAU'>P-au</option>
+	<option value='PAUX'>P-aux</option>
+	<option value='PDEA'>P-de-a</option>
+	<option value='PREPMS'>P-ms</option>
+	<option value='PDES'>P-des</option>
+	<option value='PREP'>P</option>
+ </optgroup>
+ <optgroup label='Participe pass&eacute;'>
+	<option value='PPASMS'>PP-masc-sing</option>
+	<option value='PPASMP'>PP-masc-plur</option>
+	<option value='PPASFS'>PP-fem-sing</option>
+	<option value='PPASFP'>PP-fem-plur</option>
+ </optgroup>
+ <optgroup label='Pronoms'>
+	<option value='PPOBMS'>PRO-pers-masc-sing</option>
+	<option value='PPOBMP'>PRO-pers-masc-plur</option>
+	<option value='PPOBFS'>PRO-pers-fem-sing</option>
+	<option value='PPOBFP'>PRO-pers-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PPER3M'>PRO-pers-3p-masc-sing</option>
+	<option value='PPER6M'>PRO-pers-3p-masc-plur</option>
+	<option value='PPER3F'>PRO-pers-3p-fem-sing</option>
+	<option value='PPER6F'>PRO-pers-3p-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PPER1'>PRO-pers-1p-sing</option>
+	<option value='PPER4'>PRO-pers-1p-plur</option>
+	<option value='PPER2'>PRO-pers-2p-sing</option>
+	<option value='PPER5'>PRO-pers-2p-plur</option>
+	<option value='NA'></option>
+	<option value='PINDMS'>PRO-ind-masc-sing</option>
+	<option value='PINDMP'>PRO-ind-masc-plur</option>
+	<option value='PINDFS'>PRO-ind-fem-sing</option>
+	<option value='PINDFP'>PRO-ind-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PRELMS'>PRO-rel-masc-sing</option>
+	<option value='PRELMP'>PRO-rel-masc-plur</option>
+	<option value='PRELFS'>PRO-rel-fem-sing</option>
+	<option value='PRELFP'>PRO-rel-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PREFMS'>PRO-refl-masc-sing</option>
+	<option value='PREFMP'>PRO-refl-masc-plur</option>
+	<option value='PREFFS'>PRO-refl-fem-sing</option>
+	<option value='PREFFP'>PRO-refl-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PSMS'>PRO-poss-masc-sing</option>
+	<option value='PSMP'>PRO-poss-masc-plur</option>
+	<option value='PSFS'>PRO-poss-fem-sing</option>
+	<option value='PSFP'>PRO-poss-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PDETMS'>PRO-demon-masc-sing</option>
+	<option value='PDETMP'>PRO-demon-masc-plur</option>
+	<option value='PDETFS'>PRO-demon-fem-sing</option>
+	<option value='PDETFP'>PRO-demon-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PINTMS'>PRO-int-masc-sing</option>
+	<option value='PINTMP'>PRO-int-masc-plur</option>
+	<option value='PINTFS'>PRO-int-fem-sing</option>
+	<option value='PINTFP'>PRO-int-fem-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Substantif'>
+	<option value='SUBSMS'>SUBST-masc-sing</option>
+	<option value='SUBSMP'>SUBST-masc-plur</option>
+	<option value='SUBSFS'>SUBST-fem-sing</option>
+	<option value='SUBSFP'>SUBST-fem-plur</option>
+ </optgroup>
+ <optgroup label='Divers'>
+	<option value='NPRO'>NOM-pr</option>
+	<option value='X'>X</option>
+	<option value='CSUB'>CONJ-sub</option>
+	<option value='CCOO'>CONJ-coord</option>
+	<option value='CHIF'>NUM</option>
+	<option value='PPRE'>PART-pres</option>
+ </optgroup>
+       </select>
+</div>
+ <div class='_word'><span>très</span><br />
+       <select name='w2' id='e2'>
+          <option value='NA'></option>
+ <optgroup label='Auxiliaires'>
+	<option value='AUXA1'>AUX-av-1-sing</option>
+	<option value='AUXA2'>AUX-av-2-sing</option>
+	<option value='AUXA3'>AUX-av-3-sing</option>
+	<option value='AUXA4'>AUX-av-1-plur</option>
+	<option value='AUXA5'>AUX-av-2-plur</option>
+	<option value='AUXA6'>AUX-av-3-plur</option>
+	<option value='NA'></option>
+	<option value='AUXA'>AUX-av-inf</option>
+	<option value='AUXE'>AUX-etr-inf</option>
+	<option value='NA'></option>
+	<option value='AUXE4'>AUX-etr-1-sing</option>
+	<option value='AUXE5'>AUX-etr-2-sing</option>
+	<option value='AUXE6'>AUX-etr-3-sing</option>
+	<option value='AUXE1'>AUX-etr-1-plur</option>
+	<option value='AUXE2'>AUX-etr-2-plur</option>
+	<option value='AUXE3'>AUX-etr-3-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='D&eacute;terminant'>
+	<option value='DETRMS'>DET-masc-sing</option>
+	<option value='DETRMP'>DET-masc-plur</option>
+	<option value='DETRFS'>DET-fem-sing</option>
+	<option value='DETRFP'>DET-fem-plur</option>
+	<option value='NA'></option>
+	<option value='DINTMS'>DET-masc-sing-indef</option>
+	<option value='DINTMP'>DET-masc-plur-indef</option>
+	<option value='DINTFS'>DET-fem-sing-indef</option>
+	<option value='DINTFP'>DET-fem-plur-indef</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Verbe Principal'>
+	<option value='VINF'>VERB-inf</option>
+	<option value='NA'></option>
+	<option value='VERB1'>VERB-1-sing</option>
+	<option value='VERB2'>VERB-2-sing</option>
+	<option value='VERB3'>VERB-3-sing</option>
+	<option value='VERB4'>VERB-1-plur</option>
+	<option value='VERB5'>VERB-2-plur</option>
+	<option value='VERB6'>VERB-3-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adverbes'>
+	<option value='NE'>ADV-ne</option>
+	<option value='PAS'>ADV-pas</option>
+	<option value='ADVE'>ADV</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adjectif'>
+	<option value='ADJEMS'>ADJ-masc-sing</option>
+	<option value='ADJEMP'>ADJ-masc-plur</option>
+	<option value='ADJEFS'>ADJ-fem-sing</option>
+	<option value='ADJEFP'>ADJ-fem-plur</option>
+	<option value='NA'></option>
+	<option value='ADJIFS'>ADJ-masc-sing-indef</option>
+	<option value='ADJIFP'>ADJ-masc-plur-indef</option>
+	<option value='ADJIMS'>ADJ-fem-sing-indef</option>
+	<option value='ADJIMP'>ADJ-fem-plur-indef</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adposition'>
+	<option value='PAU'>P-au</option>
+	<option value='PAUX'>P-aux</option>
+	<option value='PDEA'>P-de-a</option>
+	<option value='PREPMS'>P-ms</option>
+	<option value='PDES'>P-des</option>
+	<option value='PREP'>P</option>
+ </optgroup>
+ <optgroup label='Participe pass&eacute;'>
+	<option value='PPASMS'>PP-masc-sing</option>
+	<option value='PPASMP'>PP-masc-plur</option>
+	<option value='PPASFS'>PP-fem-sing</option>
+	<option value='PPASFP'>PP-fem-plur</option>
+ </optgroup>
+ <optgroup label='Pronoms'>
+	<option value='PPOBMS'>PRO-pers-masc-sing</option>
+	<option value='PPOBMP'>PRO-pers-masc-plur</option>
+	<option value='PPOBFS'>PRO-pers-fem-sing</option>
+	<option value='PPOBFP'>PRO-pers-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PPER3M'>PRO-pers-3p-masc-sing</option>
+	<option value='PPER6M'>PRO-pers-3p-masc-plur</option>
+	<option value='PPER3F'>PRO-pers-3p-fem-sing</option>
+	<option value='PPER6F'>PRO-pers-3p-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PPER1'>PRO-pers-1p-sing</option>
+	<option value='PPER4'>PRO-pers-1p-plur</option>
+	<option value='PPER2'>PRO-pers-2p-sing</option>
+	<option value='PPER5'>PRO-pers-2p-plur</option>
+	<option value='NA'></option>
+	<option value='PINDMS'>PRO-ind-masc-sing</option>
+	<option value='PINDMP'>PRO-ind-masc-plur</option>
+	<option value='PINDFS'>PRO-ind-fem-sing</option>
+	<option value='PINDFP'>PRO-ind-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PRELMS'>PRO-rel-masc-sing</option>
+	<option value='PRELMP'>PRO-rel-masc-plur</option>
+	<option value='PRELFS'>PRO-rel-fem-sing</option>
+	<option value='PRELFP'>PRO-rel-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PREFMS'>PRO-refl-masc-sing</option>
+	<option value='PREFMP'>PRO-refl-masc-plur</option>
+	<option value='PREFFS'>PRO-refl-fem-sing</option>
+	<option value='PREFFP'>PRO-refl-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PSMS'>PRO-poss-masc-sing</option>
+	<option value='PSMP'>PRO-poss-masc-plur</option>
+	<option value='PSFS'>PRO-poss-fem-sing</option>
+	<option value='PSFP'>PRO-poss-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PDETMS'>PRO-demon-masc-sing</option>
+	<option value='PDETMP'>PRO-demon-masc-plur</option>
+	<option value='PDETFS'>PRO-demon-fem-sing</option>
+	<option value='PDETFP'>PRO-demon-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PINTMS'>PRO-int-masc-sing</option>
+	<option value='PINTMP'>PRO-int-masc-plur</option>
+	<option value='PINTFS'>PRO-int-fem-sing</option>
+	<option value='PINTFP'>PRO-int-fem-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Substantif'>
+	<option value='SUBSMS'>SUBST-masc-sing</option>
+	<option value='SUBSMP'>SUBST-masc-plur</option>
+	<option value='SUBSFS'>SUBST-fem-sing</option>
+	<option value='SUBSFP'>SUBST-fem-plur</option>
+ </optgroup>
+ <optgroup label='Divers'>
+	<option value='NPRO'>NOM-pr</option>
+	<option value='X'>X</option>
+	<option value='CSUB'>CONJ-sub</option>
+	<option value='CCOO'>CONJ-coord</option>
+	<option value='CHIF'>NUM</option>
+	<option value='PPRE'>PART-pres</option>
+ </optgroup>
+       </select>
+</div>
+ <div class='_word'><span>belle</span><br />
+       <select name='w3' id='e3'>
+          <option value='NA'></option>
+ <optgroup label='Auxiliaires'>
+	<option value='AUXA1'>AUX-av-1-sing</option>
+	<option value='AUXA2'>AUX-av-2-sing</option>
+	<option value='AUXA3'>AUX-av-3-sing</option>
+	<option value='AUXA4'>AUX-av-1-plur</option>
+	<option value='AUXA5'>AUX-av-2-plur</option>
+	<option value='AUXA6'>AUX-av-3-plur</option>
+	<option value='NA'></option>
+	<option value='AUXA'>AUX-av-inf</option>
+	<option value='AUXE'>AUX-etr-inf</option>
+	<option value='NA'></option>
+	<option value='AUXE4'>AUX-etr-1-sing</option>
+	<option value='AUXE5'>AUX-etr-2-sing</option>
+	<option value='AUXE6'>AUX-etr-3-sing</option>
+	<option value='AUXE1'>AUX-etr-1-plur</option>
+	<option value='AUXE2'>AUX-etr-2-plur</option>
+	<option value='AUXE3'>AUX-etr-3-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='D&eacute;terminant'>
+	<option value='DETRMS'>DET-masc-sing</option>
+	<option value='DETRMP'>DET-masc-plur</option>
+	<option value='DETRFS'>DET-fem-sing</option>
+	<option value='DETRFP'>DET-fem-plur</option>
+	<option value='NA'></option>
+	<option value='DINTMS'>DET-masc-sing-indef</option>
+	<option value='DINTMP'>DET-masc-plur-indef</option>
+	<option value='DINTFS'>DET-fem-sing-indef</option>
+	<option value='DINTFP'>DET-fem-plur-indef</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Verbe Principal'>
+	<option value='VINF'>VERB-inf</option>
+	<option value='NA'></option>
+	<option value='VERB1'>VERB-1-sing</option>
+	<option value='VERB2'>VERB-2-sing</option>
+	<option value='VERB3'>VERB-3-sing</option>
+	<option value='VERB4'>VERB-1-plur</option>
+	<option value='VERB5'>VERB-2-plur</option>
+	<option value='VERB6'>VERB-3-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adverbes'>
+	<option value='NE'>ADV-ne</option>
+	<option value='PAS'>ADV-pas</option>
+	<option value='ADVE'>ADV</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adjectif'>
+	<option value='ADJEMS'>ADJ-masc-sing</option>
+	<option value='ADJEMP'>ADJ-masc-plur</option>
+	<option value='ADJEFS'>ADJ-fem-sing</option>
+	<option value='ADJEFP'>ADJ-fem-plur</option>
+	<option value='NA'></option>
+	<option value='ADJIFS'>ADJ-masc-sing-indef</option>
+	<option value='ADJIFP'>ADJ-masc-plur-indef</option>
+	<option value='ADJIMS'>ADJ-fem-sing-indef</option>
+	<option value='ADJIMP'>ADJ-fem-plur-indef</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adposition'>
+	<option value='PAU'>P-au</option>
+	<option value='PAUX'>P-aux</option>
+	<option value='PDEA'>P-de-a</option>
+	<option value='PREPMS'>P-ms</option>
+	<option value='PDES'>P-des</option>
+	<option value='PREP'>P</option>
+ </optgroup>
+ <optgroup label='Participe pass&eacute;'>
+	<option value='PPASMS'>PP-masc-sing</option>
+	<option value='PPASMP'>PP-masc-plur</option>
+	<option value='PPASFS'>PP-fem-sing</option>
+	<option value='PPASFP'>PP-fem-plur</option>
+ </optgroup>
+ <optgroup label='Pronoms'>
+	<option value='PPOBMS'>PRO-pers-masc-sing</option>
+	<option value='PPOBMP'>PRO-pers-masc-plur</option>
+	<option value='PPOBFS'>PRO-pers-fem-sing</option>
+	<option value='PPOBFP'>PRO-pers-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PPER3M'>PRO-pers-3p-masc-sing</option>
+	<option value='PPER6M'>PRO-pers-3p-masc-plur</option>
+	<option value='PPER3F'>PRO-pers-3p-fem-sing</option>
+	<option value='PPER6F'>PRO-pers-3p-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PPER1'>PRO-pers-1p-sing</option>
+	<option value='PPER4'>PRO-pers-1p-plur</option>
+	<option value='PPER2'>PRO-pers-2p-sing</option>
+	<option value='PPER5'>PRO-pers-2p-plur</option>
+	<option value='NA'></option>
+	<option value='PINDMS'>PRO-ind-masc-sing</option>
+	<option value='PINDMP'>PRO-ind-masc-plur</option>
+	<option value='PINDFS'>PRO-ind-fem-sing</option>
+	<option value='PINDFP'>PRO-ind-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PRELMS'>PRO-rel-masc-sing</option>
+	<option value='PRELMP'>PRO-rel-masc-plur</option>
+	<option value='PRELFS'>PRO-rel-fem-sing</option>
+	<option value='PRELFP'>PRO-rel-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PREFMS'>PRO-refl-masc-sing</option>
+	<option value='PREFMP'>PRO-refl-masc-plur</option>
+	<option value='PREFFS'>PRO-refl-fem-sing</option>
+	<option value='PREFFP'>PRO-refl-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PSMS'>PRO-poss-masc-sing</option>
+	<option value='PSMP'>PRO-poss-masc-plur</option>
+	<option value='PSFS'>PRO-poss-fem-sing</option>
+	<option value='PSFP'>PRO-poss-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PDETMS'>PRO-demon-masc-sing</option>
+	<option value='PDETMP'>PRO-demon-masc-plur</option>
+	<option value='PDETFS'>PRO-demon-fem-sing</option>
+	<option value='PDETFP'>PRO-demon-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PINTMS'>PRO-int-masc-sing</option>
+	<option value='PINTMP'>PRO-int-masc-plur</option>
+	<option value='PINTFS'>PRO-int-fem-sing</option>
+	<option value='PINTFP'>PRO-int-fem-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Substantif'>
+	<option value='SUBSMS'>SUBST-masc-sing</option>
+	<option value='SUBSMP'>SUBST-masc-plur</option>
+	<option value='SUBSFS'>SUBST-fem-sing</option>
+	<option value='SUBSFP'>SUBST-fem-plur</option>
+ </optgroup>
+ <optgroup label='Divers'>
+	<option value='NPRO'>NOM-pr</option>
+	<option value='X'>X</option>
+	<option value='CSUB'>CONJ-sub</option>
+	<option value='CCOO'>CONJ-coord</option>
+	<option value='CHIF'>NUM</option>
+	<option value='PPRE'>PART-pres</option>
+ </optgroup>
+       </select>
+</div>
+ <div class='_word'><span>,</span><br />
+  <input type='hidden' name='w4' value='comma' id='e4' />
+</div>
+ <div class='_word'><span>mais</span><br />
+       <select name='w5' id='e5'>
+          <option value='NA'></option>
+ <optgroup label='Auxiliaires'>
+	<option value='AUXA1'>AUX-av-1-sing</option>
+	<option value='AUXA2'>AUX-av-2-sing</option>
+	<option value='AUXA3'>AUX-av-3-sing</option>
+	<option value='AUXA4'>AUX-av-1-plur</option>
+	<option value='AUXA5'>AUX-av-2-plur</option>
+	<option value='AUXA6'>AUX-av-3-plur</option>
+	<option value='NA'></option>
+	<option value='AUXA'>AUX-av-inf</option>
+	<option value='AUXE'>AUX-etr-inf</option>
+	<option value='NA'></option>
+	<option value='AUXE4'>AUX-etr-1-sing</option>
+	<option value='AUXE5'>AUX-etr-2-sing</option>
+	<option value='AUXE6'>AUX-etr-3-sing</option>
+	<option value='AUXE1'>AUX-etr-1-plur</option>
+	<option value='AUXE2'>AUX-etr-2-plur</option>
+	<option value='AUXE3'>AUX-etr-3-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='D&eacute;terminant'>
+	<option value='DETRMS'>DET-masc-sing</option>
+	<option value='DETRMP'>DET-masc-plur</option>
+	<option value='DETRFS'>DET-fem-sing</option>
+	<option value='DETRFP'>DET-fem-plur</option>
+	<option value='NA'></option>
+	<option value='DINTMS'>DET-masc-sing-indef</option>
+	<option value='DINTMP'>DET-masc-plur-indef</option>
+	<option value='DINTFS'>DET-fem-sing-indef</option>
+	<option value='DINTFP'>DET-fem-plur-indef</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Verbe Principal'>
+	<option value='VINF'>VERB-inf</option>
+	<option value='NA'></option>
+	<option value='VERB1'>VERB-1-sing</option>
+	<option value='VERB2'>VERB-2-sing</option>
+	<option value='VERB3'>VERB-3-sing</option>
+	<option value='VERB4'>VERB-1-plur</option>
+	<option value='VERB5'>VERB-2-plur</option>
+	<option value='VERB6'>VERB-3-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adverbes'>
+	<option value='NE'>ADV-ne</option>
+	<option value='PAS'>ADV-pas</option>
+	<option value='ADVE'>ADV</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adjectif'>
+	<option value='ADJEMS'>ADJ-masc-sing</option>
+	<option value='ADJEMP'>ADJ-masc-plur</option>
+	<option value='ADJEFS'>ADJ-fem-sing</option>
+	<option value='ADJEFP'>ADJ-fem-plur</option>
+	<option value='NA'></option>
+	<option value='ADJIFS'>ADJ-masc-sing-indef</option>
+	<option value='ADJIFP'>ADJ-masc-plur-indef</option>
+	<option value='ADJIMS'>ADJ-fem-sing-indef</option>
+	<option value='ADJIMP'>ADJ-fem-plur-indef</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adposition'>
+	<option value='PAU'>P-au</option>
+	<option value='PAUX'>P-aux</option>
+	<option value='PDEA'>P-de-a</option>
+	<option value='PREPMS'>P-ms</option>
+	<option value='PDES'>P-des</option>
+	<option value='PREP'>P</option>
+ </optgroup>
+ <optgroup label='Participe pass&eacute;'>
+	<option value='PPASMS'>PP-masc-sing</option>
+	<option value='PPASMP'>PP-masc-plur</option>
+	<option value='PPASFS'>PP-fem-sing</option>
+	<option value='PPASFP'>PP-fem-plur</option>
+ </optgroup>
+ <optgroup label='Pronoms'>
+	<option value='PPOBMS'>PRO-pers-masc-sing</option>
+	<option value='PPOBMP'>PRO-pers-masc-plur</option>
+	<option value='PPOBFS'>PRO-pers-fem-sing</option>
+	<option value='PPOBFP'>PRO-pers-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PPER3M'>PRO-pers-3p-masc-sing</option>
+	<option value='PPER6M'>PRO-pers-3p-masc-plur</option>
+	<option value='PPER3F'>PRO-pers-3p-fem-sing</option>
+	<option value='PPER6F'>PRO-pers-3p-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PPER1'>PRO-pers-1p-sing</option>
+	<option value='PPER4'>PRO-pers-1p-plur</option>
+	<option value='PPER2'>PRO-pers-2p-sing</option>
+	<option value='PPER5'>PRO-pers-2p-plur</option>
+	<option value='NA'></option>
+	<option value='PINDMS'>PRO-ind-masc-sing</option>
+	<option value='PINDMP'>PRO-ind-masc-plur</option>
+	<option value='PINDFS'>PRO-ind-fem-sing</option>
+	<option value='PINDFP'>PRO-ind-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PRELMS'>PRO-rel-masc-sing</option>
+	<option value='PRELMP'>PRO-rel-masc-plur</option>
+	<option value='PRELFS'>PRO-rel-fem-sing</option>
+	<option value='PRELFP'>PRO-rel-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PREFMS'>PRO-refl-masc-sing</option>
+	<option value='PREFMP'>PRO-refl-masc-plur</option>
+	<option value='PREFFS'>PRO-refl-fem-sing</option>
+	<option value='PREFFP'>PRO-refl-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PSMS'>PRO-poss-masc-sing</option>
+	<option value='PSMP'>PRO-poss-masc-plur</option>
+	<option value='PSFS'>PRO-poss-fem-sing</option>
+	<option value='PSFP'>PRO-poss-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PDETMS'>PRO-demon-masc-sing</option>
+	<option value='PDETMP'>PRO-demon-masc-plur</option>
+	<option value='PDETFS'>PRO-demon-fem-sing</option>
+	<option value='PDETFP'>PRO-demon-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PINTMS'>PRO-int-masc-sing</option>
+	<option value='PINTMP'>PRO-int-masc-plur</option>
+	<option value='PINTFS'>PRO-int-fem-sing</option>
+	<option value='PINTFP'>PRO-int-fem-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Substantif'>
+	<option value='SUBSMS'>SUBST-masc-sing</option>
+	<option value='SUBSMP'>SUBST-masc-plur</option>
+	<option value='SUBSFS'>SUBST-fem-sing</option>
+	<option value='SUBSFP'>SUBST-fem-plur</option>
+ </optgroup>
+ <optgroup label='Divers'>
+	<option value='NPRO'>NOM-pr</option>
+	<option value='X'>X</option>
+	<option value='CSUB'>CONJ-sub</option>
+	<option value='CCOO'>CONJ-coord</option>
+	<option value='CHIF'>NUM</option>
+	<option value='PPRE'>PART-pres</option>
+ </optgroup>
+       </select>
+</div>
+ <div class='_word'><span>elle</span><br />
+       <select name='w6' id='e6'>
+          <option value='NA'></option>
+ <optgroup label='Auxiliaires'>
+	<option value='AUXA1'>AUX-av-1-sing</option>
+	<option value='AUXA2'>AUX-av-2-sing</option>
+	<option value='AUXA3'>AUX-av-3-sing</option>
+	<option value='AUXA4'>AUX-av-1-plur</option>
+	<option value='AUXA5'>AUX-av-2-plur</option>
+	<option value='AUXA6'>AUX-av-3-plur</option>
+	<option value='NA'></option>
+	<option value='AUXA'>AUX-av-inf</option>
+	<option value='AUXE'>AUX-etr-inf</option>
+	<option value='NA'></option>
+	<option value='AUXE4'>AUX-etr-1-sing</option>
+	<option value='AUXE5'>AUX-etr-2-sing</option>
+	<option value='AUXE6'>AUX-etr-3-sing</option>
+	<option value='AUXE1'>AUX-etr-1-plur</option>
+	<option value='AUXE2'>AUX-etr-2-plur</option>
+	<option value='AUXE3'>AUX-etr-3-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='D&eacute;terminant'>
+	<option value='DETRMS'>DET-masc-sing</option>
+	<option value='DETRMP'>DET-masc-plur</option>
+	<option value='DETRFS'>DET-fem-sing</option>
+	<option value='DETRFP'>DET-fem-plur</option>
+	<option value='NA'></option>
+	<option value='DINTMS'>DET-masc-sing-indef</option>
+	<option value='DINTMP'>DET-masc-plur-indef</option>
+	<option value='DINTFS'>DET-fem-sing-indef</option>
+	<option value='DINTFP'>DET-fem-plur-indef</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Verbe Principal'>
+	<option value='VINF'>VERB-inf</option>
+	<option value='NA'></option>
+	<option value='VERB1'>VERB-1-sing</option>
+	<option value='VERB2'>VERB-2-sing</option>
+	<option value='VERB3'>VERB-3-sing</option>
+	<option value='VERB4'>VERB-1-plur</option>
+	<option value='VERB5'>VERB-2-plur</option>
+	<option value='VERB6'>VERB-3-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adverbes'>
+	<option value='NE'>ADV-ne</option>
+	<option value='PAS'>ADV-pas</option>
+	<option value='ADVE'>ADV</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adjectif'>
+	<option value='ADJEMS'>ADJ-masc-sing</option>
+	<option value='ADJEMP'>ADJ-masc-plur</option>
+	<option value='ADJEFS'>ADJ-fem-sing</option>
+	<option value='ADJEFP'>ADJ-fem-plur</option>
+	<option value='NA'></option>
+	<option value='ADJIFS'>ADJ-masc-sing-indef</option>
+	<option value='ADJIFP'>ADJ-masc-plur-indef</option>
+	<option value='ADJIMS'>ADJ-fem-sing-indef</option>
+	<option value='ADJIMP'>ADJ-fem-plur-indef</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adposition'>
+	<option value='PAU'>P-au</option>
+	<option value='PAUX'>P-aux</option>
+	<option value='PDEA'>P-de-a</option>
+	<option value='PREPMS'>P-ms</option>
+	<option value='PDES'>P-des</option>
+	<option value='PREP'>P</option>
+ </optgroup>
+ <optgroup label='Participe pass&eacute;'>
+	<option value='PPASMS'>PP-masc-sing</option>
+	<option value='PPASMP'>PP-masc-plur</option>
+	<option value='PPASFS'>PP-fem-sing</option>
+	<option value='PPASFP'>PP-fem-plur</option>
+ </optgroup>
+ <optgroup label='Pronoms'>
+	<option value='PPOBMS'>PRO-pers-masc-sing</option>
+	<option value='PPOBMP'>PRO-pers-masc-plur</option>
+	<option value='PPOBFS'>PRO-pers-fem-sing</option>
+	<option value='PPOBFP'>PRO-pers-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PPER3M'>PRO-pers-3p-masc-sing</option>
+	<option value='PPER6M'>PRO-pers-3p-masc-plur</option>
+	<option value='PPER3F'>PRO-pers-3p-fem-sing</option>
+	<option value='PPER6F'>PRO-pers-3p-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PPER1'>PRO-pers-1p-sing</option>
+	<option value='PPER4'>PRO-pers-1p-plur</option>
+	<option value='PPER2'>PRO-pers-2p-sing</option>
+	<option value='PPER5'>PRO-pers-2p-plur</option>
+	<option value='NA'></option>
+	<option value='PINDMS'>PRO-ind-masc-sing</option>
+	<option value='PINDMP'>PRO-ind-masc-plur</option>
+	<option value='PINDFS'>PRO-ind-fem-sing</option>
+	<option value='PINDFP'>PRO-ind-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PRELMS'>PRO-rel-masc-sing</option>
+	<option value='PRELMP'>PRO-rel-masc-plur</option>
+	<option value='PRELFS'>PRO-rel-fem-sing</option>
+	<option value='PRELFP'>PRO-rel-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PREFMS'>PRO-refl-masc-sing</option>
+	<option value='PREFMP'>PRO-refl-masc-plur</option>
+	<option value='PREFFS'>PRO-refl-fem-sing</option>
+	<option value='PREFFP'>PRO-refl-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PSMS'>PRO-poss-masc-sing</option>
+	<option value='PSMP'>PRO-poss-masc-plur</option>
+	<option value='PSFS'>PRO-poss-fem-sing</option>
+	<option value='PSFP'>PRO-poss-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PDETMS'>PRO-demon-masc-sing</option>
+	<option value='PDETMP'>PRO-demon-masc-plur</option>
+	<option value='PDETFS'>PRO-demon-fem-sing</option>
+	<option value='PDETFP'>PRO-demon-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PINTMS'>PRO-int-masc-sing</option>
+	<option value='PINTMP'>PRO-int-masc-plur</option>
+	<option value='PINTFS'>PRO-int-fem-sing</option>
+	<option value='PINTFP'>PRO-int-fem-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Substantif'>
+	<option value='SUBSMS'>SUBST-masc-sing</option>
+	<option value='SUBSMP'>SUBST-masc-plur</option>
+	<option value='SUBSFS'>SUBST-fem-sing</option>
+	<option value='SUBSFP'>SUBST-fem-plur</option>
+ </optgroup>
+ <optgroup label='Divers'>
+	<option value='NPRO'>NOM-pr</option>
+	<option value='X'>X</option>
+	<option value='CSUB'>CONJ-sub</option>
+	<option value='CCOO'>CONJ-coord</option>
+	<option value='CHIF'>NUM</option>
+	<option value='PPRE'>PART-pres</option>
+ </optgroup>
+       </select>
+</div>
+ <div class='_word'><span>a</span><br />
+       <select name='w7' id='e7'>
+          <option value='NA'></option>
+ <optgroup label='Auxiliaires'>
+	<option value='AUXA1'>AUX-av-1-sing</option>
+	<option value='AUXA2'>AUX-av-2-sing</option>
+	<option value='AUXA3'>AUX-av-3-sing</option>
+	<option value='AUXA4'>AUX-av-1-plur</option>
+	<option value='AUXA5'>AUX-av-2-plur</option>
+	<option value='AUXA6'>AUX-av-3-plur</option>
+	<option value='NA'></option>
+	<option value='AUXA'>AUX-av-inf</option>
+	<option value='AUXE'>AUX-etr-inf</option>
+	<option value='NA'></option>
+	<option value='AUXE4'>AUX-etr-1-sing</option>
+	<option value='AUXE5'>AUX-etr-2-sing</option>
+	<option value='AUXE6'>AUX-etr-3-sing</option>
+	<option value='AUXE1'>AUX-etr-1-plur</option>
+	<option value='AUXE2'>AUX-etr-2-plur</option>
+	<option value='AUXE3'>AUX-etr-3-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='D&eacute;terminant'>
+	<option value='DETRMS'>DET-masc-sing</option>
+	<option value='DETRMP'>DET-masc-plur</option>
+	<option value='DETRFS'>DET-fem-sing</option>
+	<option value='DETRFP'>DET-fem-plur</option>
+	<option value='NA'></option>
+	<option value='DINTMS'>DET-masc-sing-indef</option>
+	<option value='DINTMP'>DET-masc-plur-indef</option>
+	<option value='DINTFS'>DET-fem-sing-indef</option>
+	<option value='DINTFP'>DET-fem-plur-indef</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Verbe Principal'>
+	<option value='VINF'>VERB-inf</option>
+	<option value='NA'></option>
+	<option value='VERB1'>VERB-1-sing</option>
+	<option value='VERB2'>VERB-2-sing</option>
+	<option value='VERB3'>VERB-3-sing</option>
+	<option value='VERB4'>VERB-1-plur</option>
+	<option value='VERB5'>VERB-2-plur</option>
+	<option value='VERB6'>VERB-3-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adverbes'>
+	<option value='NE'>ADV-ne</option>
+	<option value='PAS'>ADV-pas</option>
+	<option value='ADVE'>ADV</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adjectif'>
+	<option value='ADJEMS'>ADJ-masc-sing</option>
+	<option value='ADJEMP'>ADJ-masc-plur</option>
+	<option value='ADJEFS'>ADJ-fem-sing</option>
+	<option value='ADJEFP'>ADJ-fem-plur</option>
+	<option value='NA'></option>
+	<option value='ADJIFS'>ADJ-masc-sing-indef</option>
+	<option value='ADJIFP'>ADJ-masc-plur-indef</option>
+	<option value='ADJIMS'>ADJ-fem-sing-indef</option>
+	<option value='ADJIMP'>ADJ-fem-plur-indef</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adposition'>
+	<option value='PAU'>P-au</option>
+	<option value='PAUX'>P-aux</option>
+	<option value='PDEA'>P-de-a</option>
+	<option value='PREPMS'>P-ms</option>
+	<option value='PDES'>P-des</option>
+	<option value='PREP'>P</option>
+ </optgroup>
+ <optgroup label='Participe pass&eacute;'>
+	<option value='PPASMS'>PP-masc-sing</option>
+	<option value='PPASMP'>PP-masc-plur</option>
+	<option value='PPASFS'>PP-fem-sing</option>
+	<option value='PPASFP'>PP-fem-plur</option>
+ </optgroup>
+ <optgroup label='Pronoms'>
+	<option value='PPOBMS'>PRO-pers-masc-sing</option>
+	<option value='PPOBMP'>PRO-pers-masc-plur</option>
+	<option value='PPOBFS'>PRO-pers-fem-sing</option>
+	<option value='PPOBFP'>PRO-pers-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PPER3M'>PRO-pers-3p-masc-sing</option>
+	<option value='PPER6M'>PRO-pers-3p-masc-plur</option>
+	<option value='PPER3F'>PRO-pers-3p-fem-sing</option>
+	<option value='PPER6F'>PRO-pers-3p-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PPER1'>PRO-pers-1p-sing</option>
+	<option value='PPER4'>PRO-pers-1p-plur</option>
+	<option value='PPER2'>PRO-pers-2p-sing</option>
+	<option value='PPER5'>PRO-pers-2p-plur</option>
+	<option value='NA'></option>
+	<option value='PINDMS'>PRO-ind-masc-sing</option>
+	<option value='PINDMP'>PRO-ind-masc-plur</option>
+	<option value='PINDFS'>PRO-ind-fem-sing</option>
+	<option value='PINDFP'>PRO-ind-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PRELMS'>PRO-rel-masc-sing</option>
+	<option value='PRELMP'>PRO-rel-masc-plur</option>
+	<option value='PRELFS'>PRO-rel-fem-sing</option>
+	<option value='PRELFP'>PRO-rel-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PREFMS'>PRO-refl-masc-sing</option>
+	<option value='PREFMP'>PRO-refl-masc-plur</option>
+	<option value='PREFFS'>PRO-refl-fem-sing</option>
+	<option value='PREFFP'>PRO-refl-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PSMS'>PRO-poss-masc-sing</option>
+	<option value='PSMP'>PRO-poss-masc-plur</option>
+	<option value='PSFS'>PRO-poss-fem-sing</option>
+	<option value='PSFP'>PRO-poss-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PDETMS'>PRO-demon-masc-sing</option>
+	<option value='PDETMP'>PRO-demon-masc-plur</option>
+	<option value='PDETFS'>PRO-demon-fem-sing</option>
+	<option value='PDETFP'>PRO-demon-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PINTMS'>PRO-int-masc-sing</option>
+	<option value='PINTMP'>PRO-int-masc-plur</option>
+	<option value='PINTFS'>PRO-int-fem-sing</option>
+	<option value='PINTFP'>PRO-int-fem-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Substantif'>
+	<option value='SUBSMS'>SUBST-masc-sing</option>
+	<option value='SUBSMP'>SUBST-masc-plur</option>
+	<option value='SUBSFS'>SUBST-fem-sing</option>
+	<option value='SUBSFP'>SUBST-fem-plur</option>
+ </optgroup>
+ <optgroup label='Divers'>
+	<option value='NPRO'>NOM-pr</option>
+	<option value='X'>X</option>
+	<option value='CSUB'>CONJ-sub</option>
+	<option value='CCOO'>CONJ-coord</option>
+	<option value='CHIF'>NUM</option>
+	<option value='PPRE'>PART-pres</option>
+ </optgroup>
+       </select>
+</div>
+ <div class='_word'><span>des</span><br />
+       <select name='w8' id='e8'>
+          <option value='NA'></option>
+ <optgroup label='Auxiliaires'>
+	<option value='AUXA1'>AUX-av-1-sing</option>
+	<option value='AUXA2'>AUX-av-2-sing</option>
+	<option value='AUXA3'>AUX-av-3-sing</option>
+	<option value='AUXA4'>AUX-av-1-plur</option>
+	<option value='AUXA5'>AUX-av-2-plur</option>
+	<option value='AUXA6'>AUX-av-3-plur</option>
+	<option value='NA'></option>
+	<option value='AUXA'>AUX-av-inf</option>
+	<option value='AUXE'>AUX-etr-inf</option>
+	<option value='NA'></option>
+	<option value='AUXE4'>AUX-etr-1-sing</option>
+	<option value='AUXE5'>AUX-etr-2-sing</option>
+	<option value='AUXE6'>AUX-etr-3-sing</option>
+	<option value='AUXE1'>AUX-etr-1-plur</option>
+	<option value='AUXE2'>AUX-etr-2-plur</option>
+	<option value='AUXE3'>AUX-etr-3-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='D&eacute;terminant'>
+	<option value='DETRMS'>DET-masc-sing</option>
+	<option value='DETRMP'>DET-masc-plur</option>
+	<option value='DETRFS'>DET-fem-sing</option>
+	<option value='DETRFP'>DET-fem-plur</option>
+	<option value='NA'></option>
+	<option value='DINTMS'>DET-masc-sing-indef</option>
+	<option value='DINTMP'>DET-masc-plur-indef</option>
+	<option value='DINTFS'>DET-fem-sing-indef</option>
+	<option value='DINTFP'>DET-fem-plur-indef</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Verbe Principal'>
+	<option value='VINF'>VERB-inf</option>
+	<option value='NA'></option>
+	<option value='VERB1'>VERB-1-sing</option>
+	<option value='VERB2'>VERB-2-sing</option>
+	<option value='VERB3'>VERB-3-sing</option>
+	<option value='VERB4'>VERB-1-plur</option>
+	<option value='VERB5'>VERB-2-plur</option>
+	<option value='VERB6'>VERB-3-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adverbes'>
+	<option value='NE'>ADV-ne</option>
+	<option value='PAS'>ADV-pas</option>
+	<option value='ADVE'>ADV</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adjectif'>
+	<option value='ADJEMS'>ADJ-masc-sing</option>
+	<option value='ADJEMP'>ADJ-masc-plur</option>
+	<option value='ADJEFS'>ADJ-fem-sing</option>
+	<option value='ADJEFP'>ADJ-fem-plur</option>
+	<option value='NA'></option>
+	<option value='ADJIFS'>ADJ-masc-sing-indef</option>
+	<option value='ADJIFP'>ADJ-masc-plur-indef</option>
+	<option value='ADJIMS'>ADJ-fem-sing-indef</option>
+	<option value='ADJIMP'>ADJ-fem-plur-indef</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adposition'>
+	<option value='PAU'>P-au</option>
+	<option value='PAUX'>P-aux</option>
+	<option value='PDEA'>P-de-a</option>
+	<option value='PREPMS'>P-ms</option>
+	<option value='PDES'>P-des</option>
+	<option value='PREP'>P</option>
+ </optgroup>
+ <optgroup label='Participe pass&eacute;'>
+	<option value='PPASMS'>PP-masc-sing</option>
+	<option value='PPASMP'>PP-masc-plur</option>
+	<option value='PPASFS'>PP-fem-sing</option>
+	<option value='PPASFP'>PP-fem-plur</option>
+ </optgroup>
+ <optgroup label='Pronoms'>
+	<option value='PPOBMS'>PRO-pers-masc-sing</option>
+	<option value='PPOBMP'>PRO-pers-masc-plur</option>
+	<option value='PPOBFS'>PRO-pers-fem-sing</option>
+	<option value='PPOBFP'>PRO-pers-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PPER3M'>PRO-pers-3p-masc-sing</option>
+	<option value='PPER6M'>PRO-pers-3p-masc-plur</option>
+	<option value='PPER3F'>PRO-pers-3p-fem-sing</option>
+	<option value='PPER6F'>PRO-pers-3p-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PPER1'>PRO-pers-1p-sing</option>
+	<option value='PPER4'>PRO-pers-1p-plur</option>
+	<option value='PPER2'>PRO-pers-2p-sing</option>
+	<option value='PPER5'>PRO-pers-2p-plur</option>
+	<option value='NA'></option>
+	<option value='PINDMS'>PRO-ind-masc-sing</option>
+	<option value='PINDMP'>PRO-ind-masc-plur</option>
+	<option value='PINDFS'>PRO-ind-fem-sing</option>
+	<option value='PINDFP'>PRO-ind-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PRELMS'>PRO-rel-masc-sing</option>
+	<option value='PRELMP'>PRO-rel-masc-plur</option>
+	<option value='PRELFS'>PRO-rel-fem-sing</option>
+	<option value='PRELFP'>PRO-rel-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PREFMS'>PRO-refl-masc-sing</option>
+	<option value='PREFMP'>PRO-refl-masc-plur</option>
+	<option value='PREFFS'>PRO-refl-fem-sing</option>
+	<option value='PREFFP'>PRO-refl-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PSMS'>PRO-poss-masc-sing</option>
+	<option value='PSMP'>PRO-poss-masc-plur</option>
+	<option value='PSFS'>PRO-poss-fem-sing</option>
+	<option value='PSFP'>PRO-poss-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PDETMS'>PRO-demon-masc-sing</option>
+	<option value='PDETMP'>PRO-demon-masc-plur</option>
+	<option value='PDETFS'>PRO-demon-fem-sing</option>
+	<option value='PDETFP'>PRO-demon-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PINTMS'>PRO-int-masc-sing</option>
+	<option value='PINTMP'>PRO-int-masc-plur</option>
+	<option value='PINTFS'>PRO-int-fem-sing</option>
+	<option value='PINTFP'>PRO-int-fem-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Substantif'>
+	<option value='SUBSMS'>SUBST-masc-sing</option>
+	<option value='SUBSMP'>SUBST-masc-plur</option>
+	<option value='SUBSFS'>SUBST-fem-sing</option>
+	<option value='SUBSFP'>SUBST-fem-plur</option>
+ </optgroup>
+ <optgroup label='Divers'>
+	<option value='NPRO'>NOM-pr</option>
+	<option value='X'>X</option>
+	<option value='CSUB'>CONJ-sub</option>
+	<option value='CCOO'>CONJ-coord</option>
+	<option value='CHIF'>NUM</option>
+	<option value='PPRE'>PART-pres</option>
+ </optgroup>
+       </select>
+</div>
+ <div class='_word'><span>verues</span><br />
+       <select name='w9' id='e9'>
+          <option value='NA'></option>
+ <optgroup label='Auxiliaires'>
+	<option value='AUXA1'>AUX-av-1-sing</option>
+	<option value='AUXA2'>AUX-av-2-sing</option>
+	<option value='AUXA3'>AUX-av-3-sing</option>
+	<option value='AUXA4'>AUX-av-1-plur</option>
+	<option value='AUXA5'>AUX-av-2-plur</option>
+	<option value='AUXA6'>AUX-av-3-plur</option>
+	<option value='NA'></option>
+	<option value='AUXA'>AUX-av-inf</option>
+	<option value='AUXE'>AUX-etr-inf</option>
+	<option value='NA'></option>
+	<option value='AUXE4'>AUX-etr-1-sing</option>
+	<option value='AUXE5'>AUX-etr-2-sing</option>
+	<option value='AUXE6'>AUX-etr-3-sing</option>
+	<option value='AUXE1'>AUX-etr-1-plur</option>
+	<option value='AUXE2'>AUX-etr-2-plur</option>
+	<option value='AUXE3'>AUX-etr-3-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='D&eacute;terminant'>
+	<option value='DETRMS'>DET-masc-sing</option>
+	<option value='DETRMP'>DET-masc-plur</option>
+	<option value='DETRFS'>DET-fem-sing</option>
+	<option value='DETRFP'>DET-fem-plur</option>
+	<option value='NA'></option>
+	<option value='DINTMS'>DET-masc-sing-indef</option>
+	<option value='DINTMP'>DET-masc-plur-indef</option>
+	<option value='DINTFS'>DET-fem-sing-indef</option>
+	<option value='DINTFP'>DET-fem-plur-indef</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Verbe Principal'>
+	<option value='VINF'>VERB-inf</option>
+	<option value='NA'></option>
+	<option value='VERB1'>VERB-1-sing</option>
+	<option value='VERB2'>VERB-2-sing</option>
+	<option value='VERB3'>VERB-3-sing</option>
+	<option value='VERB4'>VERB-1-plur</option>
+	<option value='VERB5'>VERB-2-plur</option>
+	<option value='VERB6'>VERB-3-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adverbes'>
+	<option value='NE'>ADV-ne</option>
+	<option value='PAS'>ADV-pas</option>
+	<option value='ADVE'>ADV</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adjectif'>
+	<option value='ADJEMS'>ADJ-masc-sing</option>
+	<option value='ADJEMP'>ADJ-masc-plur</option>
+	<option value='ADJEFS'>ADJ-fem-sing</option>
+	<option value='ADJEFP'>ADJ-fem-plur</option>
+	<option value='NA'></option>
+	<option value='ADJIFS'>ADJ-masc-sing-indef</option>
+	<option value='ADJIFP'>ADJ-masc-plur-indef</option>
+	<option value='ADJIMS'>ADJ-fem-sing-indef</option>
+	<option value='ADJIMP'>ADJ-fem-plur-indef</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adposition'>
+	<option value='PAU'>P-au</option>
+	<option value='PAUX'>P-aux</option>
+	<option value='PDEA'>P-de-a</option>
+	<option value='PREPMS'>P-ms</option>
+	<option value='PDES'>P-des</option>
+	<option value='PREP'>P</option>
+ </optgroup>
+ <optgroup label='Participe pass&eacute;'>
+	<option value='PPASMS'>PP-masc-sing</option>
+	<option value='PPASMP'>PP-masc-plur</option>
+	<option value='PPASFS'>PP-fem-sing</option>
+	<option value='PPASFP'>PP-fem-plur</option>
+ </optgroup>
+ <optgroup label='Pronoms'>
+	<option value='PPOBMS'>PRO-pers-masc-sing</option>
+	<option value='PPOBMP'>PRO-pers-masc-plur</option>
+	<option value='PPOBFS'>PRO-pers-fem-sing</option>
+	<option value='PPOBFP'>PRO-pers-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PPER3M'>PRO-pers-3p-masc-sing</option>
+	<option value='PPER6M'>PRO-pers-3p-masc-plur</option>
+	<option value='PPER3F'>PRO-pers-3p-fem-sing</option>
+	<option value='PPER6F'>PRO-pers-3p-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PPER1'>PRO-pers-1p-sing</option>
+	<option value='PPER4'>PRO-pers-1p-plur</option>
+	<option value='PPER2'>PRO-pers-2p-sing</option>
+	<option value='PPER5'>PRO-pers-2p-plur</option>
+	<option value='NA'></option>
+	<option value='PINDMS'>PRO-ind-masc-sing</option>
+	<option value='PINDMP'>PRO-ind-masc-plur</option>
+	<option value='PINDFS'>PRO-ind-fem-sing</option>
+	<option value='PINDFP'>PRO-ind-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PRELMS'>PRO-rel-masc-sing</option>
+	<option value='PRELMP'>PRO-rel-masc-plur</option>
+	<option value='PRELFS'>PRO-rel-fem-sing</option>
+	<option value='PRELFP'>PRO-rel-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PREFMS'>PRO-refl-masc-sing</option>
+	<option value='PREFMP'>PRO-refl-masc-plur</option>
+	<option value='PREFFS'>PRO-refl-fem-sing</option>
+	<option value='PREFFP'>PRO-refl-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PSMS'>PRO-poss-masc-sing</option>
+	<option value='PSMP'>PRO-poss-masc-plur</option>
+	<option value='PSFS'>PRO-poss-fem-sing</option>
+	<option value='PSFP'>PRO-poss-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PDETMS'>PRO-demon-masc-sing</option>
+	<option value='PDETMP'>PRO-demon-masc-plur</option>
+	<option value='PDETFS'>PRO-demon-fem-sing</option>
+	<option value='PDETFP'>PRO-demon-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PINTMS'>PRO-int-masc-sing</option>
+	<option value='PINTMP'>PRO-int-masc-plur</option>
+	<option value='PINTFS'>PRO-int-fem-sing</option>
+	<option value='PINTFP'>PRO-int-fem-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Substantif'>
+	<option value='SUBSMS'>SUBST-masc-sing</option>
+	<option value='SUBSMP'>SUBST-masc-plur</option>
+	<option value='SUBSFS'>SUBST-fem-sing</option>
+	<option value='SUBSFP'>SUBST-fem-plur</option>
+ </optgroup>
+ <optgroup label='Divers'>
+	<option value='NPRO'>NOM-pr</option>
+	<option value='X'>X</option>
+	<option value='CSUB'>CONJ-sub</option>
+	<option value='CCOO'>CONJ-coord</option>
+	<option value='CHIF'>NUM</option>
+	<option value='PPRE'>PART-pres</option>
+ </optgroup>
+       </select>
+</div>
+ <div class='_word'><span>plein</span><br />
+       <select name='w10' id='e10'>
+          <option value='NA'></option>
+ <optgroup label='Auxiliaires'>
+	<option value='AUXA1'>AUX-av-1-sing</option>
+	<option value='AUXA2'>AUX-av-2-sing</option>
+	<option value='AUXA3'>AUX-av-3-sing</option>
+	<option value='AUXA4'>AUX-av-1-plur</option>
+	<option value='AUXA5'>AUX-av-2-plur</option>
+	<option value='AUXA6'>AUX-av-3-plur</option>
+	<option value='NA'></option>
+	<option value='AUXA'>AUX-av-inf</option>
+	<option value='AUXE'>AUX-etr-inf</option>
+	<option value='NA'></option>
+	<option value='AUXE4'>AUX-etr-1-sing</option>
+	<option value='AUXE5'>AUX-etr-2-sing</option>
+	<option value='AUXE6'>AUX-etr-3-sing</option>
+	<option value='AUXE1'>AUX-etr-1-plur</option>
+	<option value='AUXE2'>AUX-etr-2-plur</option>
+	<option value='AUXE3'>AUX-etr-3-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='D&eacute;terminant'>
+	<option value='DETRMS'>DET-masc-sing</option>
+	<option value='DETRMP'>DET-masc-plur</option>
+	<option value='DETRFS'>DET-fem-sing</option>
+	<option value='DETRFP'>DET-fem-plur</option>
+	<option value='NA'></option>
+	<option value='DINTMS'>DET-masc-sing-indef</option>
+	<option value='DINTMP'>DET-masc-plur-indef</option>
+	<option value='DINTFS'>DET-fem-sing-indef</option>
+	<option value='DINTFP'>DET-fem-plur-indef</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Verbe Principal'>
+	<option value='VINF'>VERB-inf</option>
+	<option value='NA'></option>
+	<option value='VERB1'>VERB-1-sing</option>
+	<option value='VERB2'>VERB-2-sing</option>
+	<option value='VERB3'>VERB-3-sing</option>
+	<option value='VERB4'>VERB-1-plur</option>
+	<option value='VERB5'>VERB-2-plur</option>
+	<option value='VERB6'>VERB-3-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adverbes'>
+	<option value='NE'>ADV-ne</option>
+	<option value='PAS'>ADV-pas</option>
+	<option value='ADVE'>ADV</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adjectif'>
+	<option value='ADJEMS'>ADJ-masc-sing</option>
+	<option value='ADJEMP'>ADJ-masc-plur</option>
+	<option value='ADJEFS'>ADJ-fem-sing</option>
+	<option value='ADJEFP'>ADJ-fem-plur</option>
+	<option value='NA'></option>
+	<option value='ADJIFS'>ADJ-masc-sing-indef</option>
+	<option value='ADJIFP'>ADJ-masc-plur-indef</option>
+	<option value='ADJIMS'>ADJ-fem-sing-indef</option>
+	<option value='ADJIMP'>ADJ-fem-plur-indef</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adposition'>
+	<option value='PAU'>P-au</option>
+	<option value='PAUX'>P-aux</option>
+	<option value='PDEA'>P-de-a</option>
+	<option value='PREPMS'>P-ms</option>
+	<option value='PDES'>P-des</option>
+	<option value='PREP'>P</option>
+ </optgroup>
+ <optgroup label='Participe pass&eacute;'>
+	<option value='PPASMS'>PP-masc-sing</option>
+	<option value='PPASMP'>PP-masc-plur</option>
+	<option value='PPASFS'>PP-fem-sing</option>
+	<option value='PPASFP'>PP-fem-plur</option>
+ </optgroup>
+ <optgroup label='Pronoms'>
+	<option value='PPOBMS'>PRO-pers-masc-sing</option>
+	<option value='PPOBMP'>PRO-pers-masc-plur</option>
+	<option value='PPOBFS'>PRO-pers-fem-sing</option>
+	<option value='PPOBFP'>PRO-pers-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PPER3M'>PRO-pers-3p-masc-sing</option>
+	<option value='PPER6M'>PRO-pers-3p-masc-plur</option>
+	<option value='PPER3F'>PRO-pers-3p-fem-sing</option>
+	<option value='PPER6F'>PRO-pers-3p-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PPER1'>PRO-pers-1p-sing</option>
+	<option value='PPER4'>PRO-pers-1p-plur</option>
+	<option value='PPER2'>PRO-pers-2p-sing</option>
+	<option value='PPER5'>PRO-pers-2p-plur</option>
+	<option value='NA'></option>
+	<option value='PINDMS'>PRO-ind-masc-sing</option>
+	<option value='PINDMP'>PRO-ind-masc-plur</option>
+	<option value='PINDFS'>PRO-ind-fem-sing</option>
+	<option value='PINDFP'>PRO-ind-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PRELMS'>PRO-rel-masc-sing</option>
+	<option value='PRELMP'>PRO-rel-masc-plur</option>
+	<option value='PRELFS'>PRO-rel-fem-sing</option>
+	<option value='PRELFP'>PRO-rel-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PREFMS'>PRO-refl-masc-sing</option>
+	<option value='PREFMP'>PRO-refl-masc-plur</option>
+	<option value='PREFFS'>PRO-refl-fem-sing</option>
+	<option value='PREFFP'>PRO-refl-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PSMS'>PRO-poss-masc-sing</option>
+	<option value='PSMP'>PRO-poss-masc-plur</option>
+	<option value='PSFS'>PRO-poss-fem-sing</option>
+	<option value='PSFP'>PRO-poss-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PDETMS'>PRO-demon-masc-sing</option>
+	<option value='PDETMP'>PRO-demon-masc-plur</option>
+	<option value='PDETFS'>PRO-demon-fem-sing</option>
+	<option value='PDETFP'>PRO-demon-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PINTMS'>PRO-int-masc-sing</option>
+	<option value='PINTMP'>PRO-int-masc-plur</option>
+	<option value='PINTFS'>PRO-int-fem-sing</option>
+	<option value='PINTFP'>PRO-int-fem-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Substantif'>
+	<option value='SUBSMS'>SUBST-masc-sing</option>
+	<option value='SUBSMP'>SUBST-masc-plur</option>
+	<option value='SUBSFS'>SUBST-fem-sing</option>
+	<option value='SUBSFP'>SUBST-fem-plur</option>
+ </optgroup>
+ <optgroup label='Divers'>
+	<option value='NPRO'>NOM-pr</option>
+	<option value='X'>X</option>
+	<option value='CSUB'>CONJ-sub</option>
+	<option value='CCOO'>CONJ-coord</option>
+	<option value='CHIF'>NUM</option>
+	<option value='PPRE'>PART-pres</option>
+ </optgroup>
+       </select>
+</div>
+ <div class='_word'><span>les</span><br />
+       <select name='w11' id='e11'>
+          <option value='NA'></option>
+ <optgroup label='Auxiliaires'>
+	<option value='AUXA1'>AUX-av-1-sing</option>
+	<option value='AUXA2'>AUX-av-2-sing</option>
+	<option value='AUXA3'>AUX-av-3-sing</option>
+	<option value='AUXA4'>AUX-av-1-plur</option>
+	<option value='AUXA5'>AUX-av-2-plur</option>
+	<option value='AUXA6'>AUX-av-3-plur</option>
+	<option value='NA'></option>
+	<option value='AUXA'>AUX-av-inf</option>
+	<option value='AUXE'>AUX-etr-inf</option>
+	<option value='NA'></option>
+	<option value='AUXE4'>AUX-etr-1-sing</option>
+	<option value='AUXE5'>AUX-etr-2-sing</option>
+	<option value='AUXE6'>AUX-etr-3-sing</option>
+	<option value='AUXE1'>AUX-etr-1-plur</option>
+	<option value='AUXE2'>AUX-etr-2-plur</option>
+	<option value='AUXE3'>AUX-etr-3-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='D&eacute;terminant'>
+	<option value='DETRMS'>DET-masc-sing</option>
+	<option value='DETRMP'>DET-masc-plur</option>
+	<option value='DETRFS'>DET-fem-sing</option>
+	<option value='DETRFP'>DET-fem-plur</option>
+	<option value='NA'></option>
+	<option value='DINTMS'>DET-masc-sing-indef</option>
+	<option value='DINTMP'>DET-masc-plur-indef</option>
+	<option value='DINTFS'>DET-fem-sing-indef</option>
+	<option value='DINTFP'>DET-fem-plur-indef</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Verbe Principal'>
+	<option value='VINF'>VERB-inf</option>
+	<option value='NA'></option>
+	<option value='VERB1'>VERB-1-sing</option>
+	<option value='VERB2'>VERB-2-sing</option>
+	<option value='VERB3'>VERB-3-sing</option>
+	<option value='VERB4'>VERB-1-plur</option>
+	<option value='VERB5'>VERB-2-plur</option>
+	<option value='VERB6'>VERB-3-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adverbes'>
+	<option value='NE'>ADV-ne</option>
+	<option value='PAS'>ADV-pas</option>
+	<option value='ADVE'>ADV</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adjectif'>
+	<option value='ADJEMS'>ADJ-masc-sing</option>
+	<option value='ADJEMP'>ADJ-masc-plur</option>
+	<option value='ADJEFS'>ADJ-fem-sing</option>
+	<option value='ADJEFP'>ADJ-fem-plur</option>
+	<option value='NA'></option>
+	<option value='ADJIFS'>ADJ-masc-sing-indef</option>
+	<option value='ADJIFP'>ADJ-masc-plur-indef</option>
+	<option value='ADJIMS'>ADJ-fem-sing-indef</option>
+	<option value='ADJIMP'>ADJ-fem-plur-indef</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adposition'>
+	<option value='PAU'>P-au</option>
+	<option value='PAUX'>P-aux</option>
+	<option value='PDEA'>P-de-a</option>
+	<option value='PREPMS'>P-ms</option>
+	<option value='PDES'>P-des</option>
+	<option value='PREP'>P</option>
+ </optgroup>
+ <optgroup label='Participe pass&eacute;'>
+	<option value='PPASMS'>PP-masc-sing</option>
+	<option value='PPASMP'>PP-masc-plur</option>
+	<option value='PPASFS'>PP-fem-sing</option>
+	<option value='PPASFP'>PP-fem-plur</option>
+ </optgroup>
+ <optgroup label='Pronoms'>
+	<option value='PPOBMS'>PRO-pers-masc-sing</option>
+	<option value='PPOBMP'>PRO-pers-masc-plur</option>
+	<option value='PPOBFS'>PRO-pers-fem-sing</option>
+	<option value='PPOBFP'>PRO-pers-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PPER3M'>PRO-pers-3p-masc-sing</option>
+	<option value='PPER6M'>PRO-pers-3p-masc-plur</option>
+	<option value='PPER3F'>PRO-pers-3p-fem-sing</option>
+	<option value='PPER6F'>PRO-pers-3p-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PPER1'>PRO-pers-1p-sing</option>
+	<option value='PPER4'>PRO-pers-1p-plur</option>
+	<option value='PPER2'>PRO-pers-2p-sing</option>
+	<option value='PPER5'>PRO-pers-2p-plur</option>
+	<option value='NA'></option>
+	<option value='PINDMS'>PRO-ind-masc-sing</option>
+	<option value='PINDMP'>PRO-ind-masc-plur</option>
+	<option value='PINDFS'>PRO-ind-fem-sing</option>
+	<option value='PINDFP'>PRO-ind-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PRELMS'>PRO-rel-masc-sing</option>
+	<option value='PRELMP'>PRO-rel-masc-plur</option>
+	<option value='PRELFS'>PRO-rel-fem-sing</option>
+	<option value='PRELFP'>PRO-rel-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PREFMS'>PRO-refl-masc-sing</option>
+	<option value='PREFMP'>PRO-refl-masc-plur</option>
+	<option value='PREFFS'>PRO-refl-fem-sing</option>
+	<option value='PREFFP'>PRO-refl-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PSMS'>PRO-poss-masc-sing</option>
+	<option value='PSMP'>PRO-poss-masc-plur</option>
+	<option value='PSFS'>PRO-poss-fem-sing</option>
+	<option value='PSFP'>PRO-poss-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PDETMS'>PRO-demon-masc-sing</option>
+	<option value='PDETMP'>PRO-demon-masc-plur</option>
+	<option value='PDETFS'>PRO-demon-fem-sing</option>
+	<option value='PDETFP'>PRO-demon-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PINTMS'>PRO-int-masc-sing</option>
+	<option value='PINTMP'>PRO-int-masc-plur</option>
+	<option value='PINTFS'>PRO-int-fem-sing</option>
+	<option value='PINTFP'>PRO-int-fem-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Substantif'>
+	<option value='SUBSMS'>SUBST-masc-sing</option>
+	<option value='SUBSMP'>SUBST-masc-plur</option>
+	<option value='SUBSFS'>SUBST-fem-sing</option>
+	<option value='SUBSFP'>SUBST-fem-plur</option>
+ </optgroup>
+ <optgroup label='Divers'>
+	<option value='NPRO'>NOM-pr</option>
+	<option value='X'>X</option>
+	<option value='CSUB'>CONJ-sub</option>
+	<option value='CCOO'>CONJ-coord</option>
+	<option value='CHIF'>NUM</option>
+	<option value='PPRE'>PART-pres</option>
+ </optgroup>
+       </select>
+</div>
+ <div class='_word'><span>pieds</span><br />
+       <select name='w12' id='e12'>
+          <option value='NA'></option>
+ <optgroup label='Auxiliaires'>
+	<option value='AUXA1'>AUX-av-1-sing</option>
+	<option value='AUXA2'>AUX-av-2-sing</option>
+	<option value='AUXA3'>AUX-av-3-sing</option>
+	<option value='AUXA4'>AUX-av-1-plur</option>
+	<option value='AUXA5'>AUX-av-2-plur</option>
+	<option value='AUXA6'>AUX-av-3-plur</option>
+	<option value='NA'></option>
+	<option value='AUXA'>AUX-av-inf</option>
+	<option value='AUXE'>AUX-etr-inf</option>
+	<option value='NA'></option>
+	<option value='AUXE4'>AUX-etr-1-sing</option>
+	<option value='AUXE5'>AUX-etr-2-sing</option>
+	<option value='AUXE6'>AUX-etr-3-sing</option>
+	<option value='AUXE1'>AUX-etr-1-plur</option>
+	<option value='AUXE2'>AUX-etr-2-plur</option>
+	<option value='AUXE3'>AUX-etr-3-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='D&eacute;terminant'>
+	<option value='DETRMS'>DET-masc-sing</option>
+	<option value='DETRMP'>DET-masc-plur</option>
+	<option value='DETRFS'>DET-fem-sing</option>
+	<option value='DETRFP'>DET-fem-plur</option>
+	<option value='NA'></option>
+	<option value='DINTMS'>DET-masc-sing-indef</option>
+	<option value='DINTMP'>DET-masc-plur-indef</option>
+	<option value='DINTFS'>DET-fem-sing-indef</option>
+	<option value='DINTFP'>DET-fem-plur-indef</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Verbe Principal'>
+	<option value='VINF'>VERB-inf</option>
+	<option value='NA'></option>
+	<option value='VERB1'>VERB-1-sing</option>
+	<option value='VERB2'>VERB-2-sing</option>
+	<option value='VERB3'>VERB-3-sing</option>
+	<option value='VERB4'>VERB-1-plur</option>
+	<option value='VERB5'>VERB-2-plur</option>
+	<option value='VERB6'>VERB-3-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adverbes'>
+	<option value='NE'>ADV-ne</option>
+	<option value='PAS'>ADV-pas</option>
+	<option value='ADVE'>ADV</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adjectif'>
+	<option value='ADJEMS'>ADJ-masc-sing</option>
+	<option value='ADJEMP'>ADJ-masc-plur</option>
+	<option value='ADJEFS'>ADJ-fem-sing</option>
+	<option value='ADJEFP'>ADJ-fem-plur</option>
+	<option value='NA'></option>
+	<option value='ADJIFS'>ADJ-masc-sing-indef</option>
+	<option value='ADJIFP'>ADJ-masc-plur-indef</option>
+	<option value='ADJIMS'>ADJ-fem-sing-indef</option>
+	<option value='ADJIMP'>ADJ-fem-plur-indef</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Adposition'>
+	<option value='PAU'>P-au</option>
+	<option value='PAUX'>P-aux</option>
+	<option value='PDEA'>P-de-a</option>
+	<option value='PREPMS'>P-ms</option>
+	<option value='PDES'>P-des</option>
+	<option value='PREP'>P</option>
+ </optgroup>
+ <optgroup label='Participe pass&eacute;'>
+	<option value='PPASMS'>PP-masc-sing</option>
+	<option value='PPASMP'>PP-masc-plur</option>
+	<option value='PPASFS'>PP-fem-sing</option>
+	<option value='PPASFP'>PP-fem-plur</option>
+ </optgroup>
+ <optgroup label='Pronoms'>
+	<option value='PPOBMS'>PRO-pers-masc-sing</option>
+	<option value='PPOBMP'>PRO-pers-masc-plur</option>
+	<option value='PPOBFS'>PRO-pers-fem-sing</option>
+	<option value='PPOBFP'>PRO-pers-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PPER3M'>PRO-pers-3p-masc-sing</option>
+	<option value='PPER6M'>PRO-pers-3p-masc-plur</option>
+	<option value='PPER3F'>PRO-pers-3p-fem-sing</option>
+	<option value='PPER6F'>PRO-pers-3p-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PPER1'>PRO-pers-1p-sing</option>
+	<option value='PPER4'>PRO-pers-1p-plur</option>
+	<option value='PPER2'>PRO-pers-2p-sing</option>
+	<option value='PPER5'>PRO-pers-2p-plur</option>
+	<option value='NA'></option>
+	<option value='PINDMS'>PRO-ind-masc-sing</option>
+	<option value='PINDMP'>PRO-ind-masc-plur</option>
+	<option value='PINDFS'>PRO-ind-fem-sing</option>
+	<option value='PINDFP'>PRO-ind-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PRELMS'>PRO-rel-masc-sing</option>
+	<option value='PRELMP'>PRO-rel-masc-plur</option>
+	<option value='PRELFS'>PRO-rel-fem-sing</option>
+	<option value='PRELFP'>PRO-rel-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PREFMS'>PRO-refl-masc-sing</option>
+	<option value='PREFMP'>PRO-refl-masc-plur</option>
+	<option value='PREFFS'>PRO-refl-fem-sing</option>
+	<option value='PREFFP'>PRO-refl-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PSMS'>PRO-poss-masc-sing</option>
+	<option value='PSMP'>PRO-poss-masc-plur</option>
+	<option value='PSFS'>PRO-poss-fem-sing</option>
+	<option value='PSFP'>PRO-poss-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PDETMS'>PRO-demon-masc-sing</option>
+	<option value='PDETMP'>PRO-demon-masc-plur</option>
+	<option value='PDETFS'>PRO-demon-fem-sing</option>
+	<option value='PDETFP'>PRO-demon-fem-plur</option>
+	<option value='NA'></option>
+	<option value='PINTMS'>PRO-int-masc-sing</option>
+	<option value='PINTMP'>PRO-int-masc-plur</option>
+	<option value='PINTFS'>PRO-int-fem-sing</option>
+	<option value='PINTFP'>PRO-int-fem-plur</option>
+	<option value='NA'></option>
+ </optgroup>
+ <optgroup label='Substantif'>
+	<option value='SUBSMS'>SUBST-masc-sing</option>
+	<option value='SUBSMP'>SUBST-masc-plur</option>
+	<option value='SUBSFS'>SUBST-fem-sing</option>
+	<option value='SUBSFP'>SUBST-fem-plur</option>
+ </optgroup>
+ <optgroup label='Divers'>
+	<option value='NPRO'>NOM-pr</option>
+	<option value='X'>X</option>
+	<option value='CSUB'>CONJ-sub</option>
+	<option value='CCOO'>CONJ-coord</option>
+	<option value='CHIF'>NUM</option>
+	<option value='PPRE'>PART-pres</option>
+ </optgroup>
+       </select>
+</div>
+ <div class='_word'><span>.</span><br />
+  <input type='hidden' name='w13' value='point' id='e13' />
+</div>
+       <div class='_word'>
+         <input type='submit' />
+       </div>
+     </div>
+   </fieldset>
+</div></form>
+<div style='clear:both;'></div>
+<div id='grammar_abbr'>
+<table class='css_table'>
+  <tr><td colspan='2' class='_desc_categ'>Auxiliaires</td></tr>
+  <tr><td>AUX-av-1-sing</td><td>auxiliair avoir 1ère personne du singulier</td></tr>
+  <tr><td>AUX-av-2-sing</td><td>auxiliair avoir 2nd  personne du singulier</td></tr>
+  <tr><td>AUX-av-3-sing</td><td>auxiliair avoir 3ème personne du singulier</td></tr>
+  <tr><td>AUX-av-1-plur</td><td>auxiliair avoir 1ère personne du pluriel</td></tr>
+  <tr><td>AUX-av-2-plur</td><td>auxiliair avoir 2nd  personne du pluriel</td></tr>
+  <tr><td>AUX-av-3-plur</td><td>auxiliair avoir 3ème personne du pluriel</td></tr>
+  <tr><td></td><td></td></tr>
+  <tr><td>AUX-av-inf</td><td>auxiliair avoir infinitive</td></tr>
+  <tr><td>AUX-etr-inf</td><td>auxiliair être infinitive</td></tr>
+  <tr><td></td><td></td></tr>
+  <tr><td>AUX-etr-1-sing</td><td>auxiliair être 1st person pluriel</td></tr>
+  <tr><td>AUX-etr-2-sing</td><td>auxiliair être 2nd person pluriel</td></tr>
+  <tr><td>AUX-etr-3-sing</td><td>auxiliair être 3rd person pluriel</td></tr>
+  <tr><td>AUX-etr-1-plur</td><td>auxiliair être 1st person singulier</td></tr>
+  <tr><td>AUX-etr-2-plur</td><td>auxiliair être 2nd person singulier</td></tr>
+  <tr><td>AUX-etr-3-plur</td><td>auxiliair être 3rd person singulier</td></tr>
+  <tr><td></td><td></td></tr>
+  <tr><td colspan='2' class='_desc_categ'>D&eacute;terminant</td></tr>
+  <tr><td>DET-masc-sing</td><td>d&eacute;terminant masculin singulier</td></tr>
+  <tr><td>DET-masc-plur</td><td>d&eacute;terminant masculin pluriel</td></tr>
+  <tr><td>DET-fem-sing</td><td>d&eacute;terminant f&eacute;minin singulier</td></tr>
+  <tr><td>DET-fem-plur</td><td>d&eacute;terminant f&eacute;minin pluriel</td></tr>
+  <tr><td></td><td></td></tr>
+  <tr><td>DET-masc-sing-indef</td><td>d&eacute;terminant ind&eacute;fini masculin singulier</td></tr>
+  <tr><td>DET-masc-plur-indef</td><td>d&eacute;terminant ind&eacute;fini masculin pluriel</td></tr>
+  <tr><td>DET-fem-sing-indef</td><td>d&eacute;terminant ind&eacute;fini f&eacute;minin singulier</td></tr>
+  <tr><td>DET-fem-plur-indef</td><td>d&eacute;terminant ind&eacute;fini f&eacute;minin pluriel</td></tr>
+  <tr><td></td><td></td></tr>
+  <tr><td colspan='2' class='_desc_categ'>Verbe Principal</td></tr>
+  <tr><td>VERB-inf</td><td>verbe principal infinitif</td></tr>
+  <tr><td></td><td></td></tr>
+  <tr><td>VERB-1-sing</td><td>verbe principal 1st personne singulier</td></tr>
+  <tr><td>VERB-2-sing</td><td>verbe principal 2nd personne singulier</td></tr>
+  <tr><td>VERB-3-sing</td><td>verbe principal 3rd personne singulier</td></tr>
+  <tr><td>VERB-1-plur</td><td>verbe principal 1st personne pluriel</td></tr>
+  <tr><td>VERB-2-plur</td><td>verbe principal 2nd personne pluriel</td></tr>
+  <tr><td>VERB-3-plur</td><td>verbe principal 3rd personne pluriel</td></tr>
+  <tr><td></td><td></td></tr>
+  <tr><td colspan='2' class='_desc_categ'>Adverbes</td></tr>
+  <tr><td>ADV-ne</td><td>adverbe négatif : particule 'ne'</td></tr>
+  <tr><td>ADV-pas</td><td>adverbe négatif : particule 'pas', 'jamais', 'point'</td></tr>
+  <tr><td>ADV</td><td>adverbe</td></tr>
+  <tr><td></td><td></td></tr>
+  <tr><td colspan='2' class='_desc_categ'>Adjectif</td></tr>
+  <tr><td>ADJ-masc-sing</td><td>adjectif masculin singulier</td></tr>
+  <tr><td>ADJ-masc-plur</td><td>adjectif masculin pluriel</td></tr>
+  <tr><td>ADJ-fem-sing</td><td>adjectif féminin singulier</td></tr>
+  <tr><td>ADJ-fem-plur</td><td>adjectif féminin pluriel</td></tr>
+  <tr><td></td><td></td></tr>
+  <tr><td>ADJ-masc-sing-indef</td><td>adjectif indefini féminin singulier</td></tr>
+  <tr><td>ADJ-masc-plur-indef</td><td>adjectif indefini féminin pluriel</td></tr>
+  <tr><td>ADJ-fem-sing-indef</td><td>adjectif indefini masculin singulier</td></tr>
+  <tr><td>ADJ-fem-plur-indef</td><td>adjectif indefini masculin pluriel</td></tr>
+  <tr><td></td><td></td></tr>
+  <tr><td colspan='2' class='_desc_categ'>Adposition</td></tr>
+  <tr><td>P-au</td><td>adposition 'au'</td></tr>
+  <tr><td>P-aux</td><td>adposition 'aux'</td></tr>
+  <tr><td>P-de-a</td><td>adposition 'de', 'a'</td></tr>
+  <tr><td>P-ms</td><td>adposition 'de'</td></tr>
+  <tr><td>P-des</td><td>adposition 'des'</td></tr>
+  <tr><td>P</td><td>adposition</td></tr>
+  <tr><td colspan='2' class='_desc_categ'>Participe pass&eacute;</td></tr>
+  <tr><td>PP-masc-sing</td><td>participe passé masculin singulier</td></tr>
+  <tr><td>PP-masc-plur</td><td>participe passé masculin pluriel</td></tr>
+  <tr><td>PP-fem-sing</td><td>participe passé féminin singulier</td></tr>
+  <tr><td>PP-fem-plur</td><td>participe passé féminin pluriel</td></tr>
+  <tr><td colspan='2' class='_desc_categ'>Pronoms</td></tr>
+  <tr><td>PRO-pers-masc-sing</td><td>pronom personel masculin singulier (object)</td></tr>
+  <tr><td>PRO-pers-masc-plur</td><td>pronom personel masculin pluriel (object)</td></tr>
+  <tr><td>PRO-pers-fem-sing</td><td>pronom personel féminin singulier (objet)</td></tr>
+  <tr><td>PRO-pers-fem-plur</td><td>pronom personel féminin pluriel (objet)</td></tr>
+  <tr><td></td><td></td></tr>
+  <tr><td>PRO-pers-3p-masc-sing</td><td>pronom personel 3rd person masculin singulier</td></tr>
+  <tr><td>PRO-pers-3p-masc-plur</td><td>pronom personel 3rd person masculin pluriel</td></tr>
+  <tr><td>PRO-pers-3p-fem-sing</td><td>pronom personel 3rd person féminin singulier</td></tr>
+  <tr><td>PRO-pers-3p-fem-plur</td><td>pronom personel 3rd person féminin pluriel</td></tr>
+  <tr><td></td><td></td></tr>
+  <tr><td>PRO-pers-1p-sing</td><td>pronom personel 1ère personne du singulier</td></tr>
+  <tr><td>PRO-pers-1p-plur</td><td>pronom personel 1ère personne du pluriel</td></tr>
+  <tr><td>PRO-pers-2p-sing</td><td>pronom personel 2nd personne du singulier</td></tr>
+  <tr><td>PRO-pers-2p-plur</td><td>pronom personel 2nd personne du pluriel</td></tr>
+  <tr><td></td><td></td></tr>
+  <tr><td>PRO-ind-masc-sing</td><td>pronom indefini masculin singulier</td></tr>
+  <tr><td>PRO-ind-masc-plur</td><td>pronom indefini masculin pluriel</td></tr>
+  <tr><td>PRO-ind-fem-sing</td><td>pronom indefini féminin singulier</td></tr>
+  <tr><td>PRO-ind-fem-plur</td><td>pronom indefini féminin pluriel</td></tr>
+  <tr><td></td><td></td></tr>
+  <tr><td>PRO-rel-masc-sing</td><td>pronom relatif masculin singulier</td></tr>
+  <tr><td>PRO-rel-masc-plur</td><td>pronom relatif masculin pluriel</td></tr>
+  <tr><td>PRO-rel-fem-sing</td><td>pronom relatif féminin singulier</td></tr>
+  <tr><td>PRO-rel-fem-plur</td><td>pronom relatif féminin pluriel</td></tr>
+  <tr><td></td><td></td></tr>
+  <tr><td>PRO-refl-masc-sing</td><td>reflexive pronom masculin singulier</td></tr>
+  <tr><td>PRO-refl-masc-plur</td><td>reflexive pronom masculin pluriel</td></tr>
+  <tr><td>PRO-refl-fem-sing</td><td>reflexive pronom féminin singulier</td></tr>
+  <tr><td>PRO-refl-fem-plur</td><td>reflexive pronom féminin pluriel</td></tr>
+  <tr><td></td><td></td></tr>
+  <tr><td>PRO-poss-masc-sing</td><td>pronom possessif masculin singulier</td></tr>
+  <tr><td>PRO-poss-masc-plur</td><td>pronom possessif masculin pluriel</td></tr>
+  <tr><td>PRO-poss-fem-sing</td><td>pronom possessif féminin singulier</td></tr>
+  <tr><td>PRO-poss-fem-plur</td><td>pronom possessif féminin pluriel</td></tr>
+  <tr><td></td><td></td></tr>
+  <tr><td>PRO-demon-masc-sing</td><td>pronom démonstratif masculin singulier</td></tr>
+  <tr><td>PRO-demon-masc-plur</td><td>pronom démonstratif masculin pluriel</td></tr>
+  <tr><td>PRO-demon-fem-sing</td><td>pronom démonstratif féminin  singulier</td></tr>
+  <tr><td>PRO-demon-fem-plur</td><td>pronom démonstratif féminin  pluriel</td></tr>
+  <tr><td></td><td></td></tr>
+  <tr><td>PRO-int-masc-sing</td><td>pronom interrogatif masculin singulier</td></tr>
+  <tr><td>PRO-int-masc-plur</td><td>pronom interrogatif masculin pluriel</td></tr>
+  <tr><td>PRO-int-fem-sing</td><td>pronom interrogatif féminin  singulier</td></tr>
+  <tr><td>PRO-int-fem-plur</td><td>pronom interrogatif féminin  pluriel</td></tr>
+  <tr><td></td><td></td></tr>
+  <tr><td colspan='2' class='_desc_categ'>Substantif</td></tr>
+  <tr><td>SUBST-masc-sing</td><td>substantif masculin singulier</td></tr>
+  <tr><td>SUBST-masc-plur</td><td>substantif masculin pluriel</td></tr>
+  <tr><td>SUBST-fem-sing</td><td>substantif feminin singulier</td></tr>
+  <tr><td>SUBST-fem-plur</td><td>substantif feminin pluriel</td></tr>
+  <tr><td colspan='2' class='_desc_categ'>Divers</td></tr>
+  <tr><td>NOM-pr</td><td>nom propre</td></tr>
+  <tr><td>X</td><td>unique membership class</td></tr>
+  <tr><td>CONJ-sub</td><td>subordinative conjunction</td></tr>
+  <tr><td>CONJ-coord</td><td>coordinative conjunction</td></tr>
+  <tr><td>NUM</td><td>numerals</td></tr>
+  <tr><td>PART-pres</td><td>present participe</td></tr>
+</table>
+</div>
+<div id='bench'>
+<div>exec-time = 2.400272s</div>
+<!-- User and system time for the process = 0.025559 &nbsp; 0.040751 -->
+</div>
+<div id='valid'>
+<a class='vxhtml'
+href='http://validator.w3.org/check/referer'
+title='Check the validity of this site&#8217;s XHTML'
+><img src='/graccota/button-xhtml.png' alt='HTML Validator' /></a>
+
+<a class='vcss'
+href='http://jigsaw.w3.org/css-validator/check/referer'
+title='Check the validity of this site&#8217;s CSS'
+><img src='/graccota/button-css.png' alt='CSS Validator' /></a>
+
+</div>
+</body>
+</html>
