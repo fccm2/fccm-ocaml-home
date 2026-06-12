@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>compiling-ocaml-5</title>
+<meta name="keywords" content="tutorial, ocaml, compiling, no-deps" />
+<meta name="description" content="How to compile an ocaml 5 version." />
+<meta name="auhtor" content="Florent Monnier, 2025" />
+<meta name="license" content="fdl, cc-by-sa_2.5 OR Later, spdx:Any" />
+<style>
+pre { border:1px solid #000; margin-right:33%; }
+</style>
+</head>
+<body>
+
+<h1>compiling-ocaml-5</h1>
+
+<p>This tutorial is known to be compatible with <code>ocaml-5.2.0</code>
+under <code>Crostini</code>.</p>
+
+<p>The command <code>ln -s</code> seem to produce an error, so it's still
+possible to use the <code>LN=cp</code> work-around.</p>
+
+<p>In case you need to re-install the <code>linux</code> container,
+it's possible to install what you compliled in:</p>
+
+<pre>$ mkdir -p /mnt/chromeos/MyFiles/Console/usr/local</pre>
+
+<p>So the complete set of commands to install <code>ocaml-5.2.0</code>
+can be:</p>
+
+<pre>$ mkdir -p /mnt/chromeos/MyFiles/Console/usr/local
+
+$ sh configure --prefix=/mnt/chromeos/MyFiles/Console/usr/local
+
+$ make LN=cp
+
+$ make install LN=cp</pre>
+
+<pre>$ cat /etc/os-release | grep -E '^(NAME=|VERSION_ID=)'
+NAME="Debian GNU/Linux"
+VERSION_ID="12"</pre>
+
+<p>Running the command <code>ocaml</code> will produce an error:</p>
+
+<pre>$ \ocaml
+cannot execute: required file not found</pre>
+
+<p>But the command <code>ocamlnat</code> which is an equivalent toplevel
+doesn't produce any error.</p>
+
+<p>Never-the-less, it seems it is not installed
+by default, so you only have to copy it:</p>
+
+<pre>$ cp ocamlnat /mnt/chromeos/MyFiles/Console/usr/local/bin/</pre>
+
+<p>Or if you prefer to install it with the <code>install</code> command:</p>
+
+<pre>$ /usr/bin/install -c -p -m 755 ocamlnat /mnt/chromeos/MyFiles/Console/usr/local/bin</pre>
+
+<p>If you selected a path which is not writable by the user at the
+<code>configure</code> step, you can just add <code>sudo</code>
+before the <code>install</code> command.</p>
+
+<p>Then you can test your <code>ocamlnat</code> command:</p>
+
+<pre>$ ocamlnat
+OCaml version 5.2.0 - native toplevel
+
+# </pre>
+
+<pre>$ cat /tmp/hello.ml
+print_endline "hello"</pre>
+
+<!--
+<pre>
+$ ocamlc.opt -version
+5.2.0
+</pre>
+-->
+
+<!--
+<pre>
+$ ocamlc.opt -o /tmp/hello.byte /tmp/hello.ml
+$ /tmp/hello.byte
+cannot execute: required file not found
+</pre>
+-->
+
+<pre>$ ocamlopt.opt -version
+5.2.0</pre>
+
+<pre>$ ocamlopt.opt -o /tmp/hello.opt /tmp/hello.ml
+
+$ /tmp/hello.opt
+hello</pre>
+
+<!--
+<pre>
+# /usr/bin/install -c -p -m 644 
+</pre>
+-->
+
+<p>Don't forget to define some <code>env-var</code>'s
+(environment-variables):</p>
+
+<pre>export CAML_LD_LIBRARY_PATH="/mnt/chromeos/MyFiles/Console/usr/local/lib/ocaml/stublibs"
+export OCAMLPATH="/mnt/chromeos/MyFiles/Console/usr/local/lib/ocaml"
+export OCAML_TOPLEVEL_PATH="/mnt/chromeos/MyFiles/Console/usr/local/lib/ocaml"
+export LD_LIBRARY_PATH="/mnt/chromeos/MyFiles/Console/usr/local/lib/ocaml/stublibs:$LD_LIBRARY_PATH"
+export PATH="/mnt/chromeos/MyFiles/Console/usr/local/bin:$PATH"</pre>
+
+<p>If you don't want to define it every-time you will use your
+<code>ocaml-5</code> installation, you can add these env-vars into
+your <code>~/.bashrc</code> file.</p>
+
+<p>If you don't know yet how to edit a <code>.txt</code> file
+you can read this
+<a href="/dev/vim.html">vim-tutorial</a>.</p>
+
+<p>Then if you want to use <code>ocamlnat</code> in stead of
+<code>ocaml</code> in a script, you can replace:</p>
+
+<pre>#!/usr/bin/env ocaml</pre><p>by:</p>
+<pre>#!/usr/bin/env ocamlnat</pre>
+
+<p>At the first line of your script.</p>
+
+<p>I hope you will be happy with your <code>ocaml-5</code> software!</p>
+
+<p>Happy <code>ocaml</code>'ing!</p>
+
+<p><em>2025</em></p>
+
+</body>
+</html>

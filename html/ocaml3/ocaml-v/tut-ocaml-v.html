@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>tutorial-ocaml-v</title>
+<meta name="keywords" content="tutorial, ocaml, 2025, situation" />
+<meta name="description" content="What is remaining with ocaml 5.4.0." />
+<meta name="auhtor" content="Florent Monnier, 2025" />
+<meta name="license" content="fdl, cc-by-sa_2.5 OR Later" />
+<style>
+pre { border:1px solid #000; margin-right:33%; }
+body { margin-right:49%; }
+code { border:1px solid #000; }
+</style>
+</head>
+<body>
+
+<h1>tutorial-ocaml-v</h1>
+
+<p>In a previous tutorial about compiling ocaml-<a href="./tut-ocaml-5.html">5.2.0</a>
+in the <code>Crostini</code> console, we saw that we were still able to get fully functional
+commands for:</p>
+
+<ul>
+<li><code>ocamlopt</code>: ok</li>
+<li><code>ocamlnat</code>: ok</li>
+</ul>
+
+<p>But that there was some serious issues with:</p>
+
+<ul>
+<li><code>ocaml</code>: Failure</li>
+<li><code>ocamlc</code>: don't remember (probably fail'd to built too)</li>
+</ul>
+
+<p>In addition we saw that the build script uses the command <code>ln -s</code>
+which is a command that produces <code>failure</code>s in <code>Crostini</code>.</p>
+
+<p>Never-the-less, it was still possible to use 
+<code>ocamlopt</code>, and <code>ocamlnat</code>, which were not
+broken yet.</p>
+
+<p>With <code>ocaml-5.4.0</code>, there are more and more parts of the
+system that are broken, and which don't compile out-of-the-box anymore.</p>
+
+<p>Now we only get the <code>ocamlopt</code> command that is able to
+compile something, and we are trying to figure-out if the ocaml-system
+will get more and more poor over the next following years.</p>
+
+<p>Fortunatly in this dark ocaml-2025 year, we are still able to compile
+old versions, but the future is un-sure if it will still be possible in
+a near or far future...</p>
+
+<p><code>ocaml</code><em>-2025 in difficulties...</em></p>
+
+</body>
+</html>
