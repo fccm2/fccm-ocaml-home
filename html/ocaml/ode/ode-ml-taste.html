@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<?xml version="1.0"?>
+<html>
+<head>
+<title>A Taste of ODE in OCaml</title>
+<meta name="Generator" content="Vim/6.3"/>
+<meta http-equiv="content-type" content="text/html; charset=utf8"/>
+<meta name="keywords" content="ocaml, ode, beginning" />
+<style type="text/css">
+<!--
+body { color: #000; background-color: #BBB; padding:0.2em 1.4em; }
+a { color: #04B; text-decoration: underline; }
+a:hover { color: #04F; background-color: #BBB; }
+pre { color: #FFF; background-color: #000; padding:2px; border:1px solid #CCC; }
+ol { margin-left: 2%; }
+.Cnst { color: #ff40ff; font-weight: bold; }
+.PrPr { color: #8080ff; font-weight: bold; }
+.Stnt { color: #ffff00; font-weight: bold; }
+-->
+</style>
+</head>
+<body>
+
+<h2>A Taste of ODE in OCaml</h2>
+<div><p>As explained in the
+        <a href="http://www.ode.org/ode-latest-userguide.html">manual of ODE</a>
+        a typical simulation will proceed like this:</p></div>
+<ol>
+        <li>Create a dynamics world.</li>
+        <li>Create bodies in the dynamics world.</li>
+        <li>Set the state (position etc) of all bodies.</li>
+        <li>Create joints in the dynamics world.</li>
+        <li>Attach the joints to the bodies.</li>
+        <li>Set the parameters of all joints.</li>
+        <li>Create a collision world and collision geometry objects, as necessary.</li>
+        <li>Create a joint group to hold the contact joints.</li>
+        <li>Loop:
+        <ol>
+                <li>Apply forces to the bodies as necessary.</li>
+                <li>Adjust the joint parameters as necessary.</li>
+                <li>Call collision detection.</li>
+                <li>Create a contact joint for every collision point, and put it
+                    in the contact joint group.</li>
+                <li>Take a simulation step.</li>
+                <li>Remove all joints in the contact joint group.</li>
+        </ol></li>
+        <li>Destroy the dynamics and collision worlds.</li>
+</ol>
+
+<div><p>Here is how it looks like in OCaml with
+        <a href="http://decapode314.free.fr/ocaml/ode/">the ODE bindings</a>
+        with the most simple possible example:</p></div>
+
+
+<pre>
+<span class="Stnt">open</span> <span class="PrPr">Ode.LowLevel</span>
+
+<span class="Stnt">let</span> <span class="Cnst">()</span> <span class="Stnt">=</span>
+  dInitODE <span class="Cnst">()</span><span class="Stnt">;</span>
+  <span class="Stnt">let</span> wrl <span class="Stnt">=</span> dWorldCreate <span class="Cnst">()</span> <span class="Stnt">in</span>
+  dWorldSetGravity wrl <span class="Cnst">0</span>. <span class="Cnst">0</span>. <span class="Stnt">(</span>-<span class="Cnst">0.9</span><span class="Stnt">)</span><span class="Stnt">;</span>
+  <span class="Stnt">let</span> space <span class="Stnt">=</span> dHashSpaceCreate <span class="Cnst">None</span> <span class="Stnt">in</span>
+  <span class="Stnt">let</span> plane <span class="Stnt">=</span> dCreatePlane <span class="Stnt">(</span><span class="Cnst">Some</span> space<span class="Stnt">)</span> <span class="Cnst">0</span>. <span class="Cnst">0</span>. <span class="Cnst">1</span>. <span class="Cnst">0</span>. <span class="Stnt">in</span>
+  <span class="Stnt">let</span> cgrp <span class="Stnt">=</span> dJointGroupCreate <span class="Cnst">()</span> <span class="Stnt">in</span>
+
+  <span class="Stnt">let</span> <span class="Stnt">(</span>lx,ly,lz<span class="Stnt">)</span> <span class="Stnt">=</span> <span class="Stnt">(</span><span class="Cnst">1</span>.,<span class="Cnst">1</span>.,<span class="Cnst">1</span>.<span class="Stnt">)</span> <span class="Stnt">in</span>
+  <span class="Stnt">let</span> b <span class="Stnt">=</span> dBodyCreate wrl <span class="Stnt">in</span>
+  dBodySetPosition b <span class="Cnst">0</span>. <span class="Cnst">0</span>. <span class="Cnst">1</span>.<span class="Stnt">;</span>
+  <span class="Stnt">let</span> m <span class="Stnt">=</span> dMassCreate <span class="Cnst">()</span> <span class="Stnt">in</span>
+  dMassSetBox m <span class="Cnst">2.4</span> lx ly lz<span class="Stnt">;</span>
+  dMassAdjust m <span class="Cnst">1.0</span><span class="Stnt">;</span>
+  dBodySetMass b m<span class="Stnt">;</span>
+  <span class="Stnt">let</span> g <span class="Stnt">=</span> dCreateBox <span class="Stnt">(</span><span class="Cnst">Some</span> space<span class="Stnt">)</span> lx ly lz <span class="Stnt">in</span>
+  dGeomSetBody g <span class="Stnt">(</span><span class="Cnst">Some</span> b<span class="Stnt">)</span><span class="Stnt">;</span>
+
+  <span class="Stnt">let</span> near ga gb <span class="Stnt">=</span>
+    <span class="Stnt">let</span> surf_params <span class="Stnt">=</span> <span class="Stnt">{</span> surf_param_zero <span class="Stnt">with</span>
+      sp_mode <span class="Stnt">=</span> <span class="Stnt">[</span><span class="Cnst">`dContactBounce</span><span class="Stnt">]</span><span class="Stnt">;</span>
+      sp_mu <span class="Stnt">=</span> dInfinity<span class="Stnt">;</span>
+      sp_bounce <span class="Stnt">=</span> <span class="Cnst">0.7</span><span class="Stnt">;</span>
+      sp_bounce_vel <span class="Stnt">=</span> <span class="Cnst">0.1</span><span class="Stnt">;</span>
+    <span class="Stnt">}</span> <span class="Stnt">in</span>
+    <span class="Stnt">let</span> cnt_arr <span class="Stnt">=</span> dCollide ga gb <span class="Cnst">5</span> <span class="Stnt">in</span>
+    <span class="PrPr">ArrayLabels</span>.iter cnt_arr <span class="Stnt">~</span><span class="Idnt">f</span>:<span class="Stnt">(fun</span> cnt_geom <span class="Stnt">-&gt;</span>
+      <span class="Stnt">let</span> cnt <span class="Stnt">=</span> <span class="Stnt">{</span>
+        c_surface <span class="Stnt">=</span> surf_params<span class="Stnt">;</span>
+        c_geom <span class="Stnt">=</span> cnt_geom<span class="Stnt">;</span>
+        c_fdir1 <span class="Stnt">=</span> <span class="Stnt">{</span> x<span class="Stnt">=</span><span class="Cnst">0</span>.<span class="Stnt">;</span> y<span class="Stnt">=</span><span class="Cnst">0</span>.<span class="Stnt">;</span> z<span class="Stnt">=</span><span class="Cnst">0</span>.<span class="Stnt">;</span> w<span class="Stnt">=</span><span class="Cnst">0</span>. <span class="Stnt">}</span>
+      <span class="Stnt">}</span> <span class="Stnt">in</span>
+      <span class="Stnt">let</span> j <span class="Stnt">=</span> dJointCreateContact wrl <span class="Stnt">(</span><span class="Cnst">Some</span> cgrp<span class="Stnt">)</span> cnt <span class="Stnt">in</span>
+      dJointAttach j <span class="Stnt">(</span>dGeomGetBody ga<span class="Stnt">)</span>
+                     <span class="Stnt">(</span>dGeomGetBody gb<span class="Stnt">)</span><span class="Stnt">;</span>
+    <span class="Stnt">)</span><span class="Stnt">;</span>
+  <span class="Stnt">in</span>
+
+  <span class="PrPr">Sys</span>.catch_break <span class="Cnst">true</span><span class="Stnt">;</span>
+  <span class="Stnt">try</span> <span class="Stnt">while</span> <span class="Cnst">true</span> <span class="Stnt">do</span>
+    dSpaceCollide space near<span class="Stnt">;</span>
+    <span class="Stnt">let</span> p <span class="Stnt">=</span> dGeomGetPosition g <span class="Stnt">in</span>
+    <span class="PrPr">Printf</span>.printf <span class="Cnst">&quot; (%6.3f %6.3f %6.3f)\n%!&quot;</span> p.x p.y p.z<span class="Stnt">;</span>
+    dWorldStep wrl <span class="Cnst">0.1</span><span class="Stnt">;</span>
+    dJointGroupEmpty cgrp<span class="Stnt">;</span>
+    <span class="PrPr">Unix</span>.sleep <span class="Cnst">1</span><span class="Stnt">;</span>
+  <span class="Stnt">done</span>
+  <span class="Stnt">with</span> <span class="PrPr">Sys</span>.<span class="Cnst">Break</span> <span class="Stnt">-&gt;</span>
+    dBodyDestroy b<span class="Stnt">;</span>
+    dGeomDestroy g<span class="Stnt">;</span>
+    dGeomDestroy plane<span class="Stnt">;</span>
+    dSpaceDestroy space<span class="Stnt">;</span>
+    dWorldDestroy wrl<span class="Stnt">;</span>
+    dCloseODE <span class="Cnst">()</span><span class="Stnt">;</span>
+<span class="Stnt">;;</span>
+</pre>
+</body>
+</html>
+<!-- vim:cindent sw=2 sts=2 ts=2 et fdm=marker
+-->
