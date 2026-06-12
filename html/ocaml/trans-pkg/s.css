@@ -1,0 +1,38 @@
+body { color:black; background:#999; padding-bottom: 1.4em; }
+
+h1 { color:white; background:#666; font-size:0.9em; }
+h1 { padding:0.2em 0.6em; }
+
+table { border: #BBB solid 1px; }
+td { border: #888 solid 1px; }
+
+.lbl { font-size:1.0em; font-weight:bold; font-style:italic; }
+.lbl { padding:0 0.4em 0.6em 0; }
+
+.date { color:#AAA; background:none; }
+.date { font-size:0.7em; font-weight:bold; }
+.date { padding-left:1.6em; }
+
+.upstream { color:white; background:black; }
+.hump { color:white; background:#e4b873; }
+.debian { color:white; background:#D70751; }
+.gentoo { color:white; background:#8A5ADA; }
+.fedora { color:white; background:#102A7F; }
+.mageia { color:white; background:#3494d3; }
+.opensuse { color:white; background:#38c153; }
+.archlinux { color:white; background:#2654c2; }
+.arch { color:white; background:#2654c2; }
+.godi { color:white; background:#f7b2b2; }
+.godi { color:white; background:#e29a9a; }
+.godi { color:white; background:#d06c6c; }
+/*
+.opam { color:white; background:#b94a48; }
+*/
+.opam { color:white; background:#b1443c; }
+
+a { text-decoration:none; font-size:0.65em; }
+a:hover { text-decoration:underline; }
+a:visited { font-style:italic; }
+/*
+a:visited { color:transparent; }
+*/
