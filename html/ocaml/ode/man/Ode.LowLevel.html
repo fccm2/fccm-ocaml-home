@@ -1,0 +1,1603 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="man.html">
+<link rel="Up" href="Ode.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Ode" rel="Chapter" href="Ode.html"><link title="World" rel="Section" href="#3_World">
+<link title="Bodies" rel="Section" href="#3_Bodies">
+<link title="Joints" rel="Section" href="#3_Joints">
+<link title="Space" rel="Section" href="#3_Space">
+<link title="Geometry" rel="Section" href="#3_Geometry">
+<link title="Mass functions" rel="Section" href="#3_Massfunctions">
+<link title="Matrices" rel="Section" href="#3_Matrices">
+<link title="Quaternion" rel="Section" href="#3_Quaternion">
+<link title="Misc" rel="Section" href="#3_Misc">
+<title>Ode.LowLevel</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a href="Ode.html">Up</a>
+&nbsp;</div>
+<center><h1>Module <a href="type_Ode.LowLevel.html">Ode.LowLevel</a></h1></center>
+<br>
+<pre><span class="keyword">module</span> LowLevel: <code class="code"><span class="keyword">sig</span></code> <a href="Ode.LowLevel.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><hr width="100%">
+<br>
+<ul>
+<li><a href="http://www.ode.org/ode-latest-userguide.html">
+          Latest ODE User Guide</a></li>
+<li><a href="http://opende.sourceforge.net/wiki/">
+          ODE's Community Wiki</a></li>
+</ul>
+<br>
+<br>
+Opaque types of ODE objects.<br>
+<pre><span class="keyword">type</span> <a name="TYPEdWorldID"></a><code class="type"></code>dWorldID </pre>
+
+<pre><span class="keyword">type</span> <a name="TYPEdSpaceID"></a><code class="type"></code>dSpaceID </pre>
+
+<pre><span class="keyword">type</span> <a name="TYPEdBodyID"></a><code class="type"></code>dBodyID </pre>
+
+<pre><span class="keyword">type</span> <a name="TYPEdGeomID"></a><code class="type">'a</code> dGeomID </pre>
+
+<pre><span class="keyword">type</span> <a name="TYPEdJointID"></a><code class="type"></code>dJointID </pre>
+
+<pre><span class="keyword">type</span> <a name="TYPEdJointGroupID"></a><code class="type"></code>dJointGroupID </pre>
+
+<pre><span class="keyword">type</span> <a name="TYPEdMass"></a><code class="type"></code>dMass </pre>
+
+<br><code><span class="keyword">type</span> <a name="TYPEdVector3"></a><code class="type"></code>dVector3 = {</code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>x&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>y&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>z&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>w&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr></table>
+}
+
+<div class="info">
+Note: These structures are binary-compatible with the ODE definitions,
+      provided that the ODE library was compiled with dDOUBLE.
+      Otherwise the OCaml datas are copied to the appropriate C type.<br>
+</div>
+
+<pre><span class="keyword">type</span> <a name="TYPEdVector4"></a><code class="type"></code>dVector4 = <code class="type"><a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code> </pre>
+
+<br><code><span class="keyword">type</span> <a name="TYPEdMatrix3"></a><code class="type"></code>dMatrix3 = {</code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>r11&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>r12&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>r13&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>r14&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>r21&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>r22&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>r23&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>r24&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>r31&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>r32&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>r33&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>r34&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr></table>
+}
+
+
+<br><code><span class="keyword">type</span> <a name="TYPEdMatrix4"></a><code class="type"></code>dMatrix4 = {</code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>s11&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>s12&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>s13&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>s14&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>s21&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>s22&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>s23&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>s24&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>s31&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>s32&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>s33&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>s34&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>s41&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>s42&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>s43&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>s44&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr></table>
+}
+
+
+<br><code><span class="keyword">type</span> <a name="TYPEdMatrix6"></a><code class="type"></code>dMatrix6 = {</code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t11&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t12&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t13&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t14&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t15&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t16&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t17&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t18&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t21&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t22&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t23&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t24&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t25&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t26&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t27&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t28&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t31&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t32&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t33&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t34&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t35&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t36&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t37&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t38&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t41&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t42&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t43&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t44&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t45&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t46&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t47&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t48&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t51&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t52&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t53&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t54&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t55&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t56&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t57&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t58&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t61&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t62&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t63&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t64&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t65&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t66&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t67&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t68&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr></table>
+}
+
+
+<br><code><span class="keyword">type</span> <a name="TYPEdQuaternion"></a><code class="type"></code>dQuaternion = {</code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>q1&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>q2&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>q3&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>q4&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr></table>
+}
+
+
+<br><code><span class="keyword">type</span> <a name="TYPEdContactGeom"></a><code class="type">('a, 'b)</code> dContactGeom = {</code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>cg_pos&nbsp;: <code class="type"><a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>cg_normal&nbsp;: <code class="type"><a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>cg_depth&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>cg_g1&nbsp;: <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a></code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>cg_g2&nbsp;: <code class="type">'b <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a></code>;</code></td>
+
+</tr></table>
+}
+
+<div class="info">
+Contact points.<br>
+</div>
+
+<br><code><span class="keyword">type</span> <a name="TYPEdContact"></a><code class="type">('a, 'b)</code> dContact = {</code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>c_surface&nbsp;: <code class="type"><a href="Ode.LowLevel.html#TYPEdSurfaceParameters">dSurfaceParameters</a></code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>c_geom&nbsp;: <code class="type">('a, 'b) <a href="Ode.LowLevel.html#TYPEdContactGeom">dContactGeom</a></code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>c_fdir1&nbsp;: <code class="type"><a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code>;</code></td>
+
+</tr></table>
+}
+
+<div class="info">
+Contact structure.<br>
+</div>
+
+<br><code><span class="keyword">type</span> <a name="TYPEdSurfaceParameters"></a><code class="type"></code>dSurfaceParameters = {</code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>sp_mode&nbsp;: <code class="type">[ `dContactApprox1<br>       | `dContactApprox1_1<br>       | `dContactApprox1_2<br>       | `dContactBounce<br>       | `dContactFDir1<br>       | `dContactMotion1<br>       | `dContactMotion2<br>       | `dContactMu2<br>       | `dContactSlip1<br>       | `dContactSlip2<br>       | `dContactSoftCFM<br>       | `dContactSoftERP ] list</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>sp_mu&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>sp_mu2&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>sp_bounce&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>sp_bounce_vel&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>sp_soft_erp&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>sp_soft_cfm&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>sp_motion1&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>sp_motion2&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>sp_slip1&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>sp_slip2&nbsp;: <code class="type">float</code>;</code></td>
+
+</tr></table>
+}
+
+
+<pre><span class="keyword">val</span> <a name="VALsurf_param_zero"></a><a href="code_VALOde.LowLevel.surf_param_zero.html">surf_param_zero</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdSurfaceParameters">dSurfaceParameters</a></code></pre><pre><span class="keyword">val</span> <a name="VALget_surface"></a><a href="code_VALOde.LowLevel.get_surface.html">get_surface</a> : <code class="type">mu:float -><br>       ?mu2:float -><br>       ?bounce:float -><br>       ?bounce_vel:float -><br>       ?soft_erp:float -><br>       ?soft_cfm:float -><br>       ?motion1:float -><br>       ?motion2:float -><br>       ?slip1:float -> ?slip2:float -> unit -> <a href="Ode.LowLevel.html#TYPEdSurfaceParameters">dSurfaceParameters</a></code></pre><br><code><span class="keyword">type</span> <a name="TYPEsurface_parameter"></a><code class="type"></code>surface_parameter = </code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Mu2</span> <span class="keyword">of</span> <code class="type">float</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Bounce</span> <span class="keyword">of</span> <code class="type">float</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">BounceVel</span> <span class="keyword">of</span> <code class="type">float</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">SoftERP</span> <span class="keyword">of</span> <code class="type">float</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">SoftCFM</span> <span class="keyword">of</span> <code class="type">float</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Motion1</span> <span class="keyword">of</span> <code class="type">float</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Motion2</span> <span class="keyword">of</span> <code class="type">float</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Slip1</span> <span class="keyword">of</span> <code class="type">float</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Slip2</span> <span class="keyword">of</span> <code class="type">float</code></code></td>
+
+</tr></table>
+
+
+<pre><span class="keyword">val</span> <a name="VALsurface_param"></a><a href="code_VALOde.LowLevel.surface_param.html">surface_param</a> : <code class="type">mu:float -><br>       <a href="Ode.LowLevel.html#TYPEsurface_parameter">surface_parameter</a> list -> <a href="Ode.LowLevel.html#TYPEdSurfaceParameters">dSurfaceParameters</a></code></pre><br><code><span class="keyword">type</span> <a name="TYPEjoint_type"></a><code class="type"></code>joint_type = </code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">JointTypeNone</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">JointTypeBall</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">JointTypeHinge</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">JointTypeSlider</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">JointTypeContact</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">JointTypeUniversal</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">JointTypeHinge2</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">JointTypeFixed</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">JointTypeNull</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">JointTypeAMotor</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">JointTypeLMotor</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">JointTypePlane2D</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">JointTypePR</span></code></td>
+
+</tr></table>
+
+
+<br><code><span class="keyword">type</span> <a name="TYPEdJointParam"></a><code class="type"></code>dJointParam = </code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamLoStop</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamHiStop</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamVel</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamFMax</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamFudgeFactor</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamBounce</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamCFM</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamStopERP</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamStopCFM</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamSuspensionERP</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamSuspensionCFM</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamERP</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamLoStop2</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamHiStop2</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamVel2</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamFMax2</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamFudgeFactor2</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamBounce2</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamCFM2</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamStopERP2</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamStopCFM2</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamSuspensionERP2</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamSuspensionCFM2</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamERP2</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamLoStop3</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamHiStop3</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamVel3</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamFMax3</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamFudgeFactor3</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamBounce3</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamCFM3</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamStopERP3</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamStopCFM3</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamSuspensionERP3</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamSuspensionCFM3</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamERP3</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DParamGroup</span></code></td>
+
+</tr></table>
+
+
+<pre><span class="keyword">val</span> <a name="VALdGetInfinity"></a><a href="code_VALOde.LowLevel.dGetInfinity.html">dGetInfinity</a> : <code class="type">unit -> float</code></pre><pre><span class="keyword">val</span> <a name="VALdInfinity"></a><a href="code_VALOde.LowLevel.dInfinity.html">dInfinity</a> : <code class="type">float</code></pre><pre><span class="keyword">val</span> <a name="VALdInitODE"></a><a href="code_VALOde.LowLevel.dInitODE.html">dInitODE</a> : <code class="type">unit -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdCloseODE"></a><a href="code_VALOde.LowLevel.dCloseODE.html">dCloseODE</a> : <code class="type">unit -> unit</code></pre><br><code><span class="keyword">type</span> <a name="TYPEdInitODEFlags"></a><code class="type"></code>dInitODEFlags = </code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">DInitFlagManualThreadCleanup</span></code></td>
+
+</tr></table>
+
+
+<pre><span class="keyword">val</span> <a name="VALdInitODE2"></a><a href="code_VALOde.LowLevel.dInitODE2.html">dInitODE2</a> : <code class="type">initFlags:<a href="Ode.LowLevel.html#TYPEdInitODEFlags">dInitODEFlags</a> list -> unit</code></pre><br>
+<a name="3_World"></a>
+<h3>World</h3><br>
+<pre><span class="keyword">val</span> <a name="VALdWorldCreate"></a><a href="code_VALOde.LowLevel.dWorldCreate.html">dWorldCreate</a> : <code class="type">unit -> <a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a></code></pre><pre><span class="keyword">val</span> <a name="VALdWorldDestroy"></a><a href="code_VALOde.LowLevel.dWorldDestroy.html">dWorldDestroy</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdWorldSetGravity"></a><a href="code_VALOde.LowLevel.dWorldSetGravity.html">dWorldSetGravity</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -> x:float -> y:float -> z:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdWorldGetGravity"></a><a href="code_VALOde.LowLevel.dWorldGetGravity.html">dWorldGetGravity</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -> <a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdWorldSetERP"></a><a href="code_VALOde.LowLevel.dWorldSetERP.html">dWorldSetERP</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -> erp:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdWorldGetERP"></a><a href="code_VALOde.LowLevel.dWorldGetERP.html">dWorldGetERP</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -> float</code></pre><pre><span class="keyword">val</span> <a name="VALdWorldSetCFM"></a><a href="code_VALOde.LowLevel.dWorldSetCFM.html">dWorldSetCFM</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -> cfm:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdWorldGetCFM"></a><a href="code_VALOde.LowLevel.dWorldGetCFM.html">dWorldGetCFM</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -> float</code></pre><pre><span class="keyword">val</span> <a name="VALdWorldStep"></a><a href="code_VALOde.LowLevel.dWorldStep.html">dWorldStep</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -> float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdWorldQuickStep"></a><a href="code_VALOde.LowLevel.dWorldQuickStep.html">dWorldQuickStep</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -> float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdWorldStepFast1"></a><a href="code_VALOde.LowLevel.dWorldStepFast1.html">dWorldStepFast1</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -> stepsize:float -> maxiterations:int -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdWorldSetAutoEnableDepthSF1"></a><a href="code_VALOde.LowLevel.dWorldSetAutoEnableDepthSF1.html">dWorldSetAutoEnableDepthSF1</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -> int -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdWorldGetAutoEnableDepthSF1"></a><a href="code_VALOde.LowLevel.dWorldGetAutoEnableDepthSF1.html">dWorldGetAutoEnableDepthSF1</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -> int</code></pre><pre><span class="keyword">val</span> <a name="VALdWorldSetQuickStepNumIterations"></a><a href="code_VALOde.LowLevel.dWorldSetQuickStepNumIterations.html">dWorldSetQuickStepNumIterations</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -> num:int -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdWorldGetQuickStepNumIterations"></a><a href="code_VALOde.LowLevel.dWorldGetQuickStepNumIterations.html">dWorldGetQuickStepNumIterations</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -> int</code></pre><pre><span class="keyword">val</span> <a name="VALdWorldSetContactSurfaceLayer"></a><a href="code_VALOde.LowLevel.dWorldSetContactSurfaceLayer.html">dWorldSetContactSurfaceLayer</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -> depth:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdWorldGetContactSurfaceLayer"></a><a href="code_VALOde.LowLevel.dWorldGetContactSurfaceLayer.html">dWorldGetContactSurfaceLayer</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -> float</code></pre><pre><span class="keyword">val</span> <a name="VALdWorldSetAutoDisableLinearThreshold"></a><a href="code_VALOde.LowLevel.dWorldSetAutoDisableLinearThreshold.html">dWorldSetAutoDisableLinearThreshold</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -> linear_threshold:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdWorldGetAutoDisableLinearThreshold"></a><a href="code_VALOde.LowLevel.dWorldGetAutoDisableLinearThreshold.html">dWorldGetAutoDisableLinearThreshold</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -> float</code></pre><pre><span class="keyword">val</span> <a name="VALdWorldSetAutoDisableAngularThreshold"></a><a href="code_VALOde.LowLevel.dWorldSetAutoDisableAngularThreshold.html">dWorldSetAutoDisableAngularThreshold</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -> angular_threshold:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdWorldGetAutoDisableAngularThreshold"></a><a href="code_VALOde.LowLevel.dWorldGetAutoDisableAngularThreshold.html">dWorldGetAutoDisableAngularThreshold</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -> float</code></pre><pre><span class="keyword">val</span> <a name="VALdWorldSetAutoDisableAverageSamplesCount"></a><a href="code_VALOde.LowLevel.dWorldSetAutoDisableAverageSamplesCount.html">dWorldSetAutoDisableAverageSamplesCount</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -> average_samples_count:int -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdWorldGetAutoDisableAverageSamplesCount"></a><a href="code_VALOde.LowLevel.dWorldGetAutoDisableAverageSamplesCount.html">dWorldGetAutoDisableAverageSamplesCount</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -> int</code></pre><pre><span class="keyword">val</span> <a name="VALdWorldSetAutoDisableSteps"></a><a href="code_VALOde.LowLevel.dWorldSetAutoDisableSteps.html">dWorldSetAutoDisableSteps</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -> steps:int -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdWorldGetAutoDisableSteps"></a><a href="code_VALOde.LowLevel.dWorldGetAutoDisableSteps.html">dWorldGetAutoDisableSteps</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -> int</code></pre><pre><span class="keyword">val</span> <a name="VALdWorldSetAutoDisableTime"></a><a href="code_VALOde.LowLevel.dWorldSetAutoDisableTime.html">dWorldSetAutoDisableTime</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -> time:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdWorldGetAutoDisableTime"></a><a href="code_VALOde.LowLevel.dWorldGetAutoDisableTime.html">dWorldGetAutoDisableTime</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -> float</code></pre><pre><span class="keyword">val</span> <a name="VALdWorldSetAutoDisableFlag"></a><a href="code_VALOde.LowLevel.dWorldSetAutoDisableFlag.html">dWorldSetAutoDisableFlag</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -> do_auto_disable:bool -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdWorldGetAutoDisableFlag"></a><a href="code_VALOde.LowLevel.dWorldGetAutoDisableFlag.html">dWorldGetAutoDisableFlag</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -> bool</code></pre><pre><span class="keyword">val</span> <a name="VALdWorldSetQuickStepW"></a><a href="code_VALOde.LowLevel.dWorldSetQuickStepW.html">dWorldSetQuickStepW</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -> over_relaxation:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdWorldGetQuickStepW"></a><a href="code_VALOde.LowLevel.dWorldGetQuickStepW.html">dWorldGetQuickStepW</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -> float</code></pre><pre><span class="keyword">val</span> <a name="VALdWorldSetContactMaxCorrectingVel"></a><a href="code_VALOde.LowLevel.dWorldSetContactMaxCorrectingVel.html">dWorldSetContactMaxCorrectingVel</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -> vel:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdWorldGetContactMaxCorrectingVel"></a><a href="code_VALOde.LowLevel.dWorldGetContactMaxCorrectingVel.html">dWorldGetContactMaxCorrectingVel</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -> float</code></pre><br>
+<a name="3_Bodies"></a>
+<h3>Bodies</h3><br>
+<pre><span class="keyword">val</span> <a name="VALdBodyCreate"></a><a href="code_VALOde.LowLevel.dBodyCreate.html">dBodyCreate</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -> <a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a></code></pre><pre><span class="keyword">val</span> <a name="VALdBodyDestroy"></a><a href="code_VALOde.LowLevel.dBodyDestroy.html">dBodyDestroy</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdBodyGetWorld"></a><a href="code_VALOde.LowLevel.dBodyGetWorld.html">dBodyGetWorld</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> <a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a></code></pre><pre><span class="keyword">val</span> <a name="VALdBodySetPosition"></a><a href="code_VALOde.LowLevel.dBodySetPosition.html">dBodySetPosition</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> x:float -> y:float -> z:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdBodySetRotation"></a><a href="code_VALOde.LowLevel.dBodySetRotation.html">dBodySetRotation</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> <a href="Ode.LowLevel.html#TYPEdMatrix3">dMatrix3</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdBodySetQuaternion"></a><a href="code_VALOde.LowLevel.dBodySetQuaternion.html">dBodySetQuaternion</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> <a href="Ode.LowLevel.html#TYPEdQuaternion">dQuaternion</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdBodySetLinearVel"></a><a href="code_VALOde.LowLevel.dBodySetLinearVel.html">dBodySetLinearVel</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> x:float -> y:float -> z:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdBodySetAngularVel"></a><a href="code_VALOde.LowLevel.dBodySetAngularVel.html">dBodySetAngularVel</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> x:float -> y:float -> z:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdBodyGetPosition"></a><a href="code_VALOde.LowLevel.dBodyGetPosition.html">dBodyGetPosition</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> <a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdBodyGetRotation"></a><a href="code_VALOde.LowLevel.dBodyGetRotation.html">dBodyGetRotation</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> <a href="Ode.LowLevel.html#TYPEdMatrix3">dMatrix3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdBodyGetQuaternion"></a><a href="code_VALOde.LowLevel.dBodyGetQuaternion.html">dBodyGetQuaternion</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> <a href="Ode.LowLevel.html#TYPEdQuaternion">dQuaternion</a></code></pre><pre><span class="keyword">val</span> <a name="VALdBodyGetLinearVel"></a><a href="code_VALOde.LowLevel.dBodyGetLinearVel.html">dBodyGetLinearVel</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> <a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdBodyGetAngularVel"></a><a href="code_VALOde.LowLevel.dBodyGetAngularVel.html">dBodyGetAngularVel</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> <a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdBodySetMass"></a><a href="code_VALOde.LowLevel.dBodySetMass.html">dBodySetMass</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> <a href="Ode.LowLevel.html#TYPEdMass">dMass</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdBodyGetMass"></a><a href="code_VALOde.LowLevel.dBodyGetMass.html">dBodyGetMass</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> <a href="Ode.LowLevel.html#TYPEdMass">dMass</a></code></pre><pre><span class="keyword">val</span> <a name="VALdBodyAddForce"></a><a href="code_VALOde.LowLevel.dBodyAddForce.html">dBodyAddForce</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> fx:float -> fy:float -> fz:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdBodyAddTorque"></a><a href="code_VALOde.LowLevel.dBodyAddTorque.html">dBodyAddTorque</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> fx:float -> fy:float -> fz:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdBodyAddRelForce"></a><a href="code_VALOde.LowLevel.dBodyAddRelForce.html">dBodyAddRelForce</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> fx:float -> fy:float -> fz:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdBodyAddRelTorque"></a><a href="code_VALOde.LowLevel.dBodyAddRelTorque.html">dBodyAddRelTorque</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> fx:float -> fy:float -> fz:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdBodyAddForceAtPos"></a><a href="code_VALOde.LowLevel.dBodyAddForceAtPos.html">dBodyAddForceAtPos</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -><br>       fx:float -> fy:float -> fz:float -> px:float -> py:float -> pz:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdBodyAddForceAtRelPos"></a><a href="code_VALOde.LowLevel.dBodyAddForceAtRelPos.html">dBodyAddForceAtRelPos</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -><br>       fx:float -> fy:float -> fz:float -> px:float -> py:float -> pz:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdBodyAddRelForceAtPos"></a><a href="code_VALOde.LowLevel.dBodyAddRelForceAtPos.html">dBodyAddRelForceAtPos</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -><br>       fx:float -> fy:float -> fz:float -> px:float -> py:float -> pz:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdBodyAddRelForceAtRelPos"></a><a href="code_VALOde.LowLevel.dBodyAddRelForceAtRelPos.html">dBodyAddRelForceAtRelPos</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -><br>       fx:float -> fy:float -> fz:float -> px:float -> py:float -> pz:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdBodySetForce"></a><a href="code_VALOde.LowLevel.dBodySetForce.html">dBodySetForce</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> x:float -> y:float -> z:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdBodySetTorque"></a><a href="code_VALOde.LowLevel.dBodySetTorque.html">dBodySetTorque</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> x:float -> y:float -> z:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdBodyGetForce"></a><a href="code_VALOde.LowLevel.dBodyGetForce.html">dBodyGetForce</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> <a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdBodyGetTorque"></a><a href="code_VALOde.LowLevel.dBodyGetTorque.html">dBodyGetTorque</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> <a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdBodyGetRelPointPos"></a><a href="code_VALOde.LowLevel.dBodyGetRelPointPos.html">dBodyGetRelPointPos</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -><br>       px:float -> py:float -> pz:float -> <a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdBodyGetPosRelPoint"></a><a href="code_VALOde.LowLevel.dBodyGetPosRelPoint.html">dBodyGetPosRelPoint</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -><br>       px:float -> py:float -> pz:float -> <a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdBodyGetRelPointVel"></a><a href="code_VALOde.LowLevel.dBodyGetRelPointVel.html">dBodyGetRelPointVel</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -><br>       px:float -> py:float -> pz:float -> <a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdBodyGetPointVel"></a><a href="code_VALOde.LowLevel.dBodyGetPointVel.html">dBodyGetPointVel</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -><br>       px:float -> py:float -> pz:float -> <a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdBodyVectorToWorld"></a><a href="code_VALOde.LowLevel.dBodyVectorToWorld.html">dBodyVectorToWorld</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -><br>       px:float -> py:float -> pz:float -> <a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdBodyVectorFromWorld"></a><a href="code_VALOde.LowLevel.dBodyVectorFromWorld.html">dBodyVectorFromWorld</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -><br>       px:float -> py:float -> pz:float -> <a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdBodyEnable"></a><a href="code_VALOde.LowLevel.dBodyEnable.html">dBodyEnable</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdBodyDisable"></a><a href="code_VALOde.LowLevel.dBodyDisable.html">dBodyDisable</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdBodyIsEnabled"></a><a href="code_VALOde.LowLevel.dBodyIsEnabled.html">dBodyIsEnabled</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> bool</code></pre><pre><span class="keyword">val</span> <a name="VALdBodySetAutoDisableFlag"></a><a href="code_VALOde.LowLevel.dBodySetAutoDisableFlag.html">dBodySetAutoDisableFlag</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> bool -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdBodyGetAutoDisableFlag"></a><a href="code_VALOde.LowLevel.dBodyGetAutoDisableFlag.html">dBodyGetAutoDisableFlag</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> bool</code></pre><pre><span class="keyword">val</span> <a name="VALdBodySetAutoDisableSteps"></a><a href="code_VALOde.LowLevel.dBodySetAutoDisableSteps.html">dBodySetAutoDisableSteps</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> steps:int -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdBodyGetAutoDisableSteps"></a><a href="code_VALOde.LowLevel.dBodyGetAutoDisableSteps.html">dBodyGetAutoDisableSteps</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> int</code></pre><pre><span class="keyword">val</span> <a name="VALdBodySetAutoDisableTime"></a><a href="code_VALOde.LowLevel.dBodySetAutoDisableTime.html">dBodySetAutoDisableTime</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> time:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdBodyGetAutoDisableTime"></a><a href="code_VALOde.LowLevel.dBodyGetAutoDisableTime.html">dBodyGetAutoDisableTime</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> float</code></pre><pre><span class="keyword">val</span> <a name="VALdAreConnected"></a><a href="code_VALOde.LowLevel.dAreConnected.html">dAreConnected</a> : <code class="type">a:<a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> b:<a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> bool</code></pre><pre><span class="keyword">val</span> <a name="VALdAreConnectedExcluding"></a><a href="code_VALOde.LowLevel.dAreConnectedExcluding.html">dAreConnectedExcluding</a> : <code class="type">a:<a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -><br>       b:<a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> <a href="Ode.LowLevel.html#TYPEjoint_type">joint_type</a> -> bool</code></pre><pre><span class="keyword">val</span> <a name="VALdBodySetGravityMode"></a><a href="code_VALOde.LowLevel.dBodySetGravityMode.html">dBodySetGravityMode</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> mode:bool -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdBodyGetGravityMode"></a><a href="code_VALOde.LowLevel.dBodyGetGravityMode.html">dBodyGetGravityMode</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> bool</code></pre><pre><span class="keyword">val</span> <a name="VALdBodySetFiniteRotationMode"></a><a href="code_VALOde.LowLevel.dBodySetFiniteRotationMode.html">dBodySetFiniteRotationMode</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> mode:bool -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdBodyGetFiniteRotationMode"></a><a href="code_VALOde.LowLevel.dBodyGetFiniteRotationMode.html">dBodyGetFiniteRotationMode</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> bool</code></pre><pre><span class="keyword">val</span> <a name="VALdBodySetFiniteRotationAxis"></a><a href="code_VALOde.LowLevel.dBodySetFiniteRotationAxis.html">dBodySetFiniteRotationAxis</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> x:float -> y:float -> z:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdBodyGetFiniteRotationAxis"></a><a href="code_VALOde.LowLevel.dBodyGetFiniteRotationAxis.html">dBodyGetFiniteRotationAxis</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> <a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdBodySetAutoDisableLinearThreshold"></a><a href="code_VALOde.LowLevel.dBodySetAutoDisableLinearThreshold.html">dBodySetAutoDisableLinearThreshold</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> linear_average_threshold:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdBodyGetAutoDisableLinearThresholda"></a><a href="code_VALOde.LowLevel.dBodyGetAutoDisableLinearThresholda.html">dBodyGetAutoDisableLinearThresholda</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> float</code></pre><pre><span class="keyword">val</span> <a name="VALdBodySetAutoDisableAngularThreshold"></a><a href="code_VALOde.LowLevel.dBodySetAutoDisableAngularThreshold.html">dBodySetAutoDisableAngularThreshold</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> angular_average_threshold:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdBodyGetAutoDisableAngularThreshold"></a><a href="code_VALOde.LowLevel.dBodyGetAutoDisableAngularThreshold.html">dBodyGetAutoDisableAngularThreshold</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> float</code></pre><pre><span class="keyword">val</span> <a name="VALdBodySetAutoDisableAverageSamplesCount"></a><a href="code_VALOde.LowLevel.dBodySetAutoDisableAverageSamplesCount.html">dBodySetAutoDisableAverageSamplesCount</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> average_samples_count:int -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdBodyGetAutoDisableAverageSamplesCount"></a><a href="code_VALOde.LowLevel.dBodyGetAutoDisableAverageSamplesCount.html">dBodyGetAutoDisableAverageSamplesCount</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> int</code></pre><pre><span class="keyword">val</span> <a name="VALdBodySetData"></a><a href="code_VALOde.LowLevel.dBodySetData.html">dBodySetData</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> int -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdBodyGetData"></a><a href="code_VALOde.LowLevel.dBodyGetData.html">dBodyGetData</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> int</code></pre><br>
+you can use these functions for example to associate user data to a body: <pre></pre><code class="code">&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;body_data_tbl&nbsp;=&nbsp;<span class="constructor">Hashtbl</span>.create&nbsp;16<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dBodySetData&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;body_data_count&nbsp;=&nbsp;ref&nbsp;0&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">fun</span>&nbsp;body&nbsp;~data&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;i&nbsp;=&nbsp;!body_data_count&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;incr&nbsp;body_data_count;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Hashtbl</span>.add&nbsp;body_data_tbl&nbsp;i&nbsp;data;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dBodySetData&nbsp;body&nbsp;i;<br>
+&nbsp;&nbsp;;;<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dBodyGetData&nbsp;body&nbsp;=&nbsp;(<span class="constructor">Hashtbl</span>.find&nbsp;body_data_tbl&nbsp;(dBodyGetData&nbsp;body))<br>
+&nbsp;&nbsp;</code><pre></pre><br>
+<br>
+<a name="3_Joints"></a>
+<h3>Joints</h3><br>
+<pre><span class="keyword">val</span> <a name="VALdJointCreateBall"></a><a href="code_VALOde.LowLevel.dJointCreateBall.html">dJointCreateBall</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -><br>       <a href="Ode.LowLevel.html#TYPEdJointGroupID">dJointGroupID</a> option -> <a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a></code></pre><pre><span class="keyword">val</span> <a name="VALdJointCreateHinge"></a><a href="code_VALOde.LowLevel.dJointCreateHinge.html">dJointCreateHinge</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -><br>       <a href="Ode.LowLevel.html#TYPEdJointGroupID">dJointGroupID</a> option -> <a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a></code></pre><pre><span class="keyword">val</span> <a name="VALdJointCreateSlider"></a><a href="code_VALOde.LowLevel.dJointCreateSlider.html">dJointCreateSlider</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -><br>       <a href="Ode.LowLevel.html#TYPEdJointGroupID">dJointGroupID</a> option -> <a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a></code></pre><pre><span class="keyword">val</span> <a name="VALdJointCreateContact"></a><a href="code_VALOde.LowLevel.dJointCreateContact.html">dJointCreateContact</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -><br>       <a href="Ode.LowLevel.html#TYPEdJointGroupID">dJointGroupID</a> option -><br>       ('a, 'b) <a href="Ode.LowLevel.html#TYPEdContact">dContact</a> -> <a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a></code></pre><pre><span class="keyword">val</span> <a name="VALdJointCreateUniversal"></a><a href="code_VALOde.LowLevel.dJointCreateUniversal.html">dJointCreateUniversal</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -><br>       <a href="Ode.LowLevel.html#TYPEdJointGroupID">dJointGroupID</a> option -> <a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a></code></pre><pre><span class="keyword">val</span> <a name="VALdJointCreateHinge2"></a><a href="code_VALOde.LowLevel.dJointCreateHinge2.html">dJointCreateHinge2</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -><br>       <a href="Ode.LowLevel.html#TYPEdJointGroupID">dJointGroupID</a> option -> <a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a></code></pre><pre><span class="keyword">val</span> <a name="VALdJointCreateFixed"></a><a href="code_VALOde.LowLevel.dJointCreateFixed.html">dJointCreateFixed</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -><br>       <a href="Ode.LowLevel.html#TYPEdJointGroupID">dJointGroupID</a> option -> <a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a></code></pre><pre><span class="keyword">val</span> <a name="VALdJointCreateAMotor"></a><a href="code_VALOde.LowLevel.dJointCreateAMotor.html">dJointCreateAMotor</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -><br>       <a href="Ode.LowLevel.html#TYPEdJointGroupID">dJointGroupID</a> option -> <a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a></code></pre><pre><span class="keyword">val</span> <a name="VALdJointCreateLMotor"></a><a href="code_VALOde.LowLevel.dJointCreateLMotor.html">dJointCreateLMotor</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -><br>       <a href="Ode.LowLevel.html#TYPEdJointGroupID">dJointGroupID</a> option -> <a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a></code></pre><pre><span class="keyword">val</span> <a name="VALdJointCreatePlane2D"></a><a href="code_VALOde.LowLevel.dJointCreatePlane2D.html">dJointCreatePlane2D</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -><br>       <a href="Ode.LowLevel.html#TYPEdJointGroupID">dJointGroupID</a> option -> <a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a></code></pre><pre><span class="keyword">val</span> <a name="VALdJointDestroy"></a><a href="code_VALOde.LowLevel.dJointDestroy.html">dJointDestroy</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointGroupCreate"></a><a href="code_VALOde.LowLevel.dJointGroupCreate.html">dJointGroupCreate</a> : <code class="type">unit -> <a href="Ode.LowLevel.html#TYPEdJointGroupID">dJointGroupID</a></code></pre><pre><span class="keyword">val</span> <a name="VALdJointGroupDestroy"></a><a href="code_VALOde.LowLevel.dJointGroupDestroy.html">dJointGroupDestroy</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointGroupID">dJointGroupID</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointGroupEmpty"></a><a href="code_VALOde.LowLevel.dJointGroupEmpty.html">dJointGroupEmpty</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointGroupID">dJointGroupID</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointAttach"></a><a href="code_VALOde.LowLevel.dJointAttach.html">dJointAttach</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -><br>       <a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> option -> <a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> option -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointSetSliderAxis"></a><a href="code_VALOde.LowLevel.dJointSetSliderAxis.html">dJointSetSliderAxis</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> x:float -> y:float -> z:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointGetSliderAxis"></a><a href="code_VALOde.LowLevel.dJointGetSliderAxis.html">dJointGetSliderAxis</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> <a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdJointGetSliderPosition"></a><a href="code_VALOde.LowLevel.dJointGetSliderPosition.html">dJointGetSliderPosition</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> float</code></pre><pre><span class="keyword">val</span> <a name="VALdJointGetSliderPositionRate"></a><a href="code_VALOde.LowLevel.dJointGetSliderPositionRate.html">dJointGetSliderPositionRate</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> float</code></pre><pre><span class="keyword">val</span> <a name="VALdJointSetHingeParam"></a><a href="code_VALOde.LowLevel.dJointSetHingeParam.html">dJointSetHingeParam</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> <a href="Ode.LowLevel.html#TYPEdJointParam">dJointParam</a> -> float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointSetSliderParam"></a><a href="code_VALOde.LowLevel.dJointSetSliderParam.html">dJointSetSliderParam</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> <a href="Ode.LowLevel.html#TYPEdJointParam">dJointParam</a> -> float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointSetHinge2Param"></a><a href="code_VALOde.LowLevel.dJointSetHinge2Param.html">dJointSetHinge2Param</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> <a href="Ode.LowLevel.html#TYPEdJointParam">dJointParam</a> -> float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointSetUniversalParam"></a><a href="code_VALOde.LowLevel.dJointSetUniversalParam.html">dJointSetUniversalParam</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> <a href="Ode.LowLevel.html#TYPEdJointParam">dJointParam</a> -> float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointSetAMotorParam"></a><a href="code_VALOde.LowLevel.dJointSetAMotorParam.html">dJointSetAMotorParam</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> <a href="Ode.LowLevel.html#TYPEdJointParam">dJointParam</a> -> float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointSetLMotorParam"></a><a href="code_VALOde.LowLevel.dJointSetLMotorParam.html">dJointSetLMotorParam</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> <a href="Ode.LowLevel.html#TYPEdJointParam">dJointParam</a> -> float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointGetHingeParam"></a><a href="code_VALOde.LowLevel.dJointGetHingeParam.html">dJointGetHingeParam</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> <a href="Ode.LowLevel.html#TYPEdJointParam">dJointParam</a> -> float</code></pre><pre><span class="keyword">val</span> <a name="VALdJointGetSliderParam"></a><a href="code_VALOde.LowLevel.dJointGetSliderParam.html">dJointGetSliderParam</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> <a href="Ode.LowLevel.html#TYPEdJointParam">dJointParam</a> -> float</code></pre><pre><span class="keyword">val</span> <a name="VALdJointGetHinge2Param"></a><a href="code_VALOde.LowLevel.dJointGetHinge2Param.html">dJointGetHinge2Param</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> <a href="Ode.LowLevel.html#TYPEdJointParam">dJointParam</a> -> float</code></pre><pre><span class="keyword">val</span> <a name="VALdJointGetUniversalParam"></a><a href="code_VALOde.LowLevel.dJointGetUniversalParam.html">dJointGetUniversalParam</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> <a href="Ode.LowLevel.html#TYPEdJointParam">dJointParam</a> -> float</code></pre><pre><span class="keyword">val</span> <a name="VALdJointGetAMotorParam"></a><a href="code_VALOde.LowLevel.dJointGetAMotorParam.html">dJointGetAMotorParam</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> <a href="Ode.LowLevel.html#TYPEdJointParam">dJointParam</a> -> float</code></pre><pre><span class="keyword">val</span> <a name="VALdJointGetLMotorParam"></a><a href="code_VALOde.LowLevel.dJointGetLMotorParam.html">dJointGetLMotorParam</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> <a href="Ode.LowLevel.html#TYPEdJointParam">dJointParam</a> -> float</code></pre><pre><span class="keyword">val</span> <a name="VALdJointSetBallAnchor"></a><a href="code_VALOde.LowLevel.dJointSetBallAnchor.html">dJointSetBallAnchor</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> x:float -> y:float -> z:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointSetBallAnchor2"></a><a href="code_VALOde.LowLevel.dJointSetBallAnchor2.html">dJointSetBallAnchor2</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> x:float -> y:float -> z:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointSetHingeAnchor"></a><a href="code_VALOde.LowLevel.dJointSetHingeAnchor.html">dJointSetHingeAnchor</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> x:float -> y:float -> z:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointSetHingeAnchorDelta"></a><a href="code_VALOde.LowLevel.dJointSetHingeAnchorDelta.html">dJointSetHingeAnchorDelta</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -><br>       x:float -> y:float -> z:float -> ax:float -> ay:float -> az:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointSetHingeAxis"></a><a href="code_VALOde.LowLevel.dJointSetHingeAxis.html">dJointSetHingeAxis</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> x:float -> y:float -> z:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointAddHingeTorque"></a><a href="code_VALOde.LowLevel.dJointAddHingeTorque.html">dJointAddHingeTorque</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> torque:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointSetSliderAxisDelta"></a><a href="code_VALOde.LowLevel.dJointSetSliderAxisDelta.html">dJointSetSliderAxisDelta</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -><br>       x:float -> y:float -> z:float -> ax:float -> ay:float -> az:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointAddSliderForce"></a><a href="code_VALOde.LowLevel.dJointAddSliderForce.html">dJointAddSliderForce</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> force:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointSetHinge2Anchor"></a><a href="code_VALOde.LowLevel.dJointSetHinge2Anchor.html">dJointSetHinge2Anchor</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> x:float -> y:float -> z:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointSetHinge2Axis1"></a><a href="code_VALOde.LowLevel.dJointSetHinge2Axis1.html">dJointSetHinge2Axis1</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> x:float -> y:float -> z:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointSetHinge2Axis2"></a><a href="code_VALOde.LowLevel.dJointSetHinge2Axis2.html">dJointSetHinge2Axis2</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> x:float -> y:float -> z:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointAddHinge2Torques"></a><a href="code_VALOde.LowLevel.dJointAddHinge2Torques.html">dJointAddHinge2Torques</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> torque1:float -> torque2:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointSetUniversalAnchor"></a><a href="code_VALOde.LowLevel.dJointSetUniversalAnchor.html">dJointSetUniversalAnchor</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> x:float -> y:float -> z:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointSetUniversalAxis1"></a><a href="code_VALOde.LowLevel.dJointSetUniversalAxis1.html">dJointSetUniversalAxis1</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> x:float -> y:float -> z:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointSetUniversalAxis2"></a><a href="code_VALOde.LowLevel.dJointSetUniversalAxis2.html">dJointSetUniversalAxis2</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> x:float -> y:float -> z:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointAddUniversalTorques"></a><a href="code_VALOde.LowLevel.dJointAddUniversalTorques.html">dJointAddUniversalTorques</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> torque1:float -> torque2:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointSetPRAnchor"></a><a href="code_VALOde.LowLevel.dJointSetPRAnchor.html">dJointSetPRAnchor</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> x:float -> y:float -> z:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointSetPRAxis1"></a><a href="code_VALOde.LowLevel.dJointSetPRAxis1.html">dJointSetPRAxis1</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> x:float -> y:float -> z:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointSetPRAxis2"></a><a href="code_VALOde.LowLevel.dJointSetPRAxis2.html">dJointSetPRAxis2</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> x:float -> y:float -> z:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointSetPRParam"></a><a href="code_VALOde.LowLevel.dJointSetPRParam.html">dJointSetPRParam</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> parameter:int -> value:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointAddPRTorque"></a><a href="code_VALOde.LowLevel.dJointAddPRTorque.html">dJointAddPRTorque</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> torque:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointSetFixed"></a><a href="code_VALOde.LowLevel.dJointSetFixed.html">dJointSetFixed</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointSetAMotorNumAxes"></a><a href="code_VALOde.LowLevel.dJointSetAMotorNumAxes.html">dJointSetAMotorNumAxes</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> num:int -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointSetAMotorAxis"></a><a href="code_VALOde.LowLevel.dJointSetAMotorAxis.html">dJointSetAMotorAxis</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -><br>       anum:int -> rel:int -> x:float -> y:float -> z:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointSetAMotorAngle"></a><a href="code_VALOde.LowLevel.dJointSetAMotorAngle.html">dJointSetAMotorAngle</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> anum:int -> angle:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointSetAMotorMode"></a><a href="code_VALOde.LowLevel.dJointSetAMotorMode.html">dJointSetAMotorMode</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> mode:int -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointAddAMotorTorques"></a><a href="code_VALOde.LowLevel.dJointAddAMotorTorques.html">dJointAddAMotorTorques</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -><br>       torque1:float -> torque2:float -> torque3:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointSetLMotorNumAxes"></a><a href="code_VALOde.LowLevel.dJointSetLMotorNumAxes.html">dJointSetLMotorNumAxes</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> num:int -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointSetLMotorAxis"></a><a href="code_VALOde.LowLevel.dJointSetLMotorAxis.html">dJointSetLMotorAxis</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -><br>       anum:int -> rel:int -> x:float -> y:float -> z:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointSetPlane2DXParam"></a><a href="code_VALOde.LowLevel.dJointSetPlane2DXParam.html">dJointSetPlane2DXParam</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> <a href="Ode.LowLevel.html#TYPEdJointParam">dJointParam</a> -> float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointSetPlane2DYParam"></a><a href="code_VALOde.LowLevel.dJointSetPlane2DYParam.html">dJointSetPlane2DYParam</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> <a href="Ode.LowLevel.html#TYPEdJointParam">dJointParam</a> -> float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointSetPlane2DAngleParam"></a><a href="code_VALOde.LowLevel.dJointSetPlane2DAngleParam.html">dJointSetPlane2DAngleParam</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> <a href="Ode.LowLevel.html#TYPEdJointParam">dJointParam</a> -> float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointGetBallAnchor"></a><a href="code_VALOde.LowLevel.dJointGetBallAnchor.html">dJointGetBallAnchor</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> <a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdJointGetBallAnchor2"></a><a href="code_VALOde.LowLevel.dJointGetBallAnchor2.html">dJointGetBallAnchor2</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> <a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdJointGetHingeAnchor"></a><a href="code_VALOde.LowLevel.dJointGetHingeAnchor.html">dJointGetHingeAnchor</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> <a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdJointGetHingeAnchor2"></a><a href="code_VALOde.LowLevel.dJointGetHingeAnchor2.html">dJointGetHingeAnchor2</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> <a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdJointGetHingeAxis"></a><a href="code_VALOde.LowLevel.dJointGetHingeAxis.html">dJointGetHingeAxis</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> <a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdJointGetHingeAngle"></a><a href="code_VALOde.LowLevel.dJointGetHingeAngle.html">dJointGetHingeAngle</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> float</code></pre><pre><span class="keyword">val</span> <a name="VALdJointGetHingeAngleRate"></a><a href="code_VALOde.LowLevel.dJointGetHingeAngleRate.html">dJointGetHingeAngleRate</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> float</code></pre><pre><span class="keyword">val</span> <a name="VALdJointGetHinge2Anchor"></a><a href="code_VALOde.LowLevel.dJointGetHinge2Anchor.html">dJointGetHinge2Anchor</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> <a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdJointGetHinge2Anchor2"></a><a href="code_VALOde.LowLevel.dJointGetHinge2Anchor2.html">dJointGetHinge2Anchor2</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> <a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdJointGetHinge2Axis1"></a><a href="code_VALOde.LowLevel.dJointGetHinge2Axis1.html">dJointGetHinge2Axis1</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> <a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdJointGetHinge2Axis2"></a><a href="code_VALOde.LowLevel.dJointGetHinge2Axis2.html">dJointGetHinge2Axis2</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> <a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdJointGetHinge2Angle1"></a><a href="code_VALOde.LowLevel.dJointGetHinge2Angle1.html">dJointGetHinge2Angle1</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> float</code></pre><pre><span class="keyword">val</span> <a name="VALdJointGetHinge2Angle1Rate"></a><a href="code_VALOde.LowLevel.dJointGetHinge2Angle1Rate.html">dJointGetHinge2Angle1Rate</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> float</code></pre><pre><span class="keyword">val</span> <a name="VALdJointGetHinge2Angle2Rate"></a><a href="code_VALOde.LowLevel.dJointGetHinge2Angle2Rate.html">dJointGetHinge2Angle2Rate</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> float</code></pre><pre><span class="keyword">val</span> <a name="VALdJointGetUniversalAnchor"></a><a href="code_VALOde.LowLevel.dJointGetUniversalAnchor.html">dJointGetUniversalAnchor</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> <a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdJointGetUniversalAnchor2"></a><a href="code_VALOde.LowLevel.dJointGetUniversalAnchor2.html">dJointGetUniversalAnchor2</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> <a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdJointGetUniversalAxis1"></a><a href="code_VALOde.LowLevel.dJointGetUniversalAxis1.html">dJointGetUniversalAxis1</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> <a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdJointGetUniversalAxis2"></a><a href="code_VALOde.LowLevel.dJointGetUniversalAxis2.html">dJointGetUniversalAxis2</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> <a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdBodyGetNumJoints"></a><a href="code_VALOde.LowLevel.dBodyGetNumJoints.html">dBodyGetNumJoints</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> int</code></pre><pre><span class="keyword">val</span> <a name="VALdBodyGetJoint"></a><a href="code_VALOde.LowLevel.dBodyGetJoint.html">dBodyGetJoint</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> index:int -> <a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a></code></pre><pre><span class="keyword">val</span> <a name="VALdConnectingJoint"></a><a href="code_VALOde.LowLevel.dConnectingJoint.html">dConnectingJoint</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> <a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> <a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a></code></pre><pre><span class="keyword">val</span> <a name="VALdConnectingJointList"></a><a href="code_VALOde.LowLevel.dConnectingJointList.html">dConnectingJointList</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> <a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> -> <a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> array</code></pre><pre><span class="keyword">val</span> <a name="VALdJointSetData"></a><a href="code_VALOde.LowLevel.dJointSetData.html">dJointSetData</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> data:int -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdJointGetData"></a><a href="code_VALOde.LowLevel.dJointGetData.html">dJointGetData</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> int</code></pre><pre><span class="keyword">val</span> <a name="VALdJointGetType"></a><a href="code_VALOde.LowLevel.dJointGetType.html">dJointGetType</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> <a href="Ode.LowLevel.html#TYPEjoint_type">joint_type</a></code></pre><pre><span class="keyword">val</span> <a name="VALdJointGetBody"></a><a href="code_VALOde.LowLevel.dJointGetBody.html">dJointGetBody</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> index:int -> <a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a></code></pre><br><code><span class="keyword">type</span> <a name="TYPEdJointFeedback"></a><code class="type"></code>dJointFeedback = {</code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>f1&nbsp;: <code class="type"><a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t1&nbsp;: <code class="type"><a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>f2&nbsp;: <code class="type"><a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>t2&nbsp;: <code class="type"><a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code>;</code></td>
+
+</tr></table>
+}
+
+
+<pre><span class="keyword">type</span> <a name="TYPEdJointFeedbackBuffer"></a><code class="type"></code>dJointFeedbackBuffer </pre>
+
+<pre><span class="keyword">val</span> <a name="VALdJointSetFeedback"></a><a href="code_VALOde.LowLevel.dJointSetFeedback.html">dJointSetFeedback</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> <a href="Ode.LowLevel.html#TYPEdJointFeedbackBuffer">dJointFeedbackBuffer</a></code></pre><pre><span class="keyword">val</span> <a name="VALdJointFeedbackBufferDestroy"></a><a href="code_VALOde.LowLevel.dJointFeedbackBufferDestroy.html">dJointFeedbackBufferDestroy</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointFeedbackBuffer">dJointFeedbackBuffer</a> -> unit</code></pre><br>
+<b>frees the memory of the buffer</b>
+      (destroy the associated world and/or joint won't free this buffer)<br>
+<pre><span class="keyword">val</span> <a name="VALdJointGetFeedback"></a><a href="code_VALOde.LowLevel.dJointGetFeedback.html">dJointGetFeedback</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointID">dJointID</a> -> <a href="Ode.LowLevel.html#TYPEdJointFeedback">dJointFeedback</a></code></pre><pre><span class="keyword">val</span> <a name="VALdJointFeedback_of_buffer"></a><a href="code_VALOde.LowLevel.dJointFeedback_of_buffer.html">dJointFeedback_of_buffer</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdJointFeedbackBuffer">dJointFeedbackBuffer</a> -> <a href="Ode.LowLevel.html#TYPEdJointFeedback">dJointFeedback</a></code></pre><br>
+<a name="3_Space"></a>
+<h3>Space</h3><br>
+<pre><span class="keyword">val</span> <a name="VALdSimpleSpaceCreate"></a><a href="code_VALOde.LowLevel.dSimpleSpaceCreate.html">dSimpleSpaceCreate</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdSpaceID">dSpaceID</a> option -> <a href="Ode.LowLevel.html#TYPEdSpaceID">dSpaceID</a></code></pre><pre><span class="keyword">val</span> <a name="VALdHashSpaceCreate"></a><a href="code_VALOde.LowLevel.dHashSpaceCreate.html">dHashSpaceCreate</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdSpaceID">dSpaceID</a> option -> <a href="Ode.LowLevel.html#TYPEdSpaceID">dSpaceID</a></code></pre><pre><span class="keyword">val</span> <a name="VALdQuadTreeSpaceCreate"></a><a href="code_VALOde.LowLevel.dQuadTreeSpaceCreate.html">dQuadTreeSpaceCreate</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdSpaceID">dSpaceID</a> option -><br>       center:<a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a> -><br>       extents:<a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a> -> depth:int -> <a href="Ode.LowLevel.html#TYPEdSpaceID">dSpaceID</a></code></pre><pre><span class="keyword">val</span> <a name="VALdSpaceDestroy"></a><a href="code_VALOde.LowLevel.dSpaceDestroy.html">dSpaceDestroy</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdSpaceID">dSpaceID</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdHashSpaceSetLevels"></a><a href="code_VALOde.LowLevel.dHashSpaceSetLevels.html">dHashSpaceSetLevels</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdSpaceID">dSpaceID</a> -> minlevel:int -> maxlevel:int -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdHashSpaceGetLevels"></a><a href="code_VALOde.LowLevel.dHashSpaceGetLevels.html">dHashSpaceGetLevels</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdSpaceID">dSpaceID</a> -> int * int</code></pre><pre><span class="keyword">val</span> <a name="VALdSpaceAdd"></a><a href="code_VALOde.LowLevel.dSpaceAdd.html">dSpaceAdd</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdSpaceID">dSpaceID</a> -> 'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdSpaceRemove"></a><a href="code_VALOde.LowLevel.dSpaceRemove.html">dSpaceRemove</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdSpaceID">dSpaceID</a> -> 'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdSpaceCollide"></a><a href="code_VALOde.LowLevel.dSpaceCollide.html">dSpaceCollide</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdSpaceID">dSpaceID</a> -><br>       ('a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> 'b <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> unit) -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdSpaceCollide2"></a><a href="code_VALOde.LowLevel.dSpaceCollide2.html">dSpaceCollide2</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -><br>       'b <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -><br>       ('c <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> 'd <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> unit) -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdSpaceSetCleanup"></a><a href="code_VALOde.LowLevel.dSpaceSetCleanup.html">dSpaceSetCleanup</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdSpaceID">dSpaceID</a> -> mode:bool -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdSpaceGetCleanup"></a><a href="code_VALOde.LowLevel.dSpaceGetCleanup.html">dSpaceGetCleanup</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdSpaceID">dSpaceID</a> -> bool</code></pre><pre><span class="keyword">val</span> <a name="VALdSpaceClean"></a><a href="code_VALOde.LowLevel.dSpaceClean.html">dSpaceClean</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdSpaceID">dSpaceID</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdSpaceQuery"></a><a href="code_VALOde.LowLevel.dSpaceQuery.html">dSpaceQuery</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdSpaceID">dSpaceID</a> -> 'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> bool</code></pre><pre><span class="keyword">val</span> <a name="VALdSpaceGetNumGeoms"></a><a href="code_VALOde.LowLevel.dSpaceGetNumGeoms.html">dSpaceGetNumGeoms</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdSpaceID">dSpaceID</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdSpaceGetGeom"></a><a href="code_VALOde.LowLevel.dSpaceGetGeom.html">dSpaceGetGeom</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdSpaceID">dSpaceID</a> -> i:int -> 'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a></code></pre><pre><span class="keyword">val</span> <a name="VALdSpaceGetGeomsArray"></a><a href="code_VALOde.LowLevel.dSpaceGetGeomsArray.html">dSpaceGetGeomsArray</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdSpaceID">dSpaceID</a> -> 'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> array</code></pre><br>
+<a name="3_Geometry"></a>
+<h3>Geometry</h3><br>
+<pre><span class="keyword">val</span> <a name="VALdCollide"></a><a href="code_VALOde.LowLevel.dCollide.html">dCollide</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -><br>       'b <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -><br>       max:int -> ('a, 'b) <a href="Ode.LowLevel.html#TYPEdContactGeom">dContactGeom</a> array</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomDestroy"></a><a href="code_VALOde.LowLevel.dGeomDestroy.html">dGeomDestroy</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomSetBody"></a><a href="code_VALOde.LowLevel.dGeomSetBody.html">dGeomSetBody</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> <a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> option -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomGetBody"></a><a href="code_VALOde.LowLevel.dGeomGetBody.html">dGeomGetBody</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> <a href="Ode.LowLevel.html#TYPEdBodyID">dBodyID</a> option</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomSetPosition"></a><a href="code_VALOde.LowLevel.dGeomSetPosition.html">dGeomSetPosition</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> x:float -> y:float -> z:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomSetRotation"></a><a href="code_VALOde.LowLevel.dGeomSetRotation.html">dGeomSetRotation</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> <a href="Ode.LowLevel.html#TYPEdMatrix3">dMatrix3</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomSetQuaternion"></a><a href="code_VALOde.LowLevel.dGeomSetQuaternion.html">dGeomSetQuaternion</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> <a href="Ode.LowLevel.html#TYPEdQuaternion">dQuaternion</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomGetPosition"></a><a href="code_VALOde.LowLevel.dGeomGetPosition.html">dGeomGetPosition</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> <a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdGeomGetRotation"></a><a href="code_VALOde.LowLevel.dGeomGetRotation.html">dGeomGetRotation</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> <a href="Ode.LowLevel.html#TYPEdMatrix3">dMatrix3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdGeomGetQuaternion"></a><a href="code_VALOde.LowLevel.dGeomGetQuaternion.html">dGeomGetQuaternion</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> <a href="Ode.LowLevel.html#TYPEdQuaternion">dQuaternion</a></code></pre><pre><span class="keyword">val</span> <a name="VALdGeomGetAABB"></a><a href="code_VALOde.LowLevel.dGeomGetAABB.html">dGeomGetAABB</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> float array</code></pre><pre><span class="keyword">val</span> <a name="VALdInfiniteAABB"></a><a href="code_VALOde.LowLevel.dInfiniteAABB.html">dInfiniteAABB</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> float array</code></pre><br>
+Geometry kind<br>
+<pre><span class="keyword">type</span> <a name="TYPEsphere_geom"></a><code class="type"></code>sphere_geom </pre>
+
+<pre><span class="keyword">type</span> <a name="TYPEbox_geom"></a><code class="type"></code>box_geom </pre>
+
+<pre><span class="keyword">type</span> <a name="TYPEplane_geom"></a><code class="type"></code>plane_geom </pre>
+
+<pre><span class="keyword">type</span> <a name="TYPEheightfield_geom"></a><code class="type"></code>heightfield_geom </pre>
+
+<pre><span class="keyword">type</span> <a name="TYPEtrimesh_geom"></a><code class="type"></code>trimesh_geom </pre>
+
+<pre><span class="keyword">type</span> <a name="TYPEconvex_geom"></a><code class="type"></code>convex_geom </pre>
+
+<pre><span class="keyword">type</span> <a name="TYPEcapsule_geom"></a><code class="type"></code>capsule_geom </pre>
+
+<pre><span class="keyword">type</span> <a name="TYPEcylinder_geom"></a><code class="type"></code>cylinder_geom </pre>
+
+<pre><span class="keyword">type</span> <a name="TYPEray_geom"></a><code class="type"></code>ray_geom </pre>
+
+<pre><span class="keyword">type</span> <a name="TYPEgeomTransform_geom"></a><code class="type"></code>geomTransform_geom </pre>
+
+<br><code><span class="keyword">type</span> <a name="TYPEgeom_class"></a><code class="type"></code>geom_class = </code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">SphereClass</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">BoxClass</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">CapsuleClass</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">CylinderClass</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">PlaneClass</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">RayClass</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">ConvexClass</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">GeomTransformClass</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">TriMeshClass</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">HeightfieldClass</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">FirstSpaceSimpleSpaceClass</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">HashSpaceClass</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">LastSpaceQuadTreeSpaceClass</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">FirstUserClass</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">LastUserClass</span></code></td>
+
+</tr></table>
+
+
+<pre><span class="keyword">val</span> <a name="VALdGeomGetClass"></a><a href="code_VALOde.LowLevel.dGeomGetClass.html">dGeomGetClass</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> <a href="Ode.LowLevel.html#TYPEgeom_class">geom_class</a></code></pre><br><code><span class="keyword">type</span> <a name="TYPEgeom_type"></a><code class="type"></code>geom_type = </code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Sphere_geom</span> <span class="keyword">of</span> <code class="type"><a href="Ode.LowLevel.html#TYPEsphere_geom">sphere_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Box_geom</span> <span class="keyword">of</span> <code class="type"><a href="Ode.LowLevel.html#TYPEbox_geom">box_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Capsule_geom</span> <span class="keyword">of</span> <code class="type"><a href="Ode.LowLevel.html#TYPEcapsule_geom">capsule_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Cylinder_geom</span> <span class="keyword">of</span> <code class="type"><a href="Ode.LowLevel.html#TYPEcylinder_geom">cylinder_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Plane_geom</span> <span class="keyword">of</span> <code class="type"><a href="Ode.LowLevel.html#TYPEplane_geom">plane_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Ray_geom</span> <span class="keyword">of</span> <code class="type"><a href="Ode.LowLevel.html#TYPEray_geom">ray_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Convex_geom</span> <span class="keyword">of</span> <code class="type"><a href="Ode.LowLevel.html#TYPEconvex_geom">convex_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">GeomTransform_geom</span> <span class="keyword">of</span> <code class="type"><a href="Ode.LowLevel.html#TYPEgeomTransform_geom">geomTransform_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">TriMesh_geom</span> <span class="keyword">of</span> <code class="type"><a href="Ode.LowLevel.html#TYPEtrimesh_geom">trimesh_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Heightfield_geom</span> <span class="keyword">of</span> <code class="type"><a href="Ode.LowLevel.html#TYPEheightfield_geom">heightfield_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Geom_is_space</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">User_class</span></code></td>
+
+</tr></table>
+
+
+<pre><span class="keyword">val</span> <a name="VALgeom_kind"></a><a href="code_VALOde.LowLevel.geom_kind.html">geom_kind</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> <a href="Ode.LowLevel.html#TYPEgeom_type">geom_type</a></code></pre><pre><span class="keyword">val</span> <a name="VALdCreateSphere"></a><a href="code_VALOde.LowLevel.dCreateSphere.html">dCreateSphere</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdSpaceID">dSpaceID</a> option -><br>       radius:float -> <a href="Ode.LowLevel.html#TYPEsphere_geom">sphere_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a></code></pre><pre><span class="keyword">val</span> <a name="VALdGeomSphereGetRadius"></a><a href="code_VALOde.LowLevel.dGeomSphereGetRadius.html">dGeomSphereGetRadius</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEsphere_geom">sphere_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> float</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomSphereSetRadius"></a><a href="code_VALOde.LowLevel.dGeomSphereSetRadius.html">dGeomSphereSetRadius</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEsphere_geom">sphere_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> radius:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomSpherePointDepth"></a><a href="code_VALOde.LowLevel.dGeomSpherePointDepth.html">dGeomSpherePointDepth</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEsphere_geom">sphere_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -><br>       x:float -> y:float -> z:float -> float</code></pre><pre><span class="keyword">val</span> <a name="VALdCreateBox"></a><a href="code_VALOde.LowLevel.dCreateBox.html">dCreateBox</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdSpaceID">dSpaceID</a> option -><br>       lx:float -><br>       ly:float -> lz:float -> <a href="Ode.LowLevel.html#TYPEbox_geom">box_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a></code></pre><pre><span class="keyword">val</span> <a name="VALdGeomBoxGetLengths"></a><a href="code_VALOde.LowLevel.dGeomBoxGetLengths.html">dGeomBoxGetLengths</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEbox_geom">box_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> <a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdGeomBoxSetLengths"></a><a href="code_VALOde.LowLevel.dGeomBoxSetLengths.html">dGeomBoxSetLengths</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEbox_geom">box_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -><br>       lx:float -> ly:float -> lz:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomBoxPointDepth"></a><a href="code_VALOde.LowLevel.dGeomBoxPointDepth.html">dGeomBoxPointDepth</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEbox_geom">box_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -><br>       x:float -> y:float -> z:float -> float</code></pre><pre><span class="keyword">val</span> <a name="VALdCreatePlane"></a><a href="code_VALOde.LowLevel.dCreatePlane.html">dCreatePlane</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdSpaceID">dSpaceID</a> option -><br>       a:float -><br>       b:float -> c:float -> d:float -> <a href="Ode.LowLevel.html#TYPEplane_geom">plane_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a></code></pre><pre><span class="keyword">val</span> <a name="VALdGeomPlaneGetParams"></a><a href="code_VALOde.LowLevel.dGeomPlaneGetParams.html">dGeomPlaneGetParams</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEplane_geom">plane_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> <a href="Ode.LowLevel.html#TYPEdVector4">dVector4</a></code></pre><pre><span class="keyword">val</span> <a name="VALdGeomPlaneSetParams"></a><a href="code_VALOde.LowLevel.dGeomPlaneSetParams.html">dGeomPlaneSetParams</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEplane_geom">plane_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -><br>       a:float -> b:float -> c:float -> d:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomPlanePointDepth"></a><a href="code_VALOde.LowLevel.dGeomPlanePointDepth.html">dGeomPlanePointDepth</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEplane_geom">plane_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -><br>       x:float -> y:float -> z:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdCreateCapsule"></a><a href="code_VALOde.LowLevel.dCreateCapsule.html">dCreateCapsule</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdSpaceID">dSpaceID</a> option -><br>       radius:float -><br>       length:float -> <a href="Ode.LowLevel.html#TYPEcapsule_geom">capsule_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a></code></pre><pre><span class="keyword">val</span> <a name="VALdGeomCapsuleGetParams"></a><a href="code_VALOde.LowLevel.dGeomCapsuleGetParams.html">dGeomCapsuleGetParams</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEcapsule_geom">capsule_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> float * float</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomCapsuleSetParams"></a><a href="code_VALOde.LowLevel.dGeomCapsuleSetParams.html">dGeomCapsuleSetParams</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEcapsule_geom">capsule_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -><br>       radius:float -> length:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomCapsulePointDepth"></a><a href="code_VALOde.LowLevel.dGeomCapsulePointDepth.html">dGeomCapsulePointDepth</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEcapsule_geom">capsule_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -><br>       x:float -> y:float -> z:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdCreateCylinder"></a><a href="code_VALOde.LowLevel.dCreateCylinder.html">dCreateCylinder</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdSpaceID">dSpaceID</a> option -><br>       radius:float -><br>       length:float -> <a href="Ode.LowLevel.html#TYPEcylinder_geom">cylinder_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a></code></pre><pre><span class="keyword">val</span> <a name="VALdGeomCylinderGetParams"></a><a href="code_VALOde.LowLevel.dGeomCylinderGetParams.html">dGeomCylinderGetParams</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEcylinder_geom">cylinder_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> float * float</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomCylinderSetParams"></a><a href="code_VALOde.LowLevel.dGeomCylinderSetParams.html">dGeomCylinderSetParams</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEcylinder_geom">cylinder_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -><br>       radius:float -> length:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdCreateRay"></a><a href="code_VALOde.LowLevel.dCreateRay.html">dCreateRay</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdSpaceID">dSpaceID</a> option -><br>       length:float -> <a href="Ode.LowLevel.html#TYPEray_geom">ray_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a></code></pre><pre><span class="keyword">val</span> <a name="VALdGeomRaySetLength"></a><a href="code_VALOde.LowLevel.dGeomRaySetLength.html">dGeomRaySetLength</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEray_geom">ray_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> length:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomRayGetLength"></a><a href="code_VALOde.LowLevel.dGeomRayGetLength.html">dGeomRayGetLength</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEray_geom">ray_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> float</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomRaySet"></a><a href="code_VALOde.LowLevel.dGeomRaySet.html">dGeomRaySet</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEray_geom">ray_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -><br>       px:float -> py:float -> pz:float -> dx:float -> dy:float -> dz:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomRayGet"></a><a href="code_VALOde.LowLevel.dGeomRayGet.html">dGeomRayGet</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEray_geom">ray_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -><br>       <a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a> * <a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdGeomRaySetParams"></a><a href="code_VALOde.LowLevel.dGeomRaySetParams.html">dGeomRaySetParams</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEray_geom">ray_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -><br>       first_contact:bool -> backface_cull:bool -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomRayGetParams"></a><a href="code_VALOde.LowLevel.dGeomRayGetParams.html">dGeomRayGetParams</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEray_geom">ray_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> bool * bool</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomRaySetClosestHit"></a><a href="code_VALOde.LowLevel.dGeomRaySetClosestHit.html">dGeomRaySetClosestHit</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEray_geom">ray_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> closest_hit:bool -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomRayGetClosestHit"></a><a href="code_VALOde.LowLevel.dGeomRayGetClosestHit.html">dGeomRayGetClosestHit</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEray_geom">ray_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> bool</code></pre><pre><span class="keyword">type</span> <a name="TYPEdTriMeshDataID"></a><code class="type"></code>dTriMeshDataID </pre>
+
+<pre><span class="keyword">val</span> <a name="VALdGeomTriMeshDataCreate"></a><a href="code_VALOde.LowLevel.dGeomTriMeshDataCreate.html">dGeomTriMeshDataCreate</a> : <code class="type">unit -> <a href="Ode.LowLevel.html#TYPEdTriMeshDataID">dTriMeshDataID</a></code></pre><pre><span class="keyword">val</span> <a name="VALdGeomTriMeshDataDestroy"></a><a href="code_VALOde.LowLevel.dGeomTriMeshDataDestroy.html">dGeomTriMeshDataDestroy</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdTriMeshDataID">dTriMeshDataID</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomTriMeshDataPreprocess"></a><a href="code_VALOde.LowLevel.dGeomTriMeshDataPreprocess.html">dGeomTriMeshDataPreprocess</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdTriMeshDataID">dTriMeshDataID</a> -> unit</code></pre><div class="info">
+<b>Frees the associated datas</b> (see <code class="code">dGeomTriMeshDataBuild</code> for explanations)<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALdGeomTriMeshSetData"></a><a href="code_VALOde.LowLevel.dGeomTriMeshSetData.html">dGeomTriMeshSetData</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEtrimesh_geom">trimesh_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -><br>       data:<a href="Ode.LowLevel.html#TYPEdTriMeshDataID">dTriMeshDataID</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomTriMeshGetData"></a><a href="code_VALOde.LowLevel.dGeomTriMeshGetData.html">dGeomTriMeshGetData</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEtrimesh_geom">trimesh_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> <a href="Ode.LowLevel.html#TYPEdTriMeshDataID">dTriMeshDataID</a></code></pre><pre><span class="keyword">val</span> <a name="VALdGeomTriMeshGetTriMeshDataID"></a><a href="code_VALOde.LowLevel.dGeomTriMeshGetTriMeshDataID.html">dGeomTriMeshGetTriMeshDataID</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEtrimesh_geom">trimesh_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> <a href="Ode.LowLevel.html#TYPEdTriMeshDataID">dTriMeshDataID</a></code></pre><pre><span class="keyword">val</span> <a name="VALdGeomTriMeshDataUpdate"></a><a href="code_VALOde.LowLevel.dGeomTriMeshDataUpdate.html">dGeomTriMeshDataUpdate</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdTriMeshDataID">dTriMeshDataID</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomTriMeshDataBuild"></a><a href="code_VALOde.LowLevel.dGeomTriMeshDataBuild.html">dGeomTriMeshDataBuild</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdTriMeshDataID">dTriMeshDataID</a> -><br>       vertices:float array -> indices:int array -> unit</code></pre><br>
+<b>Important:</b> The vertices parameter is not copied for ODE's use so make sure that it is
+      not garbage collected as long as it trimesh is still used.
+      (The indices parameter's datas are copied to a buffer associated with the dTriMeshDataID,
+      which is freed at the same time with the function <code class="code">dGeomTriMeshDataDestroy</code>.)<br>
+<pre><span class="keyword">val</span> <a name="VALdCreateTriMesh"></a><a href="code_VALOde.LowLevel.dCreateTriMesh.html">dCreateTriMesh</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdSpaceID">dSpaceID</a> option -><br>       <a href="Ode.LowLevel.html#TYPEdTriMeshDataID">dTriMeshDataID</a> -><br>       ?tri_cb:'a -><br>       ?arr_cb:'b -><br>       ?ray_cb:'c -> unit -> <a href="Ode.LowLevel.html#TYPEtrimesh_geom">trimesh_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a></code></pre><br>
+the callbacks are not implemented yet, just omit the optional parameters<br>
+<pre><span class="keyword">val</span> <a name="VALdGeomTriMeshEnableTC"></a><a href="code_VALOde.LowLevel.dGeomTriMeshEnableTC.html">dGeomTriMeshEnableTC</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEtrimesh_geom">trimesh_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -><br>       <a href="Ode.LowLevel.html#TYPEgeom_class">geom_class</a> -> bool -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomTriMeshIsTCEnabled"></a><a href="code_VALOde.LowLevel.dGeomTriMeshIsTCEnabled.html">dGeomTriMeshIsTCEnabled</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEtrimesh_geom">trimesh_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -><br>       <a href="Ode.LowLevel.html#TYPEgeom_class">geom_class</a> -> bool</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomTriMeshClearTCCache"></a><a href="code_VALOde.LowLevel.dGeomTriMeshClearTCCache.html">dGeomTriMeshClearTCCache</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEtrimesh_geom">trimesh_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdCreateGeomTransform"></a><a href="code_VALOde.LowLevel.dCreateGeomTransform.html">dCreateGeomTransform</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdSpaceID">dSpaceID</a> option -><br>       <a href="Ode.LowLevel.html#TYPEgeomTransform_geom">geomTransform_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a></code></pre><pre><span class="keyword">val</span> <a name="VALdGeomTransformSetGeom"></a><a href="code_VALOde.LowLevel.dGeomTransformSetGeom.html">dGeomTransformSetGeom</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEgeomTransform_geom">geomTransform_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -><br>       'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> option -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomTransformGetGeom"></a><a href="code_VALOde.LowLevel.dGeomTransformGetGeom.html">dGeomTransformGetGeom</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEgeomTransform_geom">geomTransform_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -><br>       'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> option</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomTransformSetCleanup"></a><a href="code_VALOde.LowLevel.dGeomTransformSetCleanup.html">dGeomTransformSetCleanup</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEgeomTransform_geom">geomTransform_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> cleanup:bool -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomTransformGetCleanup"></a><a href="code_VALOde.LowLevel.dGeomTransformGetCleanup.html">dGeomTransformGetCleanup</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEgeomTransform_geom">geomTransform_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> bool</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomTransformSetInfo"></a><a href="code_VALOde.LowLevel.dGeomTransformSetInfo.html">dGeomTransformSetInfo</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEgeomTransform_geom">geomTransform_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> cleanup:bool -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomTransformGetInfo"></a><a href="code_VALOde.LowLevel.dGeomTransformGetInfo.html">dGeomTransformGetInfo</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEgeomTransform_geom">geomTransform_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> bool</code></pre><pre><span class="keyword">type</span> <a name="TYPEdConvexDataID"></a><code class="type"></code>dConvexDataID </pre>
+
+<pre><span class="keyword">val</span> <a name="VALdConvexDataBuild"></a><a href="code_VALOde.LowLevel.dConvexDataBuild.html">dConvexDataBuild</a> : <code class="type">planes:float array -><br>       points:float array -> polygones:int array -> <a href="Ode.LowLevel.html#TYPEdConvexDataID">dConvexDataID</a></code></pre><br>
+<b>Important:</b> the <code class="code">dConvexDataID</code> needs to be freed with <code class="code">dConvexDataDestroy</code> at the end.<br>
+<pre><span class="keyword">val</span> <a name="VALdCreateConvex"></a><a href="code_VALOde.LowLevel.dCreateConvex.html">dCreateConvex</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdSpaceID">dSpaceID</a> option -><br>       <a href="Ode.LowLevel.html#TYPEdConvexDataID">dConvexDataID</a> -> <a href="Ode.LowLevel.html#TYPEconvex_geom">convex_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a></code></pre><pre><span class="keyword">val</span> <a name="VALdGeomSetConvex"></a><a href="code_VALOde.LowLevel.dGeomSetConvex.html">dGeomSetConvex</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEconvex_geom">convex_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -><br>       <a href="Ode.LowLevel.html#TYPEdConvexDataID">dConvexDataID</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdConvexDataDestroy"></a><a href="code_VALOde.LowLevel.dConvexDataDestroy.html">dConvexDataDestroy</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdConvexDataID">dConvexDataID</a> -> unit</code></pre><br>
+<b>Important:</b> do not destroy the <code class="code">dConvexDataID</code> as long as the associated convex geom is used.<br>
+<pre><span class="keyword">type</span> <a name="TYPEdHeightfieldDataID"></a><code class="type"></code>dHeightfieldDataID </pre>
+
+<pre><span class="keyword">val</span> <a name="VALdGeomHeightfieldDataCreate"></a><a href="code_VALOde.LowLevel.dGeomHeightfieldDataCreate.html">dGeomHeightfieldDataCreate</a> : <code class="type">unit -> <a href="Ode.LowLevel.html#TYPEdHeightfieldDataID">dHeightfieldDataID</a></code></pre><pre><span class="keyword">val</span> <a name="VALdGeomHeightfieldDataDestroy"></a><a href="code_VALOde.LowLevel.dGeomHeightfieldDataDestroy.html">dGeomHeightfieldDataDestroy</a> : <code class="type">id:<a href="Ode.LowLevel.html#TYPEdHeightfieldDataID">dHeightfieldDataID</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdCreateHeightfield"></a><a href="code_VALOde.LowLevel.dCreateHeightfield.html">dCreateHeightfield</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdSpaceID">dSpaceID</a> option -><br>       data:<a href="Ode.LowLevel.html#TYPEdHeightfieldDataID">dHeightfieldDataID</a> -><br>       placeable:bool -> <a href="Ode.LowLevel.html#TYPEheightfield_geom">heightfield_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a></code></pre><pre><span class="keyword">val</span> <a name="VALdGeomHeightfieldDataBuild"></a><a href="code_VALOde.LowLevel.dGeomHeightfieldDataBuild.html">dGeomHeightfieldDataBuild</a> : <code class="type">id:<a href="Ode.LowLevel.html#TYPEdHeightfieldDataID">dHeightfieldDataID</a> -><br>       height_data:float array -><br>       width:float -><br>       depth:float -><br>       width_samples:int -><br>       depth_samples:int -><br>       scale:float -> offset:float -> thickness:float -> wrap:bool -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomSetData"></a><a href="code_VALOde.LowLevel.dGeomSetData.html">dGeomSetData</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> int -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomGetData"></a><a href="code_VALOde.LowLevel.dGeomGetData.html">dGeomGetData</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> int</code></pre><br>
+you can use these functions for example to associate user data to a geometry: <pre></pre><code class="code">&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;geom_data_tbl&nbsp;=&nbsp;<span class="constructor">Hashtbl</span>.create&nbsp;16<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;geom_data_count&nbsp;=&nbsp;ref&nbsp;0<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dGeomSetData&nbsp;geom&nbsp;~data&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;i&nbsp;=&nbsp;!geom_data_count&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;incr&nbsp;geom_data_count;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Hashtbl</span>.add&nbsp;geom_data_tbl&nbsp;i&nbsp;data;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dGeomSetData&nbsp;geom&nbsp;i;<br>
+&nbsp;&nbsp;;;<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dGeomGetData&nbsp;geom&nbsp;=&nbsp;(<span class="constructor">Hashtbl</span>.find&nbsp;geom_data_tbl&nbsp;(dGeomGetData&nbsp;geom))<br>
+&nbsp;&nbsp;</code><pre></pre><br>
+<pre><span class="keyword">val</span> <a name="VALdGeomIsSpace"></a><a href="code_VALOde.LowLevel.dGeomIsSpace.html">dGeomIsSpace</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> bool</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomGetSpace"></a><a href="code_VALOde.LowLevel.dGeomGetSpace.html">dGeomGetSpace</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> <a href="Ode.LowLevel.html#TYPEdSpaceID">dSpaceID</a></code></pre><pre><span class="keyword">val</span> <a name="VALdGeomSetCategoryBits"></a><a href="code_VALOde.LowLevel.dGeomSetCategoryBits.html">dGeomSetCategoryBits</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> bits:int -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomSetCollideBits"></a><a href="code_VALOde.LowLevel.dGeomSetCollideBits.html">dGeomSetCollideBits</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> bits:int -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomGetCategoryBits"></a><a href="code_VALOde.LowLevel.dGeomGetCategoryBits.html">dGeomGetCategoryBits</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> int</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomGetCollideBits"></a><a href="code_VALOde.LowLevel.dGeomGetCollideBits.html">dGeomGetCollideBits</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> int</code></pre><br>
+<pre></pre><code class="code"><span class="keyword">if</span>&nbsp;(&nbsp;((g1.category_bits&nbsp;<span class="keywordsign">&amp;</span>&nbsp;g2.collide_bits)&nbsp;<span class="keywordsign">||</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(g2.category_bits&nbsp;<span class="keywordsign">&amp;</span>&nbsp;g1.collide_bits))&nbsp;==&nbsp;0)&nbsp;</code><pre></pre><br>
+<pre><span class="keyword">val</span> <a name="VALdGeomEnable"></a><a href="code_VALOde.LowLevel.dGeomEnable.html">dGeomEnable</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomDisable"></a><a href="code_VALOde.LowLevel.dGeomDisable.html">dGeomDisable</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomIsEnabled"></a><a href="code_VALOde.LowLevel.dGeomIsEnabled.html">dGeomIsEnabled</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> bool</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomSetOffsetPosition"></a><a href="code_VALOde.LowLevel.dGeomSetOffsetPosition.html">dGeomSetOffsetPosition</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> x:float -> y:float -> z:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomSetOffsetRotation"></a><a href="code_VALOde.LowLevel.dGeomSetOffsetRotation.html">dGeomSetOffsetRotation</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> r:<a href="Ode.LowLevel.html#TYPEdMatrix3">dMatrix3</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomSetOffsetQuaternion"></a><a href="code_VALOde.LowLevel.dGeomSetOffsetQuaternion.html">dGeomSetOffsetQuaternion</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> <a href="Ode.LowLevel.html#TYPEdQuaternion">dQuaternion</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomGetOffsetQuaternion"></a><a href="code_VALOde.LowLevel.dGeomGetOffsetQuaternion.html">dGeomGetOffsetQuaternion</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> <a href="Ode.LowLevel.html#TYPEdQuaternion">dQuaternion</a></code></pre><pre><span class="keyword">val</span> <a name="VALdGeomSetOffsetWorldPosition"></a><a href="code_VALOde.LowLevel.dGeomSetOffsetWorldPosition.html">dGeomSetOffsetWorldPosition</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> x:float -> y:float -> z:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomSetOffsetWorldRotation"></a><a href="code_VALOde.LowLevel.dGeomSetOffsetWorldRotation.html">dGeomSetOffsetWorldRotation</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> <a href="Ode.LowLevel.html#TYPEdMatrix3">dMatrix3</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomSetOffsetWorldQuaternion"></a><a href="code_VALOde.LowLevel.dGeomSetOffsetWorldQuaternion.html">dGeomSetOffsetWorldQuaternion</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> <a href="Ode.LowLevel.html#TYPEdQuaternion">dQuaternion</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomClearOffset"></a><a href="code_VALOde.LowLevel.dGeomClearOffset.html">dGeomClearOffset</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomIsOffset"></a><a href="code_VALOde.LowLevel.dGeomIsOffset.html">dGeomIsOffset</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> bool</code></pre><pre><span class="keyword">val</span> <a name="VALdGeomGetOffsetPosition"></a><a href="code_VALOde.LowLevel.dGeomGetOffsetPosition.html">dGeomGetOffsetPosition</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> <a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdGeomGetOffsetRotation"></a><a href="code_VALOde.LowLevel.dGeomGetOffsetRotation.html">dGeomGetOffsetRotation</a> : <code class="type">'a <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> <a href="Ode.LowLevel.html#TYPEdMatrix3">dMatrix3</a></code></pre><br>
+<a name="3_Massfunctions"></a>
+<h3>Mass functions</h3><br>
+<br>
+Note that dMass objects are garbage collected.<br>
+<pre><span class="keyword">val</span> <a name="VALdMassCreate"></a><a href="code_VALOde.LowLevel.dMassCreate.html">dMassCreate</a> : <code class="type">unit -> <a href="Ode.LowLevel.html#TYPEdMass">dMass</a></code></pre><pre><span class="keyword">val</span> <a name="VALdMass_set_mass"></a><a href="code_VALOde.LowLevel.dMass_set_mass.html">dMass_set_mass</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdMass">dMass</a> -> float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdMass_mass"></a><a href="code_VALOde.LowLevel.dMass_mass.html">dMass_mass</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdMass">dMass</a> -> float</code></pre><pre><span class="keyword">val</span> <a name="VALdMass_set_c"></a><a href="code_VALOde.LowLevel.dMass_set_c.html">dMass_set_c</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdMass">dMass</a> -> <a href="Ode.LowLevel.html#TYPEdVector4">dVector4</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdMass_c"></a><a href="code_VALOde.LowLevel.dMass_c.html">dMass_c</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdMass">dMass</a> -> <a href="Ode.LowLevel.html#TYPEdVector4">dVector4</a></code></pre><pre><span class="keyword">val</span> <a name="VALdMass_set_I"></a><a href="code_VALOde.LowLevel.dMass_set_I.html">dMass_set_I</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdMass">dMass</a> -> <a href="Ode.LowLevel.html#TYPEdMatrix3">dMatrix3</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdMass_I"></a><a href="code_VALOde.LowLevel.dMass_I.html">dMass_I</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdMass">dMass</a> -> <a href="Ode.LowLevel.html#TYPEdMatrix3">dMatrix3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdMassSetZero"></a><a href="code_VALOde.LowLevel.dMassSetZero.html">dMassSetZero</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdMass">dMass</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdMassSetParameters"></a><a href="code_VALOde.LowLevel.dMassSetParameters.html">dMassSetParameters</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdMass">dMass</a> -><br>       mass:float -><br>       cgx:float -><br>       cgy:float -><br>       cgz:float -><br>       i11:float -><br>       i22:float -> i33:float -> i12:float -> i13:float -> i23:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdMassSetSphere"></a><a href="code_VALOde.LowLevel.dMassSetSphere.html">dMassSetSphere</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdMass">dMass</a> -> density:float -> radius:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdMassSetSphereTotal"></a><a href="code_VALOde.LowLevel.dMassSetSphereTotal.html">dMassSetSphereTotal</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdMass">dMass</a> -> total_mass:float -> radius:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdMassSetBox"></a><a href="code_VALOde.LowLevel.dMassSetBox.html">dMassSetBox</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdMass">dMass</a> -><br>       density:float -> lx:float -> ly:float -> lz:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdMassSetBoxTotal"></a><a href="code_VALOde.LowLevel.dMassSetBoxTotal.html">dMassSetBoxTotal</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdMass">dMass</a> -><br>       total_mass:float -> lx:float -> ly:float -> lz:float -> unit</code></pre><br><code><span class="keyword">type</span> <a name="TYPEdirection"></a><code class="type"></code>direction = </code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Dir_x</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Dir_y</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">Dir_z</span></code></td>
+
+</tr></table>
+
+
+<pre><span class="keyword">val</span> <a name="VALdMassSetCapsule"></a><a href="code_VALOde.LowLevel.dMassSetCapsule.html">dMassSetCapsule</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdMass">dMass</a> -><br>       density:float -><br>       direction:<a href="Ode.LowLevel.html#TYPEdirection">direction</a> -> radius:float -> length:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdMassSetCapsuleTotal"></a><a href="code_VALOde.LowLevel.dMassSetCapsuleTotal.html">dMassSetCapsuleTotal</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdMass">dMass</a> -><br>       total_mass:float -><br>       direction:<a href="Ode.LowLevel.html#TYPEdirection">direction</a> -> radius:float -> length:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdMassSetCylinder"></a><a href="code_VALOde.LowLevel.dMassSetCylinder.html">dMassSetCylinder</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdMass">dMass</a> -><br>       density:float -><br>       direction:<a href="Ode.LowLevel.html#TYPEdirection">direction</a> -> radius:float -> length:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdMassSetCylinderTotal"></a><a href="code_VALOde.LowLevel.dMassSetCylinderTotal.html">dMassSetCylinderTotal</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdMass">dMass</a> -><br>       total_mass:float -><br>       direction:<a href="Ode.LowLevel.html#TYPEdirection">direction</a> -> radius:float -> length:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdMassSetTrimesh"></a><a href="code_VALOde.LowLevel.dMassSetTrimesh.html">dMassSetTrimesh</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdMass">dMass</a> -><br>       density:float -> <a href="Ode.LowLevel.html#TYPEtrimesh_geom">trimesh_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdMassSetTrimeshTotal"></a><a href="code_VALOde.LowLevel.dMassSetTrimeshTotal.html">dMassSetTrimeshTotal</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdMass">dMass</a> -><br>       total_mass:float -> <a href="Ode.LowLevel.html#TYPEtrimesh_geom">trimesh_geom</a> <a href="Ode.LowLevel.html#TYPEdGeomID">dGeomID</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdMassCheck"></a><a href="code_VALOde.LowLevel.dMassCheck.html">dMassCheck</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdMass">dMass</a> -> bool</code></pre><pre><span class="keyword">val</span> <a name="VALdMassAdjust"></a><a href="code_VALOde.LowLevel.dMassAdjust.html">dMassAdjust</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdMass">dMass</a> -> float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdMassTranslate"></a><a href="code_VALOde.LowLevel.dMassTranslate.html">dMassTranslate</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdMass">dMass</a> -> x:float -> y:float -> z:float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdMassRotate"></a><a href="code_VALOde.LowLevel.dMassRotate.html">dMassRotate</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdMass">dMass</a> -> <a href="Ode.LowLevel.html#TYPEdMatrix3">dMatrix3</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALdMassAdd"></a><a href="code_VALOde.LowLevel.dMassAdd.html">dMassAdd</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdMass">dMass</a> -> <a href="Ode.LowLevel.html#TYPEdMass">dMass</a> -> unit</code></pre><br>
+<a name="3_Matrices"></a>
+<h3>Matrices</h3><br>
+<pre><span class="keyword">val</span> <a name="VALdRGetIdentity"></a><a href="code_VALOde.LowLevel.dRGetIdentity.html">dRGetIdentity</a> : <code class="type">unit -> <a href="Ode.LowLevel.html#TYPEdMatrix3">dMatrix3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdRFromAxisAndAngle"></a><a href="code_VALOde.LowLevel.dRFromAxisAndAngle.html">dRFromAxisAndAngle</a> : <code class="type">ax:float -> ay:float -> az:float -> angle:float -> <a href="Ode.LowLevel.html#TYPEdMatrix3">dMatrix3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdRFromEulerAngles"></a><a href="code_VALOde.LowLevel.dRFromEulerAngles.html">dRFromEulerAngles</a> : <code class="type">phi:float -> theta:float -> psi:float -> <a href="Ode.LowLevel.html#TYPEdMatrix3">dMatrix3</a></code></pre><br>
+<a name="3_Quaternion"></a>
+<h3>Quaternion</h3><br>
+<pre><span class="keyword">val</span> <a name="VALdQGetIdentity"></a><a href="code_VALOde.LowLevel.dQGetIdentity.html">dQGetIdentity</a> : <code class="type">unit -> <a href="Ode.LowLevel.html#TYPEdQuaternion">dQuaternion</a></code></pre><pre><span class="keyword">val</span> <a name="VALdQFromAxisAndAngle"></a><a href="code_VALOde.LowLevel.dQFromAxisAndAngle.html">dQFromAxisAndAngle</a> : <code class="type">ax:float -> ay:float -> az:float -> angle:float -> <a href="Ode.LowLevel.html#TYPEdQuaternion">dQuaternion</a></code></pre><br>
+<a name="3_Misc"></a>
+<h3>Misc</h3><br>
+<pre><span class="keyword">val</span> <a name="VALdWorldImpulseToForce"></a><a href="code_VALOde.LowLevel.dWorldImpulseToForce.html">dWorldImpulseToForce</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdWorldID">dWorldID</a> -><br>       stepsize:float -> ix:float -> iy:float -> iz:float -> <a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdQtoR"></a><a href="code_VALOde.LowLevel.dQtoR.html">dQtoR</a> : <code class="type"><a href="Ode.LowLevel.html#TYPEdQuaternion">dQuaternion</a> -> <a href="Ode.LowLevel.html#TYPEdMatrix3">dMatrix3</a></code></pre><pre><span class="keyword">val</span> <a name="VALdPlaneSpace"></a><a href="code_VALOde.LowLevel.dPlaneSpace.html">dPlaneSpace</a> : <code class="type">n:<a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a> -> <a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a> * <a href="Ode.LowLevel.html#TYPEdVector3">dVector3</a></code></pre></body></html>
