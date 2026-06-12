@@ -1,0 +1,93 @@
+<html>
+<title>cos-n-sin-tut</title>
+<style>
+img.red-border { border:1px solid #F00; }
+img.green-border { border:1px solid #4E4; }
+img.blue-border { border:1px solid #22B; }
+img.purple-border { border:1px solid #A6A; }
+body { padding-right:60%; }
+pre { border:1px solid #000; padding:1px 2px; }
+a { color:#80A; }
+</style>
+<body>
+<h1>cosinus-and-sinus-tutorial</h1>
+<p>cosinus and sinus, are functions that permit you
+to get <code>x</code> and <code>y</code> coordinates,
+of points on a circle.</p>
+<p>You can get these coordinates, based on an angle.</p>
+<img class="red-border" src="./sq.png" />
+<div style="float:right"><small>
+<a href="./sq1.ml">sq1.ml</a><br />
+<a href="./sq1.svg">sq1.svg</a></small></div>
+<p>The math area for these kind of functions and its
+coordinate-system is called: <code>"trigonometry"</code>
+(or <code>"trigo"</code> for short.)</p>
+<img class="green-border" src="./sq2.png" />
+<div style="float:right"><small>
+<a href="./sq2.ml">sq2.ml</a><br />
+<a href="./sq2.svg">sq2.svg</a></small></div>
+<p>The <code>"abscissa"</code> is the x-axis, the axis where we get
+<code>x</code> coordinates.</p>
+<p>The <code>"ordinate"</code> is the vertical-axis,
+the axis for the <code>y</code> coordinate, the y-axis.</p>
+<pre>p=(x,y)</pre>
+<img class="blue-border" src="./sq3.png" />
+<div style="float:right"><small>
+<a href="./sq3.ml">sq3.ml</a><br />
+<a href="./sq3.svg">sq3.svg</a></small></div>
+<p></p>
+<img class="blue-border" src="./sq4.png" />
+<div style="float:right"><small>
+<a href="./sq4.ml">sq4.ml</a><br />
+<a href="./sq4.svg">sq4.svg</a></small></div>
+<pre>x=(cos a)
+y=(sin a)
+p=(x,y)</pre>
+<p><code>cosinus</code> and <code>sinus</code> functions return
+a <code>float</code> that is between <code>[0.0 .. 1.0]</code>,
+or <code>[0.0 .. -1.0]</code> for angles that are in the negative
+area of the axis.</p>
+<p>The range <code>[0.0 .. 1.0]</code>, is for a circle which radius
+is equal to the <code>unit</code> (radius: <code>r=1</code>).</p>
+<p>For a radius that is <code>r=3.6</code>, the values that are
+in the range <code>[0.0 .. 1.0]</code>, just have to be multiplied
+by the value of the radius:</p>
+<pre>x=(r*(cos a))
+y=(r*(sin a))
+p=(x,y)</pre>
+<p>These coordinates correspond to a circle of radius: <code>(r)</code>,
+but for a circle that is still centered at the origin of the <code>x</code>
+and <code>y</code> -axis.</p>
+<pre>x=cx+(r*(cos a))
+y=cy+(r*(sin a))
+p=(x,y)</pre>
+<p>For a circle that is centered at <code>(cx,cy)</code>, we just
+have to add <code>(cx)</code> and <code>(cy)</code>, to the
+<code>(x)</code> and <code>(y)</code> coordinates. This is a kind of
+"translation", it "translate" a circle centered at the origine, to a
+circle that can be positioned anywhere in the area, with a center
+which is not the origine <code>O</code> w/ coords <code>(0,0)</code>,
+but another point, the center of the circle <code>C</code>, with
+coords: <code>(cx,cy)</code>.</p>
+<p>The multiplication by the radius has to be operated first, because
+the <code>cos</code> and <code>sin</code> functions are giving result
+for a unit-circle, so proportionally we have to multiply first to create
+coordinates of a point on a biger circle, before to apply the translation.</p>
+<img class="purple-border" src="./sq5.png" />
+<div style="float:right"><small>
+<a href="./sq5.ml">sq5.ml</a><br />
+<a href="./sq5.svg">sq5.svg</a></small></div>
+<hr />
+<p>Here if the angle <code>a</code> is <code>30.0</code> <code>degrees</code>,
+we first have to convert it in <code>radians</code>, w/:</p>
+<pre>a=((a / 180.0) * PI)</pre>
+<p>where <code>pi</code> is probably something like <code>3.14159265358979312</code>.
+<p>we divide by <code>180.0</code> which is half of a circle-angle,
+in degrees, and then multiply by <code>pi</code> which is half of a circle,
+in radian.</p>
+<p>we need to convert in <code>radian</code>'s, because all the <code>trigo</code>
+function are made to return their result with angles expressed in <code>radian</code>'s.</p>
+<hr />
+<p>Versions of this document: <a href="./versions.html">versions</a>.</p>
+</body>
+</html>
