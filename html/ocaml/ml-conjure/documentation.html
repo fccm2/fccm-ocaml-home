@@ -1,0 +1,801 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!-- {{{ head -->
+<head>
+<title>MSL HOWTO</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="../ocaml_icon3.png" rel="shortcut icon" />
+<style type="text/css">
+<!--
+body{
+	color:#000;
+	background:#888 url(img/IM_logo.bg.png) top right no-repeat fixed;
+}
+#title *{
+	color:#444;
+	display:inline;
+}
+#title{
+	margin:0.2em 2em 3.6em 2em;
+}
+h1.main{
+	font-size:1.9em;
+	margin-left:5%;
+}
+h1.snd{
+	font-size:1.6em;
+	margin-left:0.4em;
+	font-style:italic;
+}
+#title h2{
+	margin-left:2.2em;
+}
+h2{
+	font-size:1.1em;
+}
+em{
+	text-decoration:none;
+	font-style:italic;
+}
+#footer{
+	font-size:xx-small;
+}
+#content{
+	margin-bottom:6em;
+}
+#content h2{
+	margin:3.2em 1em 0.2em 7%;
+	padding-left:12px;
+	background:transparent url(img/h2-bg.png) top left repeat-y;
+	/* the MSL source is in : 'img/h2-bg.msl' */
+}
+#content p{
+	margin:0.4em 14% 1.6em 10%;
+}
+#content p.nb{  /* no spacing at the bottom */
+	margin:0.4em 14% 0 10%;
+	padding-bottom:0;
+}
+#content p.nt{  /* no spacing at the top */
+	margin:0 14% 1.6em 10%;
+	padding-top:0;
+}
+#content p.ntnb{  /* no top, no bottom spacing */
+	margin:0 14% 0 10%;
+	padding-top:0;
+	padding-bottom:0;
+}
+ul.nop li{
+	list-style:none;
+}
+pre{
+	margin:0.1em 6% 0.1em 9%;
+	background: #333 url(img/code_tag.png) top right no-repeat;
+	/* the MSL src is in img/code_tag.msl */
+}
+
+pre.Small{
+	font-size:small;
+	margin:0.1em 4% 0.1em 6%;
+}
+
+pre.xSmall{
+	font-size:x-small;
+	margin:0.1em 2% 0.1em 4%;
+}
+
+code.inline,
+pre { color: #fff; }
+
+.Cmnt { color: #0ff; font-weight: bold; }
+.Cnst { color: #f4f; font-weight: bold; }
+.Idnt { color: #0ff; font-weight: bold; }
+.Type { color: #0f0; font-weight: bold; }
+
+.Cmnt { color: #86d; font-weight: bold; }
+.Cnst { color: #f44; font-weight: bold; }
+.Idnt { color: #2bf; font-weight: bold; }
+.Type { color: #6c0; font-weight: bold; }
+
+.Cnst,
+.Idnt,
+.Cmnt,
+.Type,
+.Line { background-color: #080808; }
+-->
+</style>
+</head>
+<!-- }}} -->
+<body>
+<!-- {{{ header -->
+
+<div id="title">
+<h1 class="main">MSL</h1>
+<h1 class="snd">HOWTO</h1>
+<h2>Magick Scripting Language</h2>
+</div>
+
+<!-- }}} -->
+
+<div id="content">
+<!-- {{{ intro -->
+
+<h2>Introduction</h2>
+<p>
+	First, MSL is an acronym which stands for Magick Scripting Language.
+	The MSL language is a scripting language for <a href="http://www.imagemagick.org/">ImageMagick</a>
+	and is formated in <a href="http://en.wikipedia.org/wiki/XML">XML</a>.
+	It's made to be independent from any programing language (like
+	<a href="http://en.wikipedia.org/wiki/C_(programming_language)">C</a>,
+	<a href="http://en.wikipedia.org/wiki/Perl">Perl</a> or
+	<a href="http://en.wikipedia.org/wiki/PHP">PHP</a>) and its associated ImageMagick
+	<a href="http://en.wikipedia.org/wiki/API">API</a> (like respectively the
+	<a href="http://www.imagemagick.org/script/magick-core.php">MagickCore</a>,
+	<a href="http://www.imagemagick.org/script/perl-magick.php">PerlMagick</a> or
+	<a href="http://pecl.php.net/package/imagick">php_imagick</a>).
+</p>
+
+<h2>Conjure</h2>
+<p>
+	MSL scripts are interpreted by an interpreter called conjure.
+	This MSL HOWTO doesn't document the
+	<a href="http://www.imagemagick.org/script/conjure.php">original ImageMagick conjure</a>
+	but an experimental one
+	<a href="http://decapode314.free.fr/ocaml/ml-conjure/">ml-conjure</a>.
+</p>
+
+<!-- }}} -->
+<!-- {{{ start -->
+
+<h2>Quick-Start</h2>
+<p class="nb">
+	OK, let's start with a simple exemple:
+</p>
+<pre>
+<span class="Line"><span class="Cmnt">&lt;?</span><span class="Type">xml</span><span class="Type"> </span><span class="Type">version</span>=<span class="Cnst">&quot;1.0&quot;</span><span class="Type"> </span><span class="Cmnt">?&gt;</span></span>
+<span class="Line"><span class="Idnt">&lt;msl</span><span class="Idnt">&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;image</span><span class="Idnt">&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;read</span> <span class="Type">filename</span>=<span class="Cnst">'image.png'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;display</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;/image&gt;</span></span>
+<span class="Line"><span class="Idnt">&lt;/msl&gt;</span></span>
+</pre>
+<p class="nt">
+	The first line shows that we are in an <a href="http://en.wikipedia.org/wiki/XML">XML</a> document,
+	the root tag indicates that we are in an MSL area.
+	Then we declare an 'image' tag where we read an image from the disk, and display it.
+</p>
+
+<p>
+	Just execute this script with the interpreter compiled or not with either:<br />
+		<code> &nbsp; ./conjure.ml  incantation.msl</code><br />
+		<code> &nbsp; ml-conjure  incantation.msl</code><br />
+</p>
+
+<p class="nb">
+	It's of course possible to apply operations on the image, let's try to negate it:
+</p>
+<pre>
+<span class="Line"><span class="Line"><span class="Cmnt">&lt;?</span><span class="Type">xml</span> <span class="Type">version</span>=<span class="Cnst">&quot;1.0&quot;</span> <span class="Cmnt">?&gt;</span></span></span>
+<span class="Line"><span class="Line"><span class="Idnt">&lt;msl</span><span class="Idnt">&gt;</span></span></span>
+<span class="Line"><span class="Line">  <span class="Idnt">&lt;image</span><span class="Idnt">&gt;</span></span></span>
+<span class="Line"><span class="Line">    <span class="Idnt">&lt;read</span> <span class="Type">filename</span>=<span class="Cnst">'image.png'</span><span class="Idnt"> /&gt;</span></span></span>
+<span class="Line"><span class="Line">    <span class="Idnt">&lt;negate</span><span class="Idnt"> /&gt;</span></span></span>
+<span class="Line"><span class="Line">    <span class="Idnt">&lt;display</span><span class="Idnt"> /&gt;</span></span></span>
+<span class="Line"><span class="Line">  <span class="Idnt">&lt;/image&gt;</span></span></span>
+<span class="Line"><span class="Line"><span class="Idnt">&lt;/msl&gt;</span></span></span>
+</pre>
+
+<!-- }}} -->
+<!-- {{{ compose -->
+
+<h2>Multi-layer Compositing</h2>
+<p class="nb">
+	It's possible to compose an image from several layers
+	(just like in the image manipulation programs with graphical user interface).<br />
+	Just make a list of layers and request for merging these by putting this list inside a 'merge' tag.
+</p>
+<pre>
+<span class="Line"><span class="Cmnt">&lt;?</span><span class="Type">xml</span> <span class="Type">version</span>=<span class="Cnst">&quot;1.0&quot;</span> <span class="Cmnt">?&gt;</span></span>
+<span class="Line"><span class="Idnt">&lt;msl</span><span class="Idnt">&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;image</span><span class="Idnt">&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;merge</span><span class="Idnt">&gt;</span></span>
+<span class="Line">      <span class="Idnt">&lt;layer</span> <span class="Type">compose</span>=<span class="Cnst">'lighten'</span><span class="Idnt">&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;read</span> <span class="Type">filename</span>=<span class="Cnst">'image.png'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;negate</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;modulate</span> <span class="Type">hue</span>=<span class="Cnst">'160'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">      <span class="Idnt">&lt;/layer&gt;</span></span>
+<span class="Line">      <span class="Idnt">&lt;layer</span><span class="Idnt">&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;read</span> <span class="Type">filename</span>=<span class="Cnst">'image.png'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;blur</span> <span class="Type">sigma</span>=<span class="Cnst">'6'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">      <span class="Idnt">&lt;/layer&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;/merge&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;display</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;/image&gt;</span></span>
+<span class="Line"><span class="Idnt">&lt;/msl&gt;</span></span>
+</pre>
+<p class="nt">
+	(For IM users there's an alias for 'merge': you can use 'composite' instead.)
+</p>
+
+<h2>Layers Anatomy</h2>
+<p>
+	Layers are merged/composited according to their
+	<a href="http://www.imagemagick.org/script/command-line-options.php#compose">compose attribute</a>.
+	The layer which is at the bottom in the list is the background, so it doesn't need a compose attribute
+	(but if you put one, it will just be ignored).
+</p>
+<p class="nb">
+	Inside the 'layer' tag, the first element have to be a <em>primitive</em>.
+	This primitive can be one of those:
+</p>
+<pre>
+<span class="Line">    <span class="Idnt">&lt;read</span> <span class="Type">filename</span>=<span class="Cnst">'image.png'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;make</span> <span class="Type">from</span>=<span class="Cnst">'plasma:fractal'</span> <span class="Type">width</span>=<span class="Cnst">'400'</span> <span class="Type">height</span>=<span class="Cnst">'300'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;canvas</span> <span class="Type">color</span>=<span class="Cnst">'#FFAA66'</span> <span class="Type">width</span>=<span class="Cnst">'400'</span> <span class="Type">height</span>=<span class="Cnst">'300'</span><span class="Idnt"> /&gt;</span></span>
+</pre>
+<p class="nt">
+	The result of a composite operation can also be used as a primitive.
+</p>
+
+<p>
+	After the primitive, you can put filter tags which will be applied on the primitive.
+	The list of the filters are at the <a href="#flt_li">end of this page</a>.
+</p>
+
+<!-- }}} -->
+<!-- {{{ append -->
+
+<h2>Appending Layers</h2>
+<p class="nb">
+	As in the other ImageMagick interfaces it's possible to append layers:
+</p>
+<pre>
+<span class="Line"><span class="Cmnt">&lt;?</span><span class="Type">xml</span><span class="Type"> </span><span class="Type">version</span>=<span class="Cnst">&quot;1.0&quot;</span><span class="Type"> </span><span class="Cmnt">?&gt;</span></span>
+<span class="Line"><span class="Idnt">&lt;msl</span><span class="Idnt">&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;image</span><span class="Idnt">&gt;</span></span>
+<span class="Line">   &nbsp;</span>
+<span class="Line">    <span class="Idnt">&lt;append</span><span class="Idnt">&gt;</span></span>
+<span class="Line">      <span class="Idnt">&lt;layer</span><span class="Idnt">&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;canvas</span> <span class="Type">width</span>=<span class="Cnst">'50'</span> <span class="Type">height</span>=<span class="Cnst">'50'</span> <span class="Type">color</span>=<span class="Cnst">'#D33'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">      <span class="Idnt">&lt;/layer&gt;</span></span>
+<span class="Line">     &nbsp;</span>
+<span class="Line">      <span class="Idnt">&lt;layer</span><span class="Idnt">&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;canvas</span> <span class="Type">width</span>=<span class="Cnst">'50'</span> <span class="Type">height</span>=<span class="Cnst">'50'</span> <span class="Type">color</span>=<span class="Cnst">'#5A0'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">      <span class="Idnt">&lt;/layer&gt;</span></span>
+<span class="Line">     &nbsp;</span>
+<span class="Line">      <span class="Idnt">&lt;layer</span><span class="Idnt">&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;canvas</span> <span class="Type">width</span>=<span class="Cnst">'50'</span> <span class="Type">height</span>=<span class="Cnst">'50'</span> <span class="Type">color</span>=<span class="Cnst">'#29D'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">      <span class="Idnt">&lt;/layer&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;/append&gt;</span></span>
+<span class="Line">   &nbsp;</span>
+<span class="Line">    <span class="Idnt">&lt;display</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;/image&gt;</span></span>
+<span class="Line"><span class="Idnt">&lt;/msl&gt;</span></span>
+</pre>
+<p class="nt">
+	<img src="img/RGB-append.png" style="margin:6px 0 0.4em 4%;" alt="RGV set from append" /><br />
+	By default it appends the layers stack in the left to right direction.<br />
+	To append top to bottom, add the 'stack' attribute in the append tag:<br />
+	<code class="inline">&nbsp;<span class="Line"><span class="Idnt">&lt;append</span> <span class="Type">stack</span>=<span class="Cnst">'top-to-bottom'</span><span class="Idnt">&gt;</span></span>&nbsp;</code>
+	<!--
+	<code class="inline">"left-to-right"</code>
+	-->
+</p>
+
+<!-- }}} -->
+<!-- {{{ set vars -->
+
+<h2>Variables</h2>
+<p class="nb">
+	Variables are used this way <strong><code>%[VAR]</code></strong>, just set its value with the 'set' tag:
+</p>
+<pre>
+<span class="Line"><span class="Cmnt">&lt;?</span><span class="Type">xml</span> <span class="Type">version</span>=<span class="Cnst">&quot;1.0&quot;</span> <span class="Cmnt">?&gt;</span></span>
+<span class="Line"><span class="Idnt">&lt;msl</span><span class="Idnt">&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;set</span> <span class="Type">var</span>=<span class="Cnst">'WIDTH'</span>  <span class="Type">value</span>=<span class="Cnst">'300'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;set</span> <span class="Type">var</span>=<span class="Cnst">'HEIGHT'</span> <span class="Type">value</span>=<span class="Cnst">'200'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line"></span>
+<span class="Line">  <span class="Idnt">&lt;image</span><span class="Idnt">&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;canvas</span> <span class="Type">width</span>=<span class="Cnst">'%[WIDTH]'</span> <span class="Type">height</span>=<span class="Cnst">'%[HEIGHT]'</span> <span class="Type">color</span>=<span class="Cnst">'#D40'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;display</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;/image&gt;</span></span>
+<span class="Line"><span class="Idnt">&lt;/msl&gt;</span></span>
+</pre>
+
+<p class="nb">
+	Variables can be modified with mathematic operators:
+</p>
+<pre>
+<span class="Line"><span class="Cmnt">&lt;?</span><span class="Type">xml</span> <span class="Type">version</span>=<span class="Cnst">&quot;1.0&quot;</span> <span class="Cmnt">?&gt;</span></span>
+<span class="Line"><span class="Idnt">&lt;msl</span><span class="Idnt">&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;set</span> <span class="Type">var</span>=<span class="Cnst">'WIDTH'</span>  <span class="Type">value</span>=<span class="Cnst">'300'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;set</span> <span class="Type">var</span>=<span class="Cnst">'HEIGHT'</span> <span class="Type">value</span>=<span class="Cnst">'200'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line"> &nbsp;</span>
+<span class="Line">  <span class="Idnt">&lt;image</span><span class="Idnt">&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;canvas</span> <span class="Type">width</span>=<span class="Cnst">'%[WIDTH]'</span> <span class="Type">height</span>=<span class="Cnst">'%[HEIGHT]'</span> <span class="Type">color</span>=<span class="Cnst">'#D40'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;display</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;/image&gt;</span></span>
+<span class="Line"> &nbsp;</span>
+<span class="Line">  <span class="Idnt">&lt;set</span> <span class="Type">var</span>=<span class="Cnst">'WIDTH'</span>  <span class="Type">op</span>=<span class="Cnst">'/'</span> <span class="Idnt"><span class="Type">value</span>=<span class="Cnst">'3'</span> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;set</span> <span class="Type">var</span>=<span class="Cnst">'HEIGHT'</span> <span class="Type">op</span>=<span class="Cnst">'/'</span> <span class="Idnt"><span class="Type">value</span>=<span class="Cnst">'2'</span> /&gt;</span></span>
+<span class="Line"> &nbsp;</span>
+<span class="Line">  <span class="Idnt">&lt;image</span><span class="Idnt">&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;canvas</span> <span class="Type">width</span>=<span class="Cnst">'%[WIDTH]'</span> <span class="Type">height</span>=<span class="Cnst">'%[HEIGHT]'</span> <span class="Type">color</span>=<span class="Cnst">'#D40'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;display</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;/image&gt;</span></span>
+<span class="Line"><span class="Idnt">&lt;/msl&gt;</span></span>
+</pre>
+<p class="nt">
+	Available operators are: <code>'+', '-', '/', '*', '**', '^' and '%'.</code>
+</p>
+
+<!-- }}} -->
+<!-- {{{ get vars -->
+
+<h2>Get Infos about the image</h2>
+<p class="nb">
+	It is also possible to get informations about an image, and set it in a variable:
+</p>
+<pre>
+<span class="Line"><span class="Cmnt">&lt;?</span><span class="Type">xml</span> <span class="Type">version</span>=<span class="Cnst">&quot;1.0&quot;</span> <span class="Cmnt">?&gt;</span></span>
+<span class="Line"><span class="Idnt">&lt;</span><span class="Idnt">msl</span><span class="Idnt">&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;</span><span class="Idnt">set</span> <span class="Type">var</span>=<span class="Cnst">'IMG_FILE'</span> <span class="Type">value</span>=<span class="Cnst">'stone_moon.jpg'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;</span><span class="Idnt">image</span><span class="Idnt">&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;</span><span class="Idnt">read</span> <span class="Type">filename</span>=<span class="Cnst">'%[IMG_FILE]'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">   &nbsp;</span>
+<span class="Line">    <span class="Idnt">&lt;</span><span class="Idnt">get</span> <span class="Type">width</span>=<span class="Cnst">'W'</span> <span class="Type">height</span>=<span class="Cnst">'H'</span></span>
+<span class="Line">         <span class="Type">depth</span>=<span class="Cnst">'D'</span> <span class="Type">quality</span>=<span class="Cnst">'Q'</span> <span class="Type">number_colors</span>=<span class="Cnst">'NC'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">   &nbsp;</span>
+<span class="Line">    <span class="Idnt">&lt;</span><span class="Idnt">print</span> <span class="Type">output</span>=<span class="Cnst">' width x height: %[W] x %[H]'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;</span><span class="Idnt">print</span> <span class="Type">output</span>=<span class="Cnst">' depth: %[D]'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;</span><span class="Idnt">print</span> <span class="Type">output</span>=<span class="Cnst">' compression quality: %[Q]'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;</span><span class="Idnt">print</span> <span class="Type">output</span>=<span class="Cnst">' number of colors: %[NC]'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;/image&gt;</span></span>
+<span class="Line"><span class="Idnt">&lt;/msl&gt;</span></span>
+</pre>
+
+<!-- }}} -->
+<!-- {{{ switch -->
+
+<h2>Switch structure</h2>
+<p class="nb">
+	The <strong>switch</strong> statement is a control structure which provides the possibility to put a list of cases,
+	in which only one will be used.<br />
+	The <em>value</em> given in the &lt;switch&gt; tag is compared to the <em>value</em>
+	given in each &lt;case&gt; tag,
+	and the content of the case which <em>value</em> is equal will be used in place of the &lt;switch&gt;.
+</p>
+<pre>
+<span class="Line"><span class="Cmnt">&lt;?</span><span class="Type">xml</span><span class="Type"> </span><span class="Type">version</span>=<span class="Cnst">&quot;1.0&quot;</span><span class="Type"> </span><span class="Cmnt">?&gt;</span></span>
+<span class="Line"><span class="Idnt">&lt;msl</span><span class="Idnt">&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;switch</span> <span class="Type">value</span>=<span class="Cnst">'B'</span><span class="Idnt">&gt;</span></span>
+<span class="Line">   &nbsp;</span>
+<span class="Line">    <span class="Idnt">&lt;case</span> <span class="Type">value</span>=<span class="Cnst">'A'</span><span class="Idnt">&gt;</span></span>
+<span class="Line">      <span class="Idnt">&lt;print</span> <span class="Type">output</span>=<span class="Cnst">'case A selected'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;/case&gt;</span></span>
+<span class="Line">   &nbsp;</span>
+<span class="Line">    <span class="Idnt">&lt;case</span> <span class="Type">value</span>=<span class="Cnst">'B'</span><span class="Idnt">&gt;</span></span>
+<span class="Line">      <span class="Idnt">&lt;print</span> <span class="Type">output</span>=<span class="Cnst">'case B selected'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;/case&gt;</span></span>
+<span class="Line">   &nbsp;</span>
+<span class="Line">    <span class="Idnt">&lt;case</span> <span class="Type">value</span>=<span class="Cnst">'C'</span><span class="Idnt">&gt;</span></span>
+<span class="Line">      <span class="Idnt">&lt;print</span> <span class="Type">output</span>=<span class="Cnst">'case C selected'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;/case&gt;</span></span>
+<span class="Line"> &nbsp;</span>
+<span class="Line">  <span class="Idnt">&lt;/switch&gt;</span></span>
+<span class="Line">  <span class="Cmnt">&lt;!</span><span class="Cmnt">-- This script will print &quot;case B selected&quot; --</span><span class="Cmnt">&gt;</span></span>
+<span class="Line"><span class="Idnt">&lt;/msl&gt;</span></span>
+</pre>
+<p class="nt">
+	When no equality is found between the switch value and any case value, then the script will stop and
+	print a message to explain what happens.
+	It is also possible to put a &lt;default&gt; tag, so if no case matches, the content of the default one will
+	be used.
+</p>
+
+<p class="nb">
+	This structure is very handy to keep several alternatives in of the same script.<br />
+	Here is a concrete exemple where several backgrounds can be selected with the <code>%[SELECT]</code>
+	variable:
+</p>
+<pre class="Small">
+<span class="Line"><span class="Cmnt">&lt;?</span><span class="Type">xml</span><span class="Type"> </span><span class="Type">version</span>=<span class="Cnst">&quot;1.0&quot;</span><span class="Type"> </span><span class="Cmnt">?&gt;</span></span>
+<span class="Line"><span class="Idnt">&lt;msl</span><span class="Idnt">&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;set</span> <span class="Type">var</span>=<span class="Cnst">'WIDTH'</span>  <span class="Type">value</span>=<span class="Cnst">'320'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;set</span> <span class="Type">var</span>=<span class="Cnst">'HEIGHT'</span> <span class="Type">value</span>=<span class="Cnst">'82'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;set</span> <span class="Type">var</span>=<span class="Cnst">'SELECT'</span> <span class="Type">value</span>=<span class="Cnst">'A'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line"> &nbsp;</span>
+<span class="Line">  <span class="Idnt">&lt;image</span><span class="Idnt">&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;merge</span><span class="Idnt">&gt;</span></span>
+<span class="Line">     &nbsp;</span>
+<span class="Line">      <span class="Idnt">&lt;layer</span> <span class="Type">compose</span>=<span class="Cnst">'modulate'</span><span class="Idnt">&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;canvas</span> <span class="Type">width</span>=<span class="Cnst">'%[WIDTH]'</span> <span class="Type">height</span>=<span class="Cnst">'%[HEIGHT]'</span> <span class="Type">color</span>=<span class="Cnst">'#FFF'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;draw_text</span> <span class="Type">x</span>=<span class="Cnst">'22'</span> <span class="Type">y</span>=<span class="Cnst">'66'</span> <span class="Type">text</span>=<span class="Cnst">'SWITCH'</span> <span class="Type">point_size</span>=<span class="Cnst">'72'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;blur</span> <span class="Type">sigma</span>=<span class="Cnst">'2.6'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;shade</span> <span class="Type">azimuth</span>=<span class="Cnst">'230'</span> <span class="Type">elevation</span>=<span class="Cnst">'30'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">      <span class="Idnt">&lt;/layer&gt;</span></span>
+<span class="Line">     &nbsp;</span>
+<span class="Line">      <span class="Idnt">&lt;layer</span><span class="Idnt">&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;switch</span> <span class="Type">value</span>=<span class="Cnst">'%[SELECT]'</span><span class="Idnt">&gt;</span></span>
+<span class="Line">          <span class="Idnt">&lt;case</span> <span class="Type">value</span>=<span class="Cnst">'A'</span><span class="Idnt">&gt;</span></span>
+<span class="Line">            <span class="Idnt">&lt;canvas</span> <span class="Type">width</span>=<span class="Cnst">'%[WIDTH]'</span> <span class="Type">height</span>=<span class="Cnst">'%[HEIGHT]'</span> <span class="Type">color</span>=<span class="Cnst">'#584'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">          <span class="Idnt">&lt;/case&gt;</span></span>
+<span class="Line">          <span class="Idnt">&lt;case</span> <span class="Type">value</span>=<span class="Cnst">'B'</span><span class="Idnt">&gt;</span></span>
+<span class="Line">            <span class="Idnt">&lt;create</span> <span class="Type">width</span>=<span class="Cnst">'%[WIDTH]'</span> <span class="Type">height</span>=<span class="Cnst">'%[HEIGHT]'</span> <span class="Type">from</span>=<span class="Cnst">'gradient:blue-white'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">          <span class="Idnt">&lt;/case&gt;</span></span>
+<span class="Line">          <span class="Idnt">&lt;case</span> <span class="Type">value</span>=<span class="Cnst">'C'</span><span class="Idnt">&gt;</span></span>
+<span class="Line">            <span class="Idnt">&lt;create</span> <span class="Type">width</span>=<span class="Cnst">'%[WIDTH]'</span> <span class="Type">height</span>=<span class="Cnst">'%[HEIGHT]'</span> <span class="Type">from</span>=<span class="Cnst">'plasma:fractal'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">            <span class="Idnt">&lt;modulate</span> <span class="Type">saturation</span>=<span class="Cnst">'20'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">            <span class="Idnt">&lt;motion_blur</span> <span class="Type">sigma</span>=<span class="Cnst">'6'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">          <span class="Idnt">&lt;/case&gt;</span></span>
+<span class="Line">          <span class="Idnt">&lt;default</span><span class="Idnt">&gt;</span></span>
+<span class="Line">            <span class="Idnt">&lt;create</span> <span class="Type">width</span>=<span class="Cnst">'%[WIDTH]'</span> <span class="Type">height</span>=<span class="Cnst">'%[HEIGHT]'</span> <span class="Type">from</span>=<span class="Cnst">'pattern:checkerboard'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">          <span class="Idnt">&lt;/default&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;/switch&gt;</span></span>
+<span class="Line">      <span class="Idnt">&lt;/layer&gt;</span></span>
+<span class="Line">     &nbsp;</span>
+<span class="Line">    <span class="Idnt">&lt;/merge&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;display</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;write</span> <span class="Type">filename</span>=<span class="Cnst">&quot;switch-%[SELECT].png&quot;</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;/image&gt;</span></span>
+<span class="Line"> &nbsp;</span>
+<span class="Line"><span class="Idnt">&lt;/msl&gt;</span></span>
+</pre>
+<p class="nb">
+	Depending on the value the <code>%[SELECT]</code> variable is set with,
+	here are the results this script can produce:
+</p>
+<ul class="nop" style="margin-bottom:4em;padding-left:16%;">
+	<li>SELECT=<strong>A</strong> &nbsp; <img src="./img/switch-A.png" alt="switch: A" /></li>
+	<li>SELECT=<strong>B</strong> &nbsp; <img src="./img/switch-B.png" alt="switch: B" /></li>
+	<li>SELECT=<strong>C</strong> &nbsp; <img src="./img/switch-C.png" alt="switch: C" /></li>
+	<li>SELECT=<strong>Z</strong> &nbsp; <img src="./img/switch-Z.png" alt="switch: Z" /></li>
+</ul>
+
+<!-- }}} -->
+<!-- {{{ For -->
+
+<h2>For structure</h2>
+<p class="nb">
+	The <strong>for</strong> statement is a control structure which provides the possibility to
+	apply an iteration.<br />
+	The iteration is exectuted with a variable over a given list.
+</p>
+<pre>
+<span class="Line"><span class="Cmnt">&lt;?</span><span class="Type">xml</span> <span class="Type">version</span>=<span class="Cnst">&quot;1.0&quot;</span> <span class="Cmnt">?&gt;</span></span>
+<span class="Line"><span class="Idnt">&lt;msl</span><span class="Idnt">&gt;</span></span>
+<span class="Line"> &nbsp;</span>
+<span class="Line">  <span class="Idnt">&lt;for</span> <span class="Type">var</span>=<span class="Cnst">'MONTH'</span> <span class="Type">in</span>=<span class="Cnst">'January February March April'</span><span class="Idnt">&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;print</span> <span class="Type">output</span>=<span class="Cnst">'=&gt; &quot;%[MONTH]&quot;'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;/for&gt;</span></span>
+<span class="Line"> &nbsp;</span>
+<span class="Line"><span class="Idnt">&lt;/msl&gt;</span></span>
+</pre>
+<p class="ntnb">
+	This exemple will print:
+</p>
+<ul class="nop" style="margin: 0.4em 0 1.8em 10%;">
+	<li><code>=&gt; "January" </code></li>
+	<li><code>=&gt; "February"</code></li>
+	<li><code>=&gt; "March"    </code></li>
+	<li><code>=&gt; "April"   </code></li>
+</ul>
+
+
+<p class="nb">
+	So let's try to reproduce the previous exemple of the <em>append</em> operator:
+</p>
+<pre>
+<span class="Line"><span class="Cmnt">&lt;?</span><span class="Type">xml</span> <span class="Type">version</span>=<span class="Cnst">&quot;1.0&quot;</span> <span class="Cmnt">?&gt;</span></span>
+<span class="Line"><span class="Idnt">&lt;msl</span><span class="Idnt">&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;image</span><span class="Idnt">&gt;</span></span>
+<span class="Line">   &nbsp;</span>
+<span class="Line">    <span class="Idnt">&lt;append</span><span class="Idnt">&gt;</span></span>
+<span class="Line">      <span class="Idnt">&lt;for</span> <span class="Type">var</span>=<span class="Cnst">'COLOR'</span> <span class="Type">in</span>=<span class="Cnst">'#D33  #5A0  #29D'</span><span class="Idnt">&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;layer</span><span class="Idnt">&gt;</span></span>
+<span class="Line">          <span class="Idnt">&lt;canvas</span> <span class="Type">width</span>=<span class="Cnst">'50'</span> <span class="Type">height</span>=<span class="Cnst">'50'</span> <span class="Type">color</span>=<span class="Cnst">'%[COLOR]'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;/layer&gt;</span></span>
+<span class="Line">      <span class="Idnt">&lt;/for&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;/append&gt;</span></span>
+<span class="Line">   &nbsp;</span>
+<span class="Line">    <span class="Idnt">&lt;display</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;/image&gt;</span></span>
+<span class="Line"><span class="Idnt">&lt;/msl&gt;</span></span>
+</pre>
+
+<!-- }}} -->
+<!-- {{{ IF -->
+
+<h2>IF condition</h2>
+<p class="nb">
+	The <strong>if</strong> statement provides conditional branches selected from comparisons:
+</p>
+<pre>
+<span class="Line"><span class="Cmnt">&lt;?</span><span class="Type">xml</span> <span class="Type">version</span>=<span class="Cnst">&quot;1.0&quot;</span> <span class="Cmnt">?&gt;</span></span>
+<span class="Line"><span class="Idnt">&lt;msl</span><span class="Idnt">&gt;</span></span>
+<span class="Line"> &nbsp;</span>
+<span class="Line">  <span class="Idnt">&lt;if</span> <span class="Type">value</span>=<span class="Cnst">'2'</span> <span class="Type">lower_than</span>=<span class="Cnst">'4'</span><span class="Idnt">&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;then</span><span class="Idnt">&gt;</span></span>
+<span class="Line">      <span class="Idnt">&lt;print</span> <span class="Type">output</span>=<span class="Cnst">' TRUE'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;/then&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;else</span><span class="Idnt">&gt;</span></span>
+<span class="Line">      <span class="Idnt">&lt;print</span> <span class="Type">output</span>=<span class="Cnst">' FALSE'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;/else&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;/if&gt;</span></span>
+<span class="Line">  <span class="Cmnt">&lt;!</span><span class="Cmnt">-- produces TRUE --</span><span class="Cmnt">&gt;</span></span>
+<span class="Line"><span class="Idnt">&lt;/msl&gt;</span></span>
+</pre>
+
+<p class="nb">
+	There are 3 available comparisons, and it's possible to put several ones at the same time:
+</p>
+<pre>
+<span class="Line"><span class="Cmnt">&lt;?</span><span class="Type">xml</span> <span class="Type">version</span>=<span class="Cnst">&quot;1.0&quot;</span> <span class="Cmnt">?&gt;</span></span>
+<span class="Line"><span class="Idnt">&lt;msl</span><span class="Idnt">&gt;</span></span>
+<span class="Line"> &nbsp;</span>
+<span class="Line">  <span class="Idnt">&lt;if</span> <span class="Type">value</span>=<span class="Cnst">'4'</span> <span class="Type">greater_than</span>=<span class="Cnst">'2'</span> <span class="Type">lower_than</span>=<span class="Cnst">'8'</span> <span class="Type">equal_with</span>=<span class="Cnst">'4'</span><span class="Idnt">&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;then</span><span class="Idnt">&gt;</span></span>
+<span class="Line">      <span class="Idnt">&lt;print</span> <span class="Type">output</span>=<span class="Cnst">' TRUE'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;/then&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;else</span><span class="Idnt">&gt;</span></span>
+<span class="Line">      <span class="Idnt">&lt;print</span> <span class="Type">output</span>=<span class="Cnst">' FALSE'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;/else&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;/if&gt;</span></span>
+<span class="Line">  <span class="Cmnt">&lt;!</span><span class="Cmnt">-- produces TRUE --</span><span class="Cmnt">&gt;</span></span>
+<span class="Line"><span class="Idnt">&lt;/msl&gt;</span></span>
+</pre>
+
+<!-- }}} -->
+<!-- {{{ id/idref -->
+
+<h2>id/idref</h2>
+<p class="nb">
+	If there is the same layer used several times, instead of generating it each time,
+	it is possible to create it once, then give an <strong>id</strong> to this layer,
+	and it will be possible to use it as many time as you wish with taking it back
+	with <strong>idref</strong>. In such case, you don't have to give a primitive as the
+	first element inside the layer tag, since the referenced layer will be used instead.
+</p>
+<pre class="Small">
+<span class="Line"><span class="Cmnt">&lt;?</span><span class="Type">xml</span> <span class="Type">version</span>=<span class="Cnst">&quot;1.0&quot;</span> <span class="Cmnt">?&gt;</span></span>
+<span class="Line"><span class="Idnt">&lt;msl</span><span class="Idnt">&gt;</span></span>
+<span class="Line"> &nbsp;</span>
+<span class="Line">  <span class="Idnt">&lt;layer</span> <span class="Type">id</span>=<span class="Cnst">'Base'</span><span class="Idnt">&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;canvas</span> <span class="Type">width</span>=<span class="Cnst">'170'</span> <span class="Type">height</span>=<span class="Cnst">'80'</span> <span class="Type">color</span>=<span class="Cnst">'#FFF'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;draw_text</span> <span class="Type">x</span>=<span class="Cnst">'25'</span> <span class="Type">y</span>=<span class="Cnst">'60'</span> <span class="Type">text</span>=<span class="Cnst">'MSL'</span> <span class="Type">point_size</span>=<span class="Cnst">'45'</span> <span class="Type">stroke_color</span>=<span class="Cnst">'#000'</span> <span class="Type">stroke_width</span>=<span class="Cnst">'1.6'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;/layer&gt;</span></span>
+<span class="Line"> &nbsp;</span>
+<span class="Line">  <span class="Idnt">&lt;image</span><span class="Idnt">&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;merge</span><span class="Idnt">&gt;</span></span>
+<span class="Line">     &nbsp;</span>
+<span class="Line">      <span class="Idnt">&lt;layer</span> <span class="Type">compose</span>=<span class="Cnst">'Multiply'</span>  <span class="Type">name</span>=<span class="Cnst">'Shadow'</span><span class="Idnt">&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;merge</span><span class="Idnt">&gt;</span></span>
+<span class="Line">          <span class="Idnt">&lt;layer</span> <span class="Type">compose</span>=<span class="Cnst">'Lighten'</span> <span class="Type">idref</span>=<span class="Cnst">'Base'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">         &nbsp;</span>
+<span class="Line">          <span class="Idnt">&lt;layer</span> <span class="Type">idref</span>=<span class="Cnst">'Base'</span><span class="Idnt">&gt;</span></span>
+<span class="Line">            <span class="Idnt">&lt;blur</span> <span class="Type">sigma</span>=<span class="Cnst">'2'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">            <span class="Idnt">&lt;modulate</span> <span class="Type">brightness</span>=<span class="Cnst">'40'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">            <span class="Idnt">&lt;negate</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">          <span class="Idnt">&lt;/layer&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;/merge&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;roll</span> <span class="Type">x</span>=<span class="Cnst">'-2'</span> <span class="Type">y</span>=<span class="Cnst">'-1'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;print</span> <span class="Type">output</span>=<span class="Cnst">' the shadow'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;display</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">      <span class="Idnt">&lt;/layer&gt;</span></span>
+<span class="Line">     &nbsp;</span>
+<span class="Line">      <span class="Idnt">&lt;layer</span> <span class="Type">compose</span>=<span class="Cnst">'Lighten'</span>  <span class="Type">name</span>=<span class="Cnst">'Internal Light'</span><span class="Idnt">&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;merge</span><span class="Idnt">&gt;</span></span>
+<span class="Line">          <span class="Idnt">&lt;layer</span> <span class="Type">compose</span>=<span class="Cnst">'Multiply'</span> <span class="Type">idref</span>=<span class="Cnst">'Base'</span><span class="Idnt">&gt;</span></span>
+<span class="Line">            <span class="Idnt">&lt;negate</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">          <span class="Idnt">&lt;/layer&gt;</span></span>
+<span class="Line">          <span class="Idnt">&lt;layer</span><span class="Idnt">&gt;</span></span>
+<span class="Line">            <span class="Idnt">&lt;canvas</span> <span class="Type">width</span>=<span class="Cnst">'170'</span> <span class="Type">height</span>=<span class="Cnst">'80'</span> <span class="Type">color</span>=<span class="Cnst">'#2E2A3C'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">          <span class="Idnt">&lt;/layer&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;/merge&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;print</span> <span class="Type">output</span>=<span class="Cnst">' the light'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;display</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">      <span class="Idnt">&lt;/layer&gt;</span></span>
+<span class="Line">     &nbsp;</span>
+<span class="Line">      <span class="Idnt">&lt;layer</span>  <span class="Type">name</span>=<span class="Cnst">'Background'</span><span class="Idnt">&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;canvas</span> <span class="Type">width</span>=<span class="Cnst">'170'</span> <span class="Type">height</span>=<span class="Cnst">'80'</span> <span class="Type">color</span>=<span class="Cnst">'#222'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">      <span class="Idnt">&lt;/layer&gt;</span></span>
+<span class="Line">     &nbsp;</span>
+<span class="Line">    <span class="Idnt">&lt;/merge&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;shear</span> <span class="Type">x</span>=<span class="Cnst">'3'</span> <span class="Type">y</span>=<span class="Cnst">'0'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;crop</span> <span class="Type">x</span>=<span class="Cnst">'25'</span> <span class="Type">y</span>=<span class="Cnst">'15'</span> <span class="Type">width</span>=<span class="Cnst">'140'</span> <span class="Type">height</span>=<span class="Cnst">'50'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">   &nbsp;</span>
+<span class="Line">    <span class="Idnt">&lt;print</span> <span class="Type">output</span>=<span class="Cnst">' the result'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;display</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;write</span> <span class="Type">filename</span>=<span class="Cnst">'./code_tag.png'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;/image&gt;</span></span>
+<span class="Line"><span class="Idnt">&lt;/msl&gt;</span></span>
+</pre>
+<p class="nt">
+	(The result of this script is the small background image in the upper right corner of the code areas.)
+</p>
+
+<!-- }}} -->
+<!-- {{{ exemple -->
+
+<h2>Exemple</h2>
+<p class="nb">
+	Here is a quite consistent script exemple, with the image it creates:<br />
+	<img src="./img/stone_moon.jpg" style="border:3px solid #222;" alt="Stone Moon" />
+</p>
+<pre class="Small">
+<span class="Line"><span class="Cmnt">&lt;?</span><span class="Type">xml</span><span class="Type"> </span><span class="Type">version</span>=<span class="Cnst">&quot;1.0&quot;</span><span class="Type"> </span><span class="Cmnt">?&gt;</span></span>
+<span class="Line"><span class="Idnt">&lt;</span><span class="Idnt">msl</span><span class="Idnt">&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;</span><span class="Idnt">set</span> <span class="Type">var</span>=<span class="Cnst">'WIDTH'</span><span class="Idnt">  </span><span class="Type">value</span>=<span class="Cnst">'400'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;</span><span class="Idnt">set</span> <span class="Type">var</span>=<span class="Cnst">'HEIGHT'</span> <span class="Type">value</span>=<span class="Cnst">'300'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;</span><span class="Idnt">set</span> <span class="Type">var</span>=<span class="Cnst">'PAD'</span><span class="Idnt">    </span><span class="Type">value</span>=<span class="Cnst">'6'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line"> &nbsp;</span>
+<span class="Line">  <span class="Idnt">&lt;</span><span class="Idnt">set</span> <span class="Type">var</span>=<span class="Cnst">'WIDTH'</span><span class="Idnt">  </span><span class="Type">op</span>=<span class="Cnst">'+'</span> <span class="Type">value</span>=<span class="Cnst">'%[PAD]'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;</span><span class="Idnt">set</span> <span class="Type">var</span>=<span class="Cnst">'HEIGHT'</span> <span class="Type">op</span>=<span class="Cnst">'+'</span> <span class="Type">value</span>=<span class="Cnst">'%[PAD]'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;</span><span class="Idnt">image</span><span class="Idnt">&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;</span><span class="Idnt">merge</span><span class="Idnt">&gt;</span></span>
+<span class="Line">      <span class="Idnt">&lt;</span><span class="Idnt">layer</span> <span class="Type">compose</span>=<span class="Cnst">'displace'</span><span class="Idnt">&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;</span><span class="Idnt">make</span> <span class="Type">from</span>=<span class="Cnst">'plasma:fractal'</span> <span class="Type">width</span>=<span class="Cnst">'%[WIDTH]'</span> <span class="Type">height</span>=<span class="Cnst">'%[HEIGHT]'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;</span><span class="Idnt">blur</span> <span class="Type">sigma</span>=<span class="Cnst">'1.0'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;</span><span class="Idnt">modulate</span> <span class="Type">brightness</span>=<span class="Cnst">'90'</span> <span class="Type">saturation</span>=<span class="Cnst">'90'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">      <span class="Idnt">&lt;/layer&gt;</span></span>
+<span class="Line">      <span class="Idnt">&lt;</span><span class="Idnt">layer</span> <span class="Type">compose</span>=<span class="Cnst">'multiply'</span><span class="Idnt">&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;</span><span class="Idnt">merge</span><span class="Idnt">&gt;</span></span>
+<span class="Line">          <span class="Idnt">&lt;</span><span class="Idnt">layer</span> <span class="Type">compose</span>=<span class="Cnst">'difference'</span><span class="Idnt">&gt;</span></span>
+<span class="Line">            <span class="Idnt">&lt;</span><span class="Idnt">canvas</span> <span class="Type">color</span>=<span class="Cnst">'#FFF'</span> <span class="Type">width</span>=<span class="Cnst">'%[WIDTH]'</span> <span class="Type">height</span>=<span class="Cnst">'%[HEIGHT]'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">            <span class="Idnt">&lt;</span><span class="Idnt">draw_circle</span> <span class="Type">x1</span>=<span class="Cnst">'270'</span> <span class="Type">x2</span>=<span class="Cnst">'390'</span> <span class="Type">y1</span>=<span class="Cnst">'150'</span> <span class="Type">y2</span>=<span class="Cnst">'150'</span> <span class="Type">fill_color</span>=<span class="Cnst">'#000'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">            <span class="Idnt">&lt;</span><span class="Idnt">draw_circle</span> <span class="Type">x1</span>=<span class="Cnst">'320'</span> <span class="Type">x2</span>=<span class="Cnst">'420'</span> <span class="Type">y1</span>=<span class="Cnst">'150'</span> <span class="Type">y2</span>=<span class="Cnst">'150'</span> <span class="Type">fill_color</span>=<span class="Cnst">'#FFF'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">          <span class="Idnt">&lt;/layer&gt;</span></span>
+<span class="Line">          <span class="Idnt">&lt;</span><span class="Idnt">layer</span><span class="Idnt">&gt;</span></span>
+<span class="Line">            <span class="Idnt">&lt;</span><span class="Idnt">canvas</span> <span class="Type">color</span>=<span class="Cnst">'#FFF'</span> <span class="Type">width</span>=<span class="Cnst">'%[WIDTH]'</span> <span class="Type">height</span>=<span class="Cnst">'%[HEIGHT]'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">            <span class="Idnt">&lt;</span><span class="Idnt">draw_line</span> <span class="Type">x1</span>=<span class="Cnst">'35'</span> <span class="Type">x2</span>=<span class="Cnst">'290'</span> <span class="Type">y1</span>=<span class="Cnst">'120'</span> <span class="Type">y2</span>=<span class="Cnst">'120'</span> <span class="Type">fill_color</span>=<span class="Cnst">'#000'</span> <span class="Type">stroke_width</span>=<span class="Cnst">'5'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">            <span class="Idnt">&lt;</span><span class="Idnt">draw_line</span> <span class="Type">x1</span>=<span class="Cnst">'35'</span> <span class="Type">x2</span>=<span class="Cnst">'290'</span> <span class="Type">y1</span>=<span class="Cnst">'150'</span> <span class="Type">y2</span>=<span class="Cnst">'150'</span> <span class="Type">fill_color</span>=<span class="Cnst">'#000'</span> <span class="Type">stroke_width</span>=<span class="Cnst">'5'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">            <span class="Idnt">&lt;</span><span class="Idnt">draw_line</span> <span class="Type">x1</span>=<span class="Cnst">'35'</span> <span class="Type">x2</span>=<span class="Cnst">'290'</span> <span class="Type">y1</span>=<span class="Cnst">'180'</span> <span class="Type">y2</span>=<span class="Cnst">'180'</span> <span class="Type">fill_color</span>=<span class="Cnst">'#000'</span> <span class="Type">stroke_width</span>=<span class="Cnst">'5'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">          <span class="Idnt">&lt;/layer&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;/merge&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;</span><span class="Idnt">display</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;</span><span class="Idnt">blur</span> <span class="Type">sigma</span>=<span class="Cnst">'2.4'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;</span><span class="Idnt">shade</span> <span class="Type">azimuth</span>=<span class="Cnst">'270'</span> <span class="Type">elevation</span>=<span class="Cnst">'60'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">      <span class="Idnt">&lt;/layer&gt;</span></span>
+<span class="Line">      <span class="Idnt">&lt;</span><span class="Idnt">layer</span> <span class="Type">compose</span>=<span class="Cnst">'modulate'</span><span class="Idnt">&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;</span><span class="Idnt">make</span> <span class="Type">from</span>=<span class="Cnst">'plasma:fractal'</span> <span class="Type">width</span>=<span class="Cnst">'%[WIDTH]'</span> <span class="Type">height</span>=<span class="Cnst">'%[HEIGHT]'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;</span><span class="Idnt">blur</span> <span class="Type">sigma</span>=<span class="Cnst">'1.2'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;</span><span class="Idnt">shade</span> <span class="Type">azimuth</span>=<span class="Cnst">'270'</span> <span class="Type">elevation</span>=<span class="Cnst">'30'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;</span><span class="Idnt">contrast</span> <span class="Type">sharp</span>=<span class="Cnst">'reduce'</span> <span class="Type">times</span>=<span class="Cnst">'2'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">      <span class="Idnt">&lt;/layer&gt;</span></span>
+<span class="Line">      <span class="Idnt">&lt;</span><span class="Idnt">layer</span><span class="Idnt">&gt;</span></span>
+<span class="Line">        <span class="Idnt">&lt;</span><span class="Idnt">canvas</span> <span class="Type">color</span>=<span class="Cnst">'#A48856'</span> <span class="Type">width</span>=<span class="Cnst">'%[WIDTH]'</span> <span class="Type">height</span>=<span class="Cnst">'%[HEIGHT]'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">      <span class="Idnt">&lt;/layer&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;/merge&gt;</span></span>
+<span class="Line">   &nbsp;</span>
+<span class="Line">    <span class="Idnt">&lt;</span><span class="Idnt">set</span> <span class="Type">var</span>=<span class="Cnst">'WIDTH'</span><span class="Idnt">  </span><span class="Type">op</span>=<span class="Cnst">'-'</span> <span class="Type">value</span>=<span class="Cnst">'%[PAD]'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;</span><span class="Idnt">set</span> <span class="Type">var</span>=<span class="Cnst">'HEIGHT'</span> <span class="Type">op</span>=<span class="Cnst">'-'</span> <span class="Type">value</span>=<span class="Cnst">'%[PAD]'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;</span><span class="Idnt">crop</span> <span class="Type">x</span>=<span class="Cnst">'%[PAD]'</span> <span class="Type">y</span>=<span class="Cnst">'%[PAD]'</span> <span class="Type">width</span>=<span class="Cnst">'%[WIDTH]'</span> <span class="Type">height</span>=<span class="Cnst">'%[HEIGHT]'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;</span><span class="Idnt">display</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;</span><span class="Idnt">set_compression</span> <span class="Type">quality</span>=<span class="Cnst">'40'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">    <span class="Idnt">&lt;</span><span class="Idnt">write</span> <span class="Type">filename</span>=<span class="Cnst">'stone_moon.jpg'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;/image&gt;</span></span>
+<span class="Line"><span class="Idnt">&lt;/msl&gt;</span></span>
+</pre>
+
+<!-- }}} -->
+<!-- {{{ filters list -->
+
+<a id="flt_li"></a>
+<h2>Operations list</h2>
+<p class="nb">
+</p>
+<pre class="Small">
+<span class="Line">  <span class="Idnt">&lt;display</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;modulate</span> <span class="Type"><em>brightness</em></span>=<span class="Cnst">'80'</span> <span class="Type"><em>saturation</em></span>=<span class="Cnst">'120'</span> <span class="Type"><em>hue</em></span>=<span class="Cnst">'60'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;shade</span> <span class="Type">azimuth</span>=<span class="Cnst">'60'</span> <span class="Type">elevation</span>=<span class="Cnst">'30'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;charcoal</span> <span class="Type"><em>radius</em></span>=<span class="Cnst">'4'</span> <span class="Type">sigma</span>=<span class="Cnst">'3'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;emboss</span> <span class="Type"><em>radius</em></span>=<span class="Cnst">'4'</span> <span class="Type">sigma</span>=<span class="Cnst">'3'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;sharpen</span> <span class="Type"><em>radius</em></span>=<span class="Cnst">'6'</span> <span class="Type">sigma</span>=<span class="Cnst">'4'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;blur</span> <span class="Type"><em>radius</em></span>=<span class="Cnst">'4'</span> <span class="Type">sigma</span>=<span class="Cnst">'3'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;gaussian_blur</span> <span class="Type"><em>radius</em></span>=<span class="Cnst">'4'</span> <span class="Type">sigma</span>=<span class="Cnst">'3'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;motion_blur</span> <span class="Type"><em>radius</em></span>=<span class="Cnst">'8'</span> <span class="Type">sigma</span>=<span class="Cnst">'6'</span> <span class="Type"><em>angle</em></span>=<span class="Cnst">'30'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;radial_blur</span> <span class="Type">angle</span>=<span class="Cnst">'16'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;radial_blur_channel</span> <span class="Type">channel</span>=<span class="Cnst">'blue'</span> <span class="Type">angle</span>=<span class="Cnst">'30'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;swirl</span> <span class="Type">degrees</span>=<span class="Cnst">'120'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;edge</span> <span class="Type">radius</span>=<span class="Cnst">'2'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;implode</span> <span class="Type">amount</span>=<span class="Cnst">'0.6'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;contrast</span> <span class="Type">sharp</span>=<span class="Cnst">'increase'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;reduce_noise</span> <span class="Type">radius</span>=<span class="Cnst">'4'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;medianfilter</span> <span class="Type">radius</span>=<span class="Cnst">'3'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;spread</span> <span class="Type">radius</span>=<span class="Cnst">'1.2'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;oilpaint</span> <span class="Type">radius</span>=<span class="Cnst">'3'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;unsharpmask</span> <span class="Type">radius</span>=<span class="Cnst">'0.8'</span> <span class="Type">sigma</span>=<span class="Cnst">'1.2'</span> <span class="Type">amount</span>=<span class="Cnst">'1.0'</span> <span class="Type">threshold</span>=<span class="Cnst">'0.05'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;sample</span> <span class="Type">width</span>=<span class="Cnst">'80'</span> <span class="Type">height</span>=<span class="Cnst">'80'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;scale</span> <span class="Type">width</span>=<span class="Cnst">'80'</span> <span class="Type">height</span>=<span class="Cnst">'80'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;thumbnail</span> <span class="Type">width</span>=<span class="Cnst">'80'</span> <span class="Type">height</span>=<span class="Cnst">'80'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;resize</span> <span class="Type">width</span>=<span class="Cnst">'80'</span> <span class="Type">height</span>=<span class="Cnst">'80'</span> <span class="Type">blur</span>=<span class="Cnst">'0.8'</span> <span class="Type">filter</span>=<span class="Cnst">'Lanczos'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;crop</span> <span class="Type">x</span>=<span class="Cnst">'10'</span> <span class="Type">y</span>=<span class="Cnst">'10'</span> <span class="Type">width</span>=<span class="Cnst">'300'</span> <span class="Type">height</span>=<span class="Cnst">'200'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;splice</span> <span class="Type">x</span>=<span class="Cnst">'60'</span> <span class="Type">y</span>=<span class="Cnst">'60'</span> <span class="Type">width</span>=<span class="Cnst">'80'</span> <span class="Type">height</span>=<span class="Cnst">'80'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;roll</span> <span class="Type">x</span>=<span class="Cnst">'60'</span> <span class="Type">y</span>=<span class="Cnst">'40'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;shear</span> <span class="Type">x</span>=<span class="Cnst">'10'</span> <span class="Type">y</span>=<span class="Cnst">'2'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;rotate</span> <span class="Type">degrees</span>=<span class="Cnst">'8'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;wave</span> <span class="Type">amplitude</span>=<span class="Cnst">'3'</span> <span class="Type">wave_length</span>=<span class="Cnst">'30'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;minify</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;magnify</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;flip</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;flop</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;enhance</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;despeckle</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;normalize</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;equalize</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;strip</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;ordered_dither</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;negate</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;negate</span> <span class="Type"><em>channel</em></span>=<span class="Cnst">&quot;red&quot;</span> <span class="Type"><em>grayscale</em></span>=<span class="Cnst">&quot;false&quot;</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;cyclecolormap</span> <span class="Type">displace</span>=<span class="Cnst">'10'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;solarize</span> <span class="Type">threshold</span>=<span class="Cnst">'65400'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;black_threshold</span> <span class="Type">threshold</span>=<span class="Cnst">'30000,10000,50000'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;white_threshold</span> <span class="Type">threshold</span>=<span class="Cnst">'5%,40%,80%'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;level</span> <span class="Type">levels</span>=<span class="Cnst">&quot;10x90+2&quot;</span><span class="Idnt"> /&gt;</span></span>
+
+<span class="Line">  <span class="Cmnt">&lt;!-- Draw Functions --&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;draw_round_rectangle</span>  <span class="Type">x1</span>=<span class="Cnst">'40'</span> <span class="Type">y1</span>=<span class="Cnst">'20'</span> <span class="Type">x2</span>=<span class="Cnst">'180'</span> <span class="Type">y2</span>=<span class="Cnst">'120'</span> <span class="Type">wc</span>=<span class="Cnst">'22'</span> <span class="Type">hc</span>=<span class="Cnst">'16'</span></span>
+<span class="Line">                          <span class="Type"><em>fill_color</em></span>=<span class="Cnst">'#888'</span>  <span class="Type"><em>stroke_color</em></span>=<span class="Cnst">'#444'</span>  <span class="Type"><em>stroke_width</em></span>=<span class="Cnst">'2'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;draw_rectangle</span>  <span class="Type">x1</span>=<span class="Cnst">'20'</span> <span class="Type">y1</span>=<span class="Cnst">'20'</span> <span class="Type">x2</span>=<span class="Cnst">'100'</span> <span class="Type">y2</span>=<span class="Cnst">'80'</span></span>
+<span class="Line">                          <span class="Type"><em>fill_color</em></span>=<span class="Cnst">'#888'</span>  <span class="Type"><em>stroke_color</em></span>=<span class="Cnst">'#444'</span>  <span class="Type"><em>stroke_width</em></span>=<span class="Cnst">'2'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;draw_line</span>  <span class="Type">x1</span>=<span class="Cnst">'10'</span> <span class="Type">y1</span>=<span class="Cnst">'10'</span> <span class="Type">x2</span>=<span class="Cnst">'200'</span> <span class="Type">y2</span>=<span class="Cnst">'80'</span></span>
+<span class="Line">                          <span class="Type"><em>fill_color</em></span>=<span class="Cnst">'#F00'</span>  <span class="Type"><em>stroke_color</em></span>=<span class="Cnst">'#0F08'</span> <span class="Type"><em>stroke_width</em></span>=<span class="Cnst">'3'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;draw_circle</span>  <span class="Type">x1</span>=<span class="Cnst">'100'</span> <span class="Type">y1</span>=<span class="Cnst">'100'</span> <span class="Type">x2</span>=<span class="Cnst">'100'</span> <span class="Type">y2</span>=<span class="Cnst">'130'</span></span>
+<span class="Line">                          <span class="Type"><em>fill_color</em></span>=<span class="Cnst">'#00F'</span>  <span class="Type"><em>stroke_color</em></span>=<span class="Cnst">'#000'</span>  <span class="Type"><em>stroke_width</em></span>=<span class="Cnst">'2'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;draw_ellipse</span>  <span class="Type">cx</span>=<span class="Cnst">'100'</span> <span class="Type">cy</span>=<span class="Cnst">'80'</span> <span class="Type">rx</span>=<span class="Cnst">'60'</span> <span class="Type">ry</span>=<span class="Cnst">'30'</span> <span class="Type"><em>a1</em></span>=<span class="Cnst">'180'</span> <span class="Type"><em>a2</em></span>=<span class="Cnst">'0'</span></span>
+<span class="Line">                          <span class="Type"><em>fill_color</em></span>=<span class="Cnst">'#D60'</span>  <span class="Type"><em>stroke_color</em></span>=<span class="Cnst">'#000'</span>  <span class="Type"><em>stroke_width</em></span>=<span class="Cnst">'1'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;draw_text</span>  <span class="Type">text</span>=<span class="Cnst">'ABCDEF'</span> <span class="Type">x</span>=<span class="Cnst">'20'</span> <span class="Type">y</span>=<span class="Cnst">'60'</span> <span class="Type">point_size</span>=<span class="Cnst">'40'</span> <span class="Type"><em>font</em></span>=<span class="Cnst">'generic.ttf'</span></span>
+<span class="Line">                          <span class="Type"><em>fill_color</em></span>=<span class="Cnst">'#444'</span>  <span class="Type"><em>stroke_color</em></span>=<span class="Cnst">'#F60'</span>  <span class="Type"><em>stroke_width</em></span>=<span class="Cnst">'1'</span><span class="Idnt"> /&gt;</span></span>
+<span class="Line">  <span class="Idnt">&lt;draw_path</span>  <span class="Type">path</span>=<span class="Cnst">'M 30 120 C 80 20 80 100 120 130 C 160 150 180 60 160 40'</span></span>
+<span class="Line">                          <span class="Type"><em>fill_color</em></span>=<span class="Cnst">'#D607'</span> <span class="Type"><em>stroke_color</em></span>=<span class="Cnst">'#0008'</span> <span class="Type"><em>stroke_width</em></span>=<span class="Cnst">'2'</span><span class="Idnt"> /&gt;</span></span>
+
+</pre>
+<p class="nt">
+	If you wish to get the description of the filters and the parameters, as these are quite the same
+	than in the other ImageMagick interfaces, and particularly than the OCaml binding, you can read
+	its description
+	<a href="http://decapode314.free.fr/ocaml/ImageMagick/doc/Magick.Imper.html#effects">here</a>.
+</p>
+<p>
+	The arguments written in italic in this list are optional.
+</p>
+
+<!-- }}} -->
+<!-- {{{ Misc -->
+
+<h2>Miscelanous</h2>
+<p>
+	ml-conjure can also read from the standard input:<br />
+		<code> &nbsp; cat incantation.msl | ml-conjure -</code>
+</p>
+
+<!-- }}} -->
+</div>
+
+<!-- {{{ footer -->
+
+<div id="footer">
+ <div id="copy">
+   <p>Copyright &copy; 2006 Florent Monnier<br />
+   You can use this documentation under the terms of the GNU/FDL licence (GNU Free Documentation Licence):<br />
+   <a href="http://www.fsf.org/licensing/licenses/fdl.html">http://www.fsf.org/licensing/licenses/fdl.html</a></p>
+ </div>
+
+ <div id="conformance">
+  <a class="vxhtml"
+    href="http://validator.w3.org/check/referer"
+	title="XHTML Valid!"><span>xhtml</span></a>
+  <a class="vcss"
+    href="http://jigsaw.w3.org/css-validator/check/referer"
+	title="CSS Valid!"><span>css</span></a>
+ </div>
+</div>
+
+<!-- }}} -->
+</body>
+</html>
+<!-- vim: sw=4 sts=4 ts=4 fdm=marker nowrap
+ -->
