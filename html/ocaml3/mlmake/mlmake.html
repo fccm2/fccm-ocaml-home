@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Make w/ ocaml</title>
+<meta name="keywords" content="command-line, terminal, console, compile, ocaml, make" />
+<meta name="description" content="How to use make with ocaml." />
+<meta name="auhtor" content="Florent Monnier, 2025" />
+<meta name="license" content="fdl, cc-by-sa_2.5 OR Later, spdx:Any" />
+<style>
+pre { border-left:1px solid #000; padding-left:3px; }
+</style>
+</head>
+<body>
+<h1>Using Make - with ocaml</h1>
+<h2>How to use make with ocaml source files</h2>
+<p>Make can be a convenient way to compile,
+and recompile, ocaml sources.</p>
+<p>Here is an example of a generic, compile
+rule, to compile an ocaml source file, <code>"source.ml"</code>:</p>
+<pre>source.cmo: source.ml
+        ocamlc -c source.ml</pre>
+<p>Put this compile reciepy in a file called <code>Makefile</code>,
+in the same directory than the file <code>"source.ml"</code>.</p>
+<p>Then running the command <code>make</code>, will execute the
+command:</p>
+<pre>ocamlc -c source.ml</pre>
+<p>And it will create the compiled bytecode object: <code>"source.cmo"</code></p>
+<p>When you edit the source file <code>"source.ml"</code>, then
+you can automaticaly recompile the bytecode result, with the
+<code>make</code> command again.</p>
+<p>It is also possible to create a generic reciepy-rule:</p>
+<pre>%.cmo: %.ml
+        ocamlc -c $&lt;</pre>
+<p>(replace the 8 spaces by a tab '\t')<br />
+<p>The characters <code>$&lt;</code> can be used for the input file,
+after the <code>':'</code> colon character.</p>
+<p>With this generic reciepy, you can call the command:</p>
+<pre>make source.cmo</pre>
+<p>It will compile the source-file, with the same basename,
+and the <code>.ml</code>, file extension.</p>
+</body>
+</html>

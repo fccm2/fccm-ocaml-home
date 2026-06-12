@@ -1,0 +1,40 @@
+[ann-s]
+
+a second snapshot of mltree,
+adds md5
+
+tryed nim, it's type-system look like similar
+
+lost the wip of mini-svg 0.03.14, the doc 0.03.14a is still avail. online
+
+wrote a tut. objects-with-records, avail. online
+
+tried to make, a scheme like implementation,
+with a tut. also avail. online
+
+xmlerr 0.08.2 avail. in .zip re-organized with dirs.
+
+detrow, similar than detri, but with row
+
+trying to make a p6 module
+
+mgk-cmd, im6 im7 gm
+
+comb2-ocaml, doc. avail. at gh @fccm2
+
+mini-svg, re-write to ruby: rb-svg at gh
+
+cart-prod, at gh-fccm2, 4 iterators
+
+start gil, not a scm, snapshot-management-system
+
+a vim tut. to edit your .ml
+
+a git-tut. to mng. your .ml src w/ .git
+
+.mk tut. planed for .ml src
+
+start a w-site w/ .ml, eq. of oga for gen-gfx
+
+gen-asset usable w/ ml-sdl2/3
+

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>oo without oo, in ocaml</title>
+<meta name="syntax-highlight" content="Vim/9.0" />
+<meta name="keywords" content="documentation, oo, object, object-oriented programming, ocaml" />
+<meta name="description" content="How to make object-oriented programming in ocaml with records." />
+<meta name="license" content="Gnu/FDL, CC-by-sa_2.5 OR Later, Spdx:Any" />
+<meta name="auhtor" content="Florent (C. C.) Monnier, 2025" />
+<style>
+pre, code { white-space:pre-wrap; font-family:monospace; color:#fff; background-color:#000; }
+pre { padding:1px 2px; }
+body { font-family:monospace; color:#000; background-color:#fff; padding-right:26%; }
+.Statement { color:#ffff00; }
+.PreProc { color:#5fd7ff; }
+.Constant { color:#ff40ff; }
+.Comment { color:#00ffff; }
+.Type { color:#87ffaf; }
+</style>
+</head>
+<body>
+
+<h1>Objects with Records, in OCaml</h1>
+
+<p>With the rescript compiler version 8.4.2, the ocaml objects are not available.</p>
+<p>Here is a tutorial about how to simulate OO with records.</p>
+<p>In Python, the objects are available in the methods as the first parameter usually called <code>"self"</code>,
+so we will re-use this convention to contain the generic data of our objects as a field called <code>.self</code>
+in our generic objects implemented with a record.</p>
+
+<p>So here in our type <code>"o"</code>, we have the field <code>.self</code> to store the generic data,
+one method called <code>.meth</code> (but you can put several), and a second method called <code>.new_o</code>
+to replicate functional update methods of ocaml objects.</p>
+
+<pre class="ocaml">
+<span class="Statement">type</span> 'a o <span class="Statement">=</span> <span class="Statement">{</span>
+  self : 'a<span class="Statement">;</span>
+  meth : 'a <span class="Statement">-&gt;</span> <span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">int</span><span class="Statement">;</span>
+  new_o : 'a <span class="Statement">-&gt;</span> <span class="Type">int</span> <span class="Statement">-&gt;</span> 'a<span class="Statement">;</span>
+<span class="Statement">}</span>
+</pre>
+
+<p>Here there is a generic type parameter <code>'a</code>, if several objects have a different type for the .self field
+it will not be possible anymore to store several of these objects in a single structure, like a list for example.</p>
+
+<p>The solution is then to hide the self part by partial application.</p>
+<p>Our generic record will then look like this, with no generic type <code>'a</code> anymore:</p>
+
+<pre class="ocaml">
+<span class="Comment">(* our generic object *)</span>
+<span class="Statement">type</span> g <span class="Statement">=</span> <span class="Statement">{</span>
+  gmeth : <span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">int</span><span class="Statement">;</span>
+  new_g : <span class="Type">int</span> <span class="Statement">-&gt;</span> g<span class="Statement">;</span>
+<span class="Statement">}</span>
+</pre>
+
+<p>The original type <code>o</code> has a method <code>.new_o</code> which returns the new <code>self</code> element,
+which will be used to create the functional update method <code>.new_g</code> in the generic functional object.</p>
+
+<pre class="ocaml">
+<span class="Statement">type</span> 'a o <span class="Statement">=</span> <span class="Statement">{</span>
+  self : 'a<span class="Statement">;</span>
+  meth : 'a <span class="Statement">-&gt;</span> <span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">int</span><span class="Statement">;</span>
+  new_o : 'a <span class="Statement">-&gt;</span> <span class="Type">int</span> <span class="Statement">-&gt;</span> 'a<span class="Statement">;</span>
+<span class="Statement">}</span>
+
+<span class="Comment">(* type obj-1 *)</span>
+<span class="Statement">let</span> meth1 <span class="Statement">=</span> <span class="Statement">(fun</span> a b <span class="Statement">-&gt;</span> a + b<span class="Statement">)</span>
+<span class="Statement">let</span> new_o1 <span class="Statement">=</span> <span class="Statement">(fun</span> a c <span class="Statement">-&gt;</span> <span class="Statement">let</span> self <span class="Statement">=</span> <span class="Statement">(</span>a + c<span class="Statement">)</span> <span class="Statement">in</span> <span class="Statement">(</span>self<span class="Statement">)</span> <span class="Statement">)</span>
+<span class="Statement">let</span> o1 <span class="Statement">=</span> <span class="Statement">{</span>
+  self <span class="Statement">=</span> <span class="Constant">5</span><span class="Statement">;</span>
+  meth <span class="Statement">=</span> meth1<span class="Statement">;</span>
+  new_o <span class="Statement">=</span> new_o1<span class="Statement">;</span>
+<span class="Statement">}</span>
+
+<span class="Comment">(* type obj-2 *)</span>
+<span class="Statement">let</span> meth2 <span class="Statement">=</span> <span class="Statement">(fun</span> <span class="Statement">(</span>a1, a2<span class="Statement">)</span> b <span class="Statement">-&gt;</span> a1 + a2 + b<span class="Statement">)</span>
+<span class="Statement">let</span> new_o2 <span class="Statement">=</span> <span class="Statement">(fun</span> <span class="Statement">(</span>a1, a2<span class="Statement">)</span> c <span class="Statement">-&gt;</span> <span class="Statement">let</span> self <span class="Statement">=</span> <span class="Statement">(</span>a1 + c, a2 + c<span class="Statement">)</span> <span class="Statement">in</span> <span class="Statement">(</span>self<span class="Statement">)</span> <span class="Statement">)</span>
+<span class="Statement">let</span> o2 <span class="Statement">=</span> <span class="Statement">{</span>
+  self <span class="Statement">=</span> <span class="Statement">(</span><span class="Constant">3</span>, <span class="Constant">4</span><span class="Statement">)</span><span class="Statement">;</span>
+  meth <span class="Statement">=</span> meth2<span class="Statement">;</span>
+  new_o <span class="Statement">=</span> new_o2<span class="Statement">;</span>
+<span class="Statement">}</span>
+
+<span class="Comment">(* wrap both in obj-g (generic) *)</span>
+<span class="Statement">type</span> g <span class="Statement">=</span> <span class="Statement">{</span>
+  gmeth : <span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">int</span><span class="Statement">;</span>
+  new_g : <span class="Type">int</span> <span class="Statement">-&gt;</span> g<span class="Statement">;</span>
+<span class="Statement">}</span>
+
+<span class="Comment">(* hide self by partial application: *)</span>
+
+<span class="Statement">let</span> <span class="Statement">rec</span> new_g1 self <span class="Statement">=</span>
+  <span class="Statement">(fun</span> v <span class="Statement">-&gt;</span>
+    <span class="Statement">let</span> self <span class="Statement">=</span> o1.new_o self v <span class="Statement">in</span>
+    <span class="Statement">{</span>
+      gmeth <span class="Statement">=</span> o1.meth self<span class="Statement">;</span>
+      new_g <span class="Statement">=</span> new_g1 self<span class="Statement">;</span>
+    <span class="Statement">}</span>
+  <span class="Statement">)</span>
+
+<span class="Statement">let</span> g1 <span class="Statement">=</span> <span class="Statement">{</span>
+  gmeth <span class="Statement">=</span> o1.meth o1.self<span class="Statement">;</span>
+  new_g <span class="Statement">=</span> new_g1 o1.self<span class="Statement">;</span>
+<span class="Statement">}</span>
+
+<span class="Statement">let</span> <span class="Statement">rec</span> new_g2 self <span class="Statement">=</span>
+  <span class="Statement">(fun</span> v <span class="Statement">-&gt;</span>
+    <span class="Statement">let</span> self <span class="Statement">=</span> o2.new_o self v <span class="Statement">in</span>
+    <span class="Statement">{</span>
+      gmeth <span class="Statement">=</span> o2.meth self<span class="Statement">;</span>
+      new_g <span class="Statement">=</span> new_g2 self<span class="Statement">;</span>
+    <span class="Statement">}</span>
+  <span class="Statement">)</span>
+
+<span class="Statement">let</span> g2 <span class="Statement">=</span> <span class="Statement">{</span>
+  gmeth <span class="Statement">=</span> o2.meth o2.self<span class="Statement">;</span>
+  new_g <span class="Statement">=</span> new_g2 o2.self<span class="Statement">;</span>
+<span class="Statement">}</span>
+
+<span class="Comment">(* both objs can now be grouped in a single structure: *)</span>
+<span class="Statement">let</span> gs <span class="Statement">=</span> <span class="Statement">[</span> g1<span class="Statement">;</span> g2<span class="Statement">;</span> <span class="Statement">]</span> <span class="Statement">;;</span>
+
+<span class="Statement">let</span> gs <span class="Statement">=</span> <span class="PreProc">List</span>.map <span class="Statement">(fun</span> g <span class="Statement">-&gt;</span> g.new_g <span class="Constant">1</span><span class="Statement">)</span> gs <span class="Statement">;;</span>
+<span class="Statement">let</span> <span class="Constant">()</span> <span class="Statement">=</span> <span class="PreProc">List</span>.iter <span class="Statement">(fun</span> g <span class="Statement">-&gt;</span> <span class="PreProc">Printf</span>.printf <span class="Constant">&quot;r1:%d\n&quot;</span> <span class="Statement">(</span>g.gmeth <span class="Constant">2</span><span class="Statement">))</span> gs <span class="Statement">;;</span>
+
+<span class="Statement">let</span> gs <span class="Statement">=</span> <span class="PreProc">List</span>.map <span class="Statement">(fun</span> g <span class="Statement">-&gt;</span> g.new_g <span class="Constant">1</span><span class="Statement">)</span> gs <span class="Statement">;;</span>
+<span class="Statement">let</span> <span class="Constant">()</span> <span class="Statement">=</span> <span class="PreProc">List</span>.iter <span class="Statement">(fun</span> g <span class="Statement">-&gt;</span> <span class="PreProc">Printf</span>.printf <span class="Constant">&quot;r2:%d\n&quot;</span> <span class="Statement">(</span>g.gmeth <span class="Constant">2</span><span class="Statement">))</span> gs <span class="Statement">;;</span>
+
+</pre>
+
+<p>The output will be:</p>
+
+<pre class='ocaml'>
+r1:8
+r1:11
+
+r2:9
+r2:13
+</pre>
+
+<p>A generic wrapper function can then be written from the code above, which will
+translate every object of type <code>o</code> into the generic type <code>g</code>
+with no <code>'a</code> type parameters.</p>
+
+<pre class="ocaml">
+
+<span class="Statement">let</span> wrap_g o <span class="Statement">=</span>
+  <span class="Statement">let</span> <span class="Statement">rec</span> new_g self <span class="Statement">=</span>
+    <span class="Statement">(fun</span> v <span class="Statement">-&gt;</span>
+      <span class="Statement">let</span> self <span class="Statement">=</span> o.new_o self v <span class="Statement">in</span>
+      <span class="Statement">{</span>
+        gmeth <span class="Statement">=</span> o.meth self<span class="Statement">;</span>
+        new_g <span class="Statement">=</span> new_g self<span class="Statement">;</span>
+      <span class="Statement">}</span>
+    <span class="Statement">)</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> g <span class="Statement">=</span> <span class="Statement">{</span>
+    gmeth <span class="Statement">=</span> o.meth o.self<span class="Statement">;</span>
+    new_g <span class="Statement">=</span> new_g o.self<span class="Statement">;</span>
+  <span class="Statement">}</span> <span class="Statement">in</span>
+  <span class="Statement">(</span>g<span class="Statement">)</span>
+
+<span class="Statement">let</span> g1 <span class="Statement">=</span> wrap_g o1
+<span class="Statement">let</span> g2 <span class="Statement">=</span> wrap_g o2
+
+<span class="Statement">let</span> gs <span class="Statement">=</span> <span class="Statement">[</span> g1<span class="Statement">;</span> g2<span class="Statement">;</span> <span class="Statement">]</span> <span class="Statement">;;</span>
+
+</pre>
+</body>
+</html>
+<!-- vim: set foldmethod=manual : -->
