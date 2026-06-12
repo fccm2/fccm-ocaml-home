@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<?xml version="1.0"?>
+<html>
+<head>
+<title>ming/set_line.ml</title>
+<meta name="Generator" content="Vim/6.3" />
+<meta http-equiv="content-type" content="text/html; charset=utf8" />
+<style type="text/css">
+body { color:#ffffff; background-color:#000000; }
+pre { color:#ffffff; background-color:#000000; border:1px solid #444; }
+.Ident { color:#00ffff; font-weight:bold; }
+.Const { color:#ff40ff; font-weight:bold; }
+.PrPr { color:#8080ff; font-weight:bold; }
+.Comm { color:#00ffff; font-weight:bold; }
+.Stat { color:#ffff00; font-weight:bold; }
+a:link {color:#37F; text-decoration:none; }
+a:hover {color:#E84; text-decoration:none; background-color:#333; }
+a:active {color:Red; text-decoration:underline; }
+a:visited {color:#26E; text-decoration:none; }
+</style>
+</head>
+<body>
+<pre>
+<span class="Comm">(*  Copyright (C) 1997-2006  the PHP Documentation Group</span>
+<span class="Comm">  This exemple was converted from a PHP exemple found at:</span>
+<span class="Comm">  <a href="http://php.net/manual/en/swfshape.setline.php"
+                             >http://php.net/manual/en/swfshape.setline.php</a></span>
+<span class="Comm">  which is available under  <a href="http://www.opencontent.org/openpub/">Open Publication License</a>  *)</span>
+
+<span class="Stat">open</span> <span class="PrPr">SWF</span>
+<span class="Stat">open</span> <span class="PrPr">OO</span>
+
+<span class="Stat">let</span> <span class="Const">()</span> <span class="Stat">=</span>
+  <span class="Stat">let</span> s <span class="Stat">=</span> <span class="Stat">new</span> swfShape<span class="Const">()</span> <span class="Stat">in</span>
+  <span class="Stat">let</span> f1 <span class="Stat">=</span> s#add_fill <span class="Stat">~</span><span class="Ident">r</span>:<span class="Const">0xff</span> <span class="Stat">~</span><span class="Ident">g</span>:<span class="Const">0</span>    <span class="Stat">~</span><span class="Ident">b</span>:<span class="Const">0</span>    <span class="Stat">~</span><span class="Ident">a</span>:<span class="Const">0x7f</span> <span class="Stat">in</span>
+  <span class="Stat">let</span> f2 <span class="Stat">=</span> s#add_fill <span class="Stat">~</span><span class="Ident">r</span>:<span class="Const">0xff</span> <span class="Stat">~</span><span class="Ident">g</span>:<span class="Const">0x7f</span> <span class="Stat">~</span><span class="Ident">b</span>:<span class="Const">0</span>    <span class="Stat">~</span><span class="Ident">a</span>:<span class="Const">0x7f</span> <span class="Stat">in</span>
+  <span class="Stat">let</span> f3 <span class="Stat">=</span> s#add_fill <span class="Stat">~</span><span class="Ident">r</span>:<span class="Const">0xff</span> <span class="Stat">~</span><span class="Ident">g</span>:<span class="Const">0xff</span> <span class="Stat">~</span><span class="Ident">b</span>:<span class="Const">0</span>    <span class="Stat">~</span><span class="Ident">a</span>:<span class="Const">0x7f</span> <span class="Stat">in</span>
+  <span class="Stat">let</span> f4 <span class="Stat">=</span> s#add_fill <span class="Stat">~</span><span class="Ident">r</span>:<span class="Const">0</span>    <span class="Stat">~</span><span class="Ident">g</span>:<span class="Const">0xff</span> <span class="Stat">~</span><span class="Ident">b</span>:<span class="Const">0</span>    <span class="Stat">~</span><span class="Ident">a</span>:<span class="Const">0x7f</span> <span class="Stat">in</span>
+  <span class="Stat">let</span> f5 <span class="Stat">=</span> s#add_fill <span class="Stat">~</span><span class="Ident">r</span>:<span class="Const">0</span>    <span class="Stat">~</span><span class="Ident">g</span>:<span class="Const">0</span>    <span class="Stat">~</span><span class="Ident">b</span>:<span class="Const">0xff</span> <span class="Stat">~</span><span class="Ident">a</span>:<span class="Const">0x7f</span> <span class="Stat">in</span>
+
+  <span class="Comm">(* ming-fonts-1.00.tar.gz  from  <A HREF="http://ming.sourceforge.net/">http://ming.sourceforge.net/</A> *)</span>
+  <span class="Stat">let</span> filename <span class="Stat">=</span> <span class="Const">&quot;./ming-fonts-1.00/fdb/Bitstream Vera Serif.fdb&quot;</span> <span class="Stat">in</span>
+  <span class="Stat">let</span> font <span class="Stat">=</span> <span class="Stat">new</span> swfFont <span class="Stat">~</span><span class="Ident">filename</span> <span class="Stat">in</span>
+
+  <span class="Stat">let</span> put_glyph <span class="Stat">~</span><span class="Ident">c</span> <span class="Stat">~</span><span class="Ident">fill</span> <span class="Stat">~</span><span class="Ident">r</span> <span class="Stat">~</span><span class="Ident">g</span> <span class="Stat">~</span><span class="Ident">b</span> <span class="Stat">=</span>
+    s#set_right_fill <span class="Stat">~</span><span class="Ident">fill</span><span class="Stat">;</span>
+    s#set_line <span class="Stat">~</span><span class="Ident">width</span>:<span class="Const">40</span>  <span class="Stat">~</span><span class="Ident">r</span> <span class="Stat">~</span><span class="Ident">g</span> <span class="Stat">~</span><span class="Ident">b</span> <span class="Stat">~</span><span class="Ident">a</span>:<span class="Const">148</span><span class="Stat">;</span>
+    s#draw_glyph <span class="Stat">~</span><span class="Ident">font</span>  <span class="Stat">~</span><span class="Ident">c</span><span class="Stat">;</span>
+    <span class="Stat">let</span> str <span class="Stat">=</span> <span class="PrPr">Printf</span>.sprintf <span class="Const">&quot;%c&quot;</span> c <span class="Stat">in</span>
+    s#move_pen <span class="Stat">~</span><span class="Ident">x</span>:<span class="Stat">(</span>font#get_width str<span class="Stat">)</span>  <span class="Stat">~</span><span class="Ident">y</span>:<span class="Const">0.0</span><span class="Stat">;</span>
+  <span class="Stat">in</span>
+
+  put_glyph <span class="Stat">~</span><span class="Ident">c</span>:<span class="Const">'!'</span> <span class="Stat">~</span><span class="Ident">fill</span>:f1 <span class="Stat">~</span><span class="Ident">r</span>:<span class="Const">0x7f</span> <span class="Stat">~</span><span class="Ident">g</span>:<span class="Const">0</span>    <span class="Stat">~</span><span class="Ident">b</span>:<span class="Const">0</span><span class="Stat">;</span>
+  put_glyph <span class="Stat">~</span><span class="Ident">c</span>:<span class="Const">'#'</span> <span class="Stat">~</span><span class="Ident">fill</span>:f2 <span class="Stat">~</span><span class="Ident">r</span>:<span class="Const">0x7f</span> <span class="Stat">~</span><span class="Ident">g</span>:<span class="Const">0x3f</span> <span class="Stat">~</span><span class="Ident">b</span>:<span class="Const">0</span><span class="Stat">;</span>
+  put_glyph <span class="Stat">~</span><span class="Ident">c</span>:<span class="Const">'%'</span> <span class="Stat">~</span><span class="Ident">fill</span>:f3 <span class="Stat">~</span><span class="Ident">r</span>:<span class="Const">0x7f</span> <span class="Stat">~</span><span class="Ident">g</span>:<span class="Const">0x7f</span> <span class="Stat">~</span><span class="Ident">b</span>:<span class="Const">0</span><span class="Stat">;</span>
+  put_glyph <span class="Stat">~</span><span class="Ident">c</span>:<span class="Const">'*'</span> <span class="Stat">~</span><span class="Ident">fill</span>:f4 <span class="Stat">~</span><span class="Ident">r</span>:<span class="Const">0x7f</span> <span class="Stat">~</span><span class="Ident">g</span>:<span class="Const">0</span>    <span class="Stat">~</span><span class="Ident">b</span>:<span class="Const">0x7f</span><span class="Stat">;</span>
+  put_glyph <span class="Stat">~</span><span class="Ident">c</span>:<span class="Const">'@'</span> <span class="Stat">~</span><span class="Ident">fill</span>:f5 <span class="Stat">~</span><span class="Ident">r</span>:<span class="Const">0</span>    <span class="Stat">~</span><span class="Ident">g</span>:<span class="Const">0x7f</span> <span class="Stat">~</span><span class="Ident">b</span>:<span class="Const">0x7f</span><span class="Stat">;</span>
+
+  <span class="Stat">let</span> m <span class="Stat">=</span> <span class="Stat">new</span> swfMovie <span class="Stat">in</span>
+  m#set_dimension <span class="Stat">~</span><span class="Ident">x</span>:<span class="Const">3000.0</span> <span class="Stat">~</span><span class="Ident">y</span>:<span class="Const">2000.0</span><span class="Stat">;</span>
+  m#set_rate <span class="Stat">~</span><span class="Ident">rate</span>:<span class="Const">12.0</span><span class="Stat">;</span>
+  <span class="Stat">let</span> i <span class="Stat">=</span> m#add <span class="Stat">~</span><span class="Ident">block</span>:<span class="Stat">(</span><span class="Const">SWFShape</span> s<span class="Stat">)</span> <span class="Stat">in</span>
+  i#move_to <span class="Stat">~</span><span class="Ident">x</span>:<span class="Stat">(</span><span class="Const">1500.0</span> -. <span class="Stat">(</span>font#get_width <span class="Const">&quot;!#%*@&quot;</span><span class="Stat">)</span> /. <span class="Const">2.0</span><span class="Stat">)</span>
+            <span class="Stat">~</span><span class="Ident">y</span>:<span class="Stat">(</span><span class="Const">1000.0</span> +. <span class="Stat">(</span>font#get_ascent<span class="Const">()</span><span class="Stat">)</span> /. <span class="Const">2.0</span><span class="Stat">)</span><span class="Stat">;</span>
+
+  <span class="Stat">let</span> size <span class="Stat">=</span> m#save <span class="Stat">~</span><span class="Ident">filename</span>:<span class="Const">&quot;set_line.ml.swf&quot;</span> <span class="Stat">in</span>
+  ignore<span class="Stat">(</span>size<span class="Stat">)</span><span class="Stat">;</span>
+<span class="Stat">;;</span>
+
+</pre>
+</body>
+</html>
