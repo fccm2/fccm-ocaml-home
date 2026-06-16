@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<title>tr-alph - tutorial - 6</title>
+<meta charset="UTF-8" />
+<style>
+body { color:#ebebeb; background-color:#202026; font-size:1.1em; }
+td { background-color:#121220; padding:0.1em 0.4em; }
+table { margin-left:0.8em; }
+a { color:#ef20ff; font-weight:bold; }
+pre { color:#fff; background-color:#000; }
+body { padding-right:26%; }
+span, p.res { background-color:#121220; }
+pre > span { background-color:#000; }
+pre { padding-left:2px; }
+pre > span { font-family:sans-serif; }
+</style>
+<body>
+
+<h1>Tr-alph - tutorial - 6</h1>
+
+<p>Here is yet another tutorial for
+<a href="http://decapode314.free.fr/ocaml2/tr_alph/">tr-alph</a> ;</p>
+
+<p>Translat'ng alphabet's from phoneticaly ;</p>
+
+<p>Here are some countries, and capitals:</p>
+
+<ul>
+<li><span> &nbsp; Libya — <span dir='rtl'>ليبيا</span> &nbsp; </span></li>
+<li><span> &nbsp; Sudan — <span dir='rtl'>السودان</span> &nbsp; </span></li>
+</ul>
+
+<pre>$ ocamlc -c tr_alph.ml
+$ \ocaml -I . tr_alph.cmo
+# Tr_alph.main () ;;</pre>
+
+<pre>LYBYA
+ 'L' 'Y' 'B' 'Y' 'A'
+<span dir='rtl'>ليبيا</span></pre>
+
+<pre class="cn">ALSUDAN
+ 'A' 'L' 'S' 'U' 'D' 'A' 'N'
+<span dir='rtl'>السودان</span></pre>
+
+<table>
+<tr><td>U</td><td>D</td><td>N</td><td>A</td></tr>
+<tr><td>و</td><td>د</td><td>ن</td><td>ا</td></tr>
+</table>
+
+<ul>
+<li><span> &nbsp; Marrakesh — <span dir='rtl'>مراكش</span> &nbsp; </span></li>
+<li><span> &nbsp; Syria — <span dir='rtl'>سوريا</span> &nbsp; </span></li>
+</ul>
+
+<pre>MRAKC
+ 'M' 'R' 'A' 'K' 'C'
+<span dir='rtl'>مراکش</span></pre>
+
+<p>For this tutorial, we add'd a new letter:</p>
+
+<table>
+<tr><td>S</td><td>C</td></tr>
+<tr><td>س</td><td>ش</td></tr>
+</table>
+
+<ul>
+<li><span> &nbsp; Syria — <span dir='rtl'>سوريا</span> &nbsp; </span></li>
+<li><span> &nbsp; Tchad — <span dir='rtl'>تشاد</span> &nbsp; </span></li>
+</ul>
+
+<pre>SURYA
+ 'S' 'U' 'R' 'Y' 'A'
+<span dir='rtl'>سوريا</span></pre>
+
+<pre>TCAD
+ 'T' 'C' 'A' 'D'
+<span dir='rtl'>تشاد</span></pre>
+
+<ul>
+<li><span> &nbsp; Lebanon — <span dir='rtl'>لبنان</span> &nbsp; </span></li>
+<li><span> &nbsp; Beirut — <span dir='rtl'>بيروت</span> &nbsp; </span></li>
+</ul>
+
+<pre>LBNAN
+ 'L' 'B' 'N' 'A' 'N'
+<span dir='rtl'>لبنان</span></pre>
+
+<pre>BYRUT
+ 'B' 'Y' 'R' 'U' 'T'
+<span dir='rtl'>بيروت</span></pre>
+
+<p class="res"> &nbsp; &dash; <span dir='rtl'>لبنان</span><br />
+ &nbsp; &dash; <span dir='rtl'>بيروت</span><br />
+ &nbsp; &dash; <span dir='rtl'>ليبيا</span><br />
+ &nbsp; &dash; <span dir='rtl'>سوريا</span><br />
+ &nbsp; &dash; <span dir='rtl'>السودان</span><br />
+ &nbsp; &dash; <span dir='rtl'>ليبيا</span></p>
+<!--
+<p class="res"> &nbsp; &dash; </p>
+<p class="res"> &nbsp; &dash; </p>
+-->
+
+<hr />
+
+<ul>
+<li><span> &nbsp; Pakistan — <span dir='rtl'>باكستان</span> &nbsp; </span></li>
+<li><span> &nbsp; Iran — <span dir='rtl'>ايران</span> &nbsp; </span></li>
+</ul>
+
+<pre>BAKSTAN
+ 'B' 'A' 'K' 'S' 'T' 'A' 'N'
+<span dir='rtl'>باکستان</span></pre>
+
+<pre>AYRAN
+ 'A' 'Y' 'R' 'A' 'N'
+<span dir='rtl'>ايران</span></pre>
+
+</body>
+</html>

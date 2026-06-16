@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<title>tr-alph - tutorial - 5</title>
+<meta charset="UTF-8" />
+<style>
+body { color:#ebebeb; background-color:#202026; font-size:1.1em; }
+td { background-color:#121220; padding:0.1em 0.4em; }
+table { margin-left:0.8em; }
+a { color:#cf20df; font-weight:bold; }
+pre { color:#fff; background-color:#000; }
+body { padding-right:29%; }
+code, span, p.res { background-color:#121220; }
+strong.bg { background-color:#121220; }
+pre.res { background-color:#121220; }
+</style>
+<body>
+
+<h1>Tr-alph - tutorial - 5</h1>
+
+<p>Here is a third tutorial about
+<a href="http://decapode314.free.fr/ocaml2/tr_alph/">tr-alph</a>,
+<a href="http://decapode314.free.fr/bilingual-books/Leo_Tolstoy/War_and_Peace/en-ru/War_and_Peace-07.html">[7]</a>
+ ;</p>
+
+<p>We can continue learning the alphabet with new characters-names:</p>
+
+<p class="res"> &nbsp; &dash; Анна Михайловна &mdash; Anna Mikháylovna</p>
+
+<p>In <code>Tr_alph.</code> version <code>.9</code> there is no the letters
+<strong class='bg'>М</strong> and <strong class='bg'>х</strong> yet,
+so we only need to add it:</p>
+
+<pre>  'M', "&#1052;"; (* М - M *)
+  'm', "&#1084;"; (* м - n *)
+
+  'k', "&#1093;"; (* х - k *)
+  'K', "&#1061;"; (* Х - K *)</pre>
+
+<p>Here is a new person that appeares in chapter 7:</p>
+
+<ul>
+<li><span> &nbsp; Анна Михайловна — Anna Mikháylovna &nbsp; </span></li>
+</ul>
+
+<pre>$ \ocaml -I . tr_alph.cmo
+OCaml version 4.14.1
+
+# Tr_alph.main () ;;
+&lt;meta charset='UTF-8' /&gt;
+
+Please choose an alphabet:
+- 'cy', 'ar', or 'he'
+cy
+Now type phoneticaly:
+Mika
+ 'M' 'i' 'k' 'a'
+&#1052;&#1080;&#1082;&#1072;
+
+Mikaelovna
+ 'M' 'i' 'k' 'a' 'e' 'l' 'o' 'v' 'n' 'a'
+&#1052;&#1080;&#1082;&#1072;&#1081;&#1083;&#1086;&#1074;&#1085;&#1072;
+
+Exception: End_of_file.
+# </pre>
+
+<p>Type <code>Ctrl+D</code> to exit the <code>main</code>-loop
+of <code>Tr_alph.</code> (<code>Tr_alph.main () ;;</code>).</p>
+
+<p>And type <code>Ctrl+D</code> a second time to exit the main
+loop of the programming language we are using.</p>
+
+<p>We get the expect'd result:</p>
+
+<pre>     Микайловна</pre>
+
+<p>So here are below the letters we have already learn'd, and that
+we can load w/: <code>ass_cy</code>:</p>
+
+<table>
+<tr><td> 'd' </td><td> "&amp;#1076;" </td><td> (* д - d *) </td><td> (* &amp;dcy; *) </td></tr>
+<tr><td> 'D' </td><td> "&amp;#1044;" </td><td> (* Д - D *) </td><td> (* &amp;Dcy; *) </td></tr>
+<tr><td>&nbsp;</td><td>              </td><td>             </td><td>                 </td></tr>
+<tr><td> 'L' </td><td> "&amp;#1051;" </td><td> (* 'Л' *)   </td><td> (* &amp;Lcy; *) </td></tr>
+<tr><td> 'l' </td><td> "&amp;#1083;" </td><td> (* 'л' *)   </td><td> (* &amp;lcy; *) </td></tr>
+<tr><td>&nbsp;</td><td>              </td><td>             </td><td>                 </td></tr>
+<tr><td> 'i' </td><td> "&amp;#1080;" </td><td> (* и - i *) </td><td> (* &amp;icy; *) </td></tr>
+<tr><td> 'I' </td><td> "&amp;#1048;" </td><td> (* И - I *) </td><td> (* &amp;Icy; *) </td></tr>
+<tr><td>&nbsp;</td><td>              </td><td>             </td><td>                 </td></tr>
+<tr><td> 'B' </td><td> "&amp;#1041;" </td><td> (* Б - B *) </td><td> (* &amp;Bcy; *) </td></tr>
+<tr><td> 'b' </td><td> "&amp;#1073;" </td><td> (* б - b *) </td><td> (* &amp;bcy; *) </td></tr>
+<tr><td>&nbsp;</td><td>              </td><td>             </td><td>                 </td></tr>
+<tr><td> 'J' </td><td> "&amp;#1046;" </td><td> (* Ж - J *) </td><td> (* &amp;ZHcy; *) </td></tr>
+<tr><td> 'j' </td><td> "&amp;#1078;" </td><td> (* ж - j *) </td><td> (* &amp;zhcy; *) </td></tr>
+<tr><td>&nbsp;</td><td>              </td><td>             </td><td>                 </td></tr>
+<tr><td> 'N' </td><td> "&amp;#1053;" </td><td> (* Н - N *) </td><td> (* &amp;Ncy; *) </td></tr>
+<tr><td> 'n' </td><td> "&amp;#1085;" </td><td> (* н - n *) </td><td> (* &amp;ncy; *) </td></tr>
+<tr><td>&nbsp;</td><td>              </td><td>             </td><td>                 </td></tr>
+<tr><td> 'A' </td><td> "&amp;#1040;" </td><td> (* А - A *) </td><td> (* &amp;Acy; *) </td></tr>
+<tr><td> 'a' </td><td> "&amp;#1072;" </td><td> (* а - a *) </td><td> (* &amp;acy; *) </td></tr>
+<tr><td>&nbsp;</td><td>              </td><td>             </td><td>                 </td></tr>
+<tr><td> 'V' </td><td> "&amp;#1042;" </td><td> (* В - V *) </td><td> (* &amp;Vcy; *) </td></tr>
+<tr><td> 'v' </td><td> "&amp;#1074;" </td><td> (* в - v *) </td><td> (* &amp;vcy; *) </td></tr>
+<tr><td>&nbsp;</td><td>  </td><td>  </td><td>  </td></tr>
+<tr><td> 'S' </td><td> "&amp;#1057;" </td><td> (* С - S *) </td><td> (* &amp;Scy; *) </td></tr>
+<tr><td> 's' </td><td> "&amp;#1089;" </td><td> (* с - s *) </td><td> (* &amp;scy; *) </td></tr>
+<tr><td>&nbsp;</td><td>              </td><td>             </td><td>                 </td></tr>
+<tr><td> 'E' </td><td> "&amp;#1049;" </td><td> (* Й - E *) </td><td> (* &amp;Jcy; *) </td></tr>
+<tr><td> 'e' </td><td> "&amp;#1081;" </td><td> (* й - e *) </td><td> (* &amp;jcy; *) </td></tr>
+<tr><td>&nbsp;</td><td>              </td><td>             </td><td>                 </td></tr>
+<tr><td> 'K' </td><td> "&amp;#1050;" </td><td> (* К - K *) </td><td> (* &amp;Kcy; *) </td></tr>
+<tr><td> 'k' </td><td> "&amp;#1082;" </td><td> (* к - k *) </td><td> (* &amp;kcy; *) </td></tr>
+<tr><td>&nbsp;</td><td>              </td><td>             </td><td>                 </td></tr>
+<tr><td> 'Y' </td><td> "&amp;#1071;" </td><td> (* Я - Ya *) </td><td> (* &amp;_cy; *) </td></tr>
+<tr><td> 'y' </td><td> "&amp;#1103;" </td><td> (* я - ya *) </td><td> (* &amp;_cy; *) </td></tr>
+<tr><td>&nbsp;</td><td>              </td><td>             </td><td>                 </td></tr>
+<tr><td> 'Z' </td><td> "&amp;#1047;" </td><td> (* З - Z *) </td><td> (* &amp;Zcy; *) </td></tr>
+<tr><td> 'z' </td><td> "&amp;#1079;" </td><td> (* з - z *) </td><td> (* &amp;zcy; *) </td></tr>
+<tr><td>&nbsp;</td><td>              </td><td>             </td><td>                 </td></tr>
+<tr><td> '_' </td><td> "&amp;#1068;" </td><td> (* Ь - 'H' *) </td><td>               </td></tr>
+<tr><td> '-' </td><td> "&amp;#1100;" </td><td> (* ь - ' ' *) </td><td> (* &amp;softcy; *) </td></tr>
+<tr><td>&nbsp;</td><td>              </td><td>             </td><td>                 </td></tr>
+<tr><td> 'G' </td><td> "&amp;#1043;" </td><td> (* Г -  *)  </td><td> (* &amp;Gcy; *) </td></tr>
+<tr><td> 'g' </td><td> "&amp;#1075;" </td><td> (* г -  *)  </td><td> (* &amp;gcy; *) </td></tr>
+<tr><td>&nbsp;</td><td>              </td><td>             </td><td>                 </td></tr>
+<tr><td> 'O' </td><td> "&amp;#1054;" </td><td> (* О - O *) </td><td> (* &amp;Ocy; *) </td></tr>
+<tr><td> 'o' </td><td> "&amp;#1086;" </td><td> (* о - o *) </td><td> (* &amp;ocy; *) </td></tr>
+<tr><td>&nbsp;</td><td>              </td><td>             </td><td>                 </td></tr>
+<tr><td> 'M' </td><td> "&amp;#1052;" </td><td> (* М - M *) </td><td> (* &amp;Mcy; ? *) </td></tr>
+<tr><td> 'm' </td><td> "&amp;#1084;" </td><td> (* м - n *) </td><td> (* &amp;mcy; ? *) </td></tr>
+<tr><td>&nbsp;</td><td>              </td><td>             </td><td>                 </td></tr>
+<tr><td> 'k' </td><td> "&amp;#1093;" </td><td> (* х - k *) </td><td> (* &amp;_cy; *) </td></tr>
+<tr><td> 'K' </td><td> "&amp;#1061;" </td><td> (* Х - K *) </td><td> (* &amp;_cy; *) </td></tr>
+<tr><td>&nbsp;</td><td>  </td><td>  </td><td>  </td></tr>
+<tr><td> '\n' </td><td> "&lt;br /&gt;" </td><td>  </td><td>  </td></tr>
+</table>
+
+<!--
+-->
+<p>For every phonetic equivalence we have the .html entity.</p>
+
+<p>The entities can be number'd, or name'd.</p>
+
+<p>In the mini-project <a href="http://decapode314.free.fr/ocaml2/mkalph/">Mk-alph</a>
+the generated page: <a href="http://decapode314.free.fr/ocaml2/mkalph/mkalph.2/mkalph.html">mkalph.html</a>,
+<br />shows the numbers for every entity character.</p>
+
+<p>Of course after we add new letters, we have to recompile:</p>
+
+<pre>$ ocamlc -c tr_alph.mli
+$ ocamlc -c tr_alph.ml</pre>
+
+<p>In the <a href="./tut-tr-alph-4.html">previous</a> version of
+the tutorial, there was no <code>.mli</code> yet.</p>
+
+<p>Of course it's better if we create one, because we can clearly
+see the functions that we can use, their interface, and we can add
+some documentation, to explain how to use every element of the
+module.</p>
+
+<p>After recompil'd, the module is the <code>.cmo</code> file,
+which is immediately usable like this:</p>
+
+<pre>$ \ocaml -I . tr_alph.cmo</pre>
+
+<p>An interface always has to be compil'd before the implementation.
+Compiling the <code>.mli</code> file, produces a <code>.cmi</code>
+file.</p>
+
+<p>The option <code>-I .</code> tells our interactive loop, that
+our module is to be search'd in the directory where we are.</p>
+
+<p>An interface always has to be compil'd before the implementation,
+in order to guaranty that the implementation will really match the
+desire'd behaviour.</p>
+
+<p>You can write the implementation first (<code>.ml</code>), or the interface
+first (<code>.mli</code>) as you prefer. If you write the <code>.mli</code>
+first, trying to compile an implementation that doesn't match
+the requirement will produce a error, that you will have to fix.</p>
+
+<p>If you write the <code>.ml</code> file first, it's probably
+easier to proceed iteratively. And the initial version of the
+interface can be produced w/:</p>
+
+<pre>$ ocamlc -i tr_alph.ml &gt; tr_alph.mli</pre>
+
+<p>(Be sure to check first there is no a previous <code>.mli</code>,
+otherwise it will be erased.)</p>
+
+<p>After you can edit this <code>.mli</code> to fix details, and
+to write the included documentation.</p>
+
+<p>Our last
+<a href="http://decapode314.free.fr/ocaml2/tr_alph/tr_alph/tr_alph.0/.gil/tr_alph.ml.10">tr_alph.ml</a>
+and its new associated <code>.mli</code> file:
+<a href="http://decapode314.free.fr/ocaml2/tr_alph/tr_alph/tr_alph.0/.gil/tr_alph.mli.0">tr_alph.mli</a></p>
+
+<hr />
+
+<p><strong>Errata</strong></p>
+
+<p>The letter "Ka" (n= 1050 / 1082) has already as equivalence the latin letter
+'k', so it's better to found one which has an equivalence based on its shape:</p>
+
+<pre>$ diff tr_alph.ml.10 tr_alph.ml
+110,111c110,111
+&lt;   'k', "&amp;#1093;"; (* х - k *) (* &amp;_cy; *)
+&lt;   'K', "&amp;#1061;"; (* Х - K *) (* &amp;_cy; *)
+---
+&gt;   'x', "&amp;#1093;"; (* х - k *) (* &amp;khcy; *)
+&gt;   'X', "&amp;#1061;"; (* Х - K *) (* &amp;KHcy; *)</pre>
+
+<p><a href="http://decapode314.free.fr/ocaml2/tr_alph/tr_alph/tr_alph.0/.gil/tr_alph.ml.12">tr_alph.ml.12</a></p>
+
+<table>
+<tr><td> 'x' </td><td> "&amp;#1093;" </td><td> (* х - k *) </td><td> (* &amp;khcy; *) </td></tr>
+<tr><td> 'X' </td><td> "&amp;#1061;" </td><td> (* Х - K *) </td><td> (* &amp;KHcy; *) </td></tr>
+</table>
+
+<p>Now we really get the expected result:</p>
+
+<pre>$ ocamlc -c tr_alph.mli
+$ ocamlc -c tr_alph.ml
+$ \ocaml -I . tr_alph.cmo
+OCaml version 4.14.1
+
+# Tr_alph.main () ;;
+&lt;meta charset='UTF-8' /&gt;
+
+Please choose an alphabet:
+- 'cy', 'ar', or 'he'
+cy
+
+Now type phoneticaly:
+Mixa
+ 'M' 'i' 'x' 'a'
+&#1052;&#1080;&#1093;&#1072;
+
+Mixaelovna
+ 'M' 'i' 'x' 'a' 'e' 'l' 'o' 'v' 'n' 'a'
+&#1052;&#1080;&#1093;&#1072;&#1081;&#1083;&#1086;&#1074;&#1085;&#1072;
+
+# </pre>
+
+<pre>     Михайловна</pre>
+
+</body>
+</html>

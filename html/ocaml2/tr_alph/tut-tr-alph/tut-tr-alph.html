@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<title>tr-alph - tutorial</title>
+<meta charset="UTF-8" />
+<style>
+body { color:#ebebeb; background-color:#202026; font-size:1.1em; }
+td { background-color:#121220; padding:0.1em 0.4em; }
+table { margin-left:0.8em; }
+a { color:#ef20ff; font-weight:bold; }
+pre { color:#fff; background-color:#000; }
+body { padding-right:26%; }
+span, p.res { background-color:#121220; }
+</style>
+<body>
+
+<h1>Tr-alph - tutorial</h1>
+
+<p>Here is a tutorial about
+<a href="http://decapode314.free.fr/ocaml2/tr_alph/">tr-alph</a> ;</p>
+
+<p>It translate other alphabet from phoneticaly ;</p>
+
+<p>The signature take the phonetic c, to alphabet.</p>
+
+<pre>val phon_to_letters : (char * string) list -&gt; char list -&gt; string list</pre>
+
+<p>Here are some example.</p>
+
+<ul>
+<li><span> &nbsp; Salima — سليمة &nbsp; </span></li>
+<li><span> &nbsp; Samira — سميرة &nbsp; </span></li>
+</ul>
+
+<table>
+<tr><td>S</td><td>L</td><td>Y</td><td>M</td></tr>
+<tr><td>س</td><td>ل</td><td>ي</td><td>م</td></tr>
+</table>
+
+<pre>SLYMa</pre>
+
+<p>Only three alphabets for now:</p>
+
+<pre>val ass_he : (char * string) list
+val ass_cy : (char * string) list
+val ass_ar : (char * string) list</pre>
+
+<table>
+<tr><td>S</td><td>M</td><td>Y</td><td>R</td></tr>
+<tr><td>س</td><td>م</td><td>ي</td><td>ر</td></tr>
+</table>
+
+<pre>SMYRa</pre>
+
+<ul>
+<li><span> &nbsp; Yasmina — ياسمين &nbsp; </span></li>
+<li><span> &nbsp; Amira — أميرة &nbsp; </span></li>
+<li><span> &nbsp; Rania — رانيا &nbsp; </span></li>
+</ul>
+
+<pre> YASMYN
+ EMYRa
+ RANYA</pre>
+
+<p class="res"> &nbsp; &dash; ياسمين<br />
+ &nbsp; &dash; أميرة<br />
+ &nbsp; &dash; رانيا</p>
+
+<ul>
+<li><span> &nbsp; Dounia — دنيا &nbsp; </span></li>
+</ul>
+
+<pre> DNYA</pre>
+
+<p class="res"> &nbsp; &dash; دنيا</p>
+
+<ul>
+<li><span> &nbsp; Leila — ليلى &nbsp; </span></li>
+</ul>
+
+<pre> LYL(</pre>
+<p class="res"> &nbsp; &dash; ليلى</p>
+
+</body>
+</html>

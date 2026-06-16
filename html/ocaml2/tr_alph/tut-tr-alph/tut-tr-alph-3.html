@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<title>tr-alph - tutorial - 3</title>
+<meta charset="UTF-8" />
+<style>
+body { color:#ebebeb; background-color:#202026; font-size:1.1em; }
+td { background-color:#121220; padding:0.1em 0.4em; }
+table { margin-left:0.8em; }
+a { color:#cf20df; font-weight:bold; }
+pre { color:#fff; background-color:#000; }
+body { padding-right:26%; }
+code, span, p.res { background-color:#121220; }
+</style>
+<body>
+
+<h1>Tr-alph - tutorial - 3</h1>
+
+<p>Here is a second tutorial about
+<a href="http://decapode314.free.fr/ocaml2/tr_alph/">tr-alph</a>,
+<a href="http://decapode314.free.fr/bilingual-books/Leo_Tolstoy/War_and_Peace/en-ru/War_and_Peace-01.html">[1]</a>
+ ;</p>
+
+<p>It translate other alphabet from phoneticaly ;</p>
+
+<p>The signature take the phonetic c, to alphabet.</p>
+
+<pre>val phon_to_letters : (char * string) list -&gt; char list -&gt; string list</pre>
+
+<p>Here are some examples:</p>
+
+<ul>
+<li><span> &nbsp; Анна Павловна — Anna Pavlovna &nbsp; </span></li>
+<li><span> &nbsp; Австрию — Austria &nbsp; </span></li>
+</ul>
+
+<table>
+<tr><td>А</td><td>н</td><td>н</td><td>а</td></tr>
+<tr><td>А</td><td>n</td><td>n</td><td>а</td></tr>
+</table>
+
+<pre>Аnnа</pre>
+
+<p>Using the Cyrillic alphabet:</p>
+
+<pre>val ass_cy : (char * string) list</pre>
+
+<p>From the module <code>Tr_alph.</code>:</p>
+
+<pre>Tr_alph.ass_cy</pre>
+
+<p>Using the sequence:</p>
+
+<pre># Tr_alph.phon_to_letters Tr_alph.ass_cy ['A'; 'n'; 'n'; 'a'] ;;</pre>
+
+<p>Will produce:</p>
+
+<p><span>&#1040;&#1085;&#1085;&#1072;</span></p>
+
+<table>
+<tr><td>&Acy;</td><td>&ncy;</td><td>&ncy;</td><td>&acy;</td></tr>
+</table>
+
+<pre>$ ocamlc -c tr_alph.ml 
+
+$ \ocaml -I . tr_alph.cmo
+OCaml version 4.14.1
+
+# Tr_alph.main () ;;
+&lt;meta charset='UTF-8' /&gt;
+
+Please choose an alphabet:
+- 'cy', 'ar', or 'he'
+cy
+
+Now type phoneticaly:
+Anna
+
+ 'A' 'n' 'n' 'a'
+&#1040;&#1085;&#1085;&#1072;
+&lt;br /&gt;
+Exception: End_of_file.
+
+#</pre>
+
+<p>The <code>Exception: End_of_file</code> indicate that
+you typed <code>Ctrl+D</code>, to exit the <code>main</code>-<code>loop</code>.</p>
+
+<ul>
+<li><span> &nbsp; Князь Василий — Prince Vasíli &nbsp; </span></li>
+<li><span> &nbsp; Князь — Prince &nbsp; </span></li>
+</ul>
+
+<pre> [ 'V' 'a' 's' 'i' 'l' 'i' 'e' ] </pre>
+
+<pre>Vasilie</pre>
+
+<p class="res"> &nbsp; &dash; Василий<br />
+ &nbsp; &dash; Князь Василий</p>
+
+<ul>
+<li><span> &nbsp; Князь — Prince &nbsp; </span></li>
+</ul>
+
+<pre>Knyz-</pre>
+
+<p class="res"> &nbsp; &dash; &#1050;&#1085;&#1103;&#1079;&#1100;</p>
+
+</body>
+</html>
