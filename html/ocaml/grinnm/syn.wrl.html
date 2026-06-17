@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+ "http://www.w3.org/TR/html4/strict.dtd">
+<?xml version="1.0"?>
+<html>
+<head>
+<title>syn.wrl.html</title>
+<meta name="Generator" content="Vim/6.3"/>
+<meta http-equiv="content-type" content="text/html; charset=utf8"/>
+<style type="text/css">
+<!--
+.Type { color: #00ff00; font-weight: bold; }
+.Constant { color: #ff40ff; font-weight: bold; }
+.Comment { color: #00ffff; font-weight: bold; }
+pre { color: #ffffff; background-color: #000000; border: 1px solid #7F7F7F; padding: 2px; }
+body { color: #ffffff; background-color: #000000; }
+.Statement { color: #ffff00; font-weight: bold; }
+-->
+</style>
+</head>
+<body>
+<pre>
+<span class="Statement">composite </span>{
+  <span class="Statement">layer </span>{
+    (<span class="Type">compose</span>-&gt;<span class="Type">Blend</span>)
+    <span class="Statement">composite </span>{
+      <span class="Statement">layer </span>{
+        (<span class="Type">compose</span>-&gt;<span class="Type">HardLight</span>)
+        <span class="Statement">create_image </span>{
+          (<span class="Type">width</span>-&gt;<span class="Constant">300</span>)
+          (<span class="Type">height</span>-&gt;<span class="Constant">225</span>)
+          (<span class="Type">pseudo_format</span>-&gt;<span class="Type">plasma</span>:<span class="Type">fractal</span>)
+        }
+        <span class="Statement">edge </span>{
+          (<span class="Type">radius</span>-&gt;<span class="Constant">8.0</span>)
+        }
+        <span class="Statement">blur </span>{
+          (<span class="Type">sigma</span>-&gt;<span class="Constant">4.0</span>)
+        }
+        <span class="Statement">modulate </span>{
+          (<span class="Type">saturation</span>-&gt;<span class="Constant">60</span>)
+        }
+      }
+      <span class="Statement">layer </span>{
+        <span class="Statement">create_image </span>{
+          (<span class="Type">width</span>-&gt;<span class="Constant">300</span>)
+          (<span class="Type">height</span>-&gt;<span class="Constant">225</span>)
+          (<span class="Type">pseudo_format</span>-&gt;<span class="Type">pattern</span>:<span class="Type">hexagons</span>)
+        }
+        <span class="Statement">modulate </span>{
+          (<span class="Type">brightness</span>-&gt;<span class="Constant">40</span>)
+        }
+        <span class="Statement">shade </span>{
+          (<span class="Type">azimuth</span>-&gt;<span class="Constant">270</span>)
+          (<span class="Type">elevation</span>-&gt;<span class="Constant">30</span>)
+        }
+      }
+    }
+    <span class="Statement">swirl </span>{
+      (<span class="Type">degrees</span>-&gt;<span class="Constant">80</span>)
+    }
+  }
+  <span class="Statement">layer </span>{
+    <span class="Statement">create_image </span>{
+      (<span class="Type">width</span>-&gt;<span class="Constant">300</span>)
+      (<span class="Type">height</span>-&gt;<span class="Constant">225</span>)
+      (<span class="Type">pseudo_format</span>-&gt;<span class="Type">gradient</span>:<span class="Comment">#DB4-#26E)</span>
+    }
+    <span class="Statement">normalize </span>{
+    }
+    <span class="Statement">enhance </span>{
+    }
+  }
+}
+</pre>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+ "http://www.w3.org/TR/html4/strict.dtd">
+<?xml version="1.0"?>
+<html>
+<head>
+<title>syn.xml.html</title>
+<meta name="Generator" content="Vim/6.3"/>
+<meta http-equiv="content-type" content="text/html; charset=utf8"/>
+<style type="text/css">
+<!--
+.Constant { color: #ff40ff; font-weight: bold; }
+.Type { color: #00ff00; font-weight: bold; }
+pre { color: #ffffff; background-color: #000000; border: 1px solid #7F7F7F; padding: 2px; }
+body { color: #ffffff; background-color: #000000; }
+.Identifier { color: #00ffff; font-weight: bold; }
+-->
+</style>
+</head>
+<body>
+<pre>
+<span class="Identifier">&lt;</span><span class="Identifier">composite</span><span class="Identifier">&gt;</span>
+  <span class="Identifier">&lt;</span><span class="Identifier">layer</span><span class="Identifier"> </span><span class="Type">compose</span>=<span class="Constant">&quot;Blend&quot;</span><span class="Identifier">&gt;</span>
+    <span class="Identifier">&lt;</span><span class="Identifier">composite</span><span class="Identifier">&gt;</span>
+      <span class="Identifier">&lt;</span><span class="Identifier">layer</span><span class="Identifier"> </span><span class="Type">compose</span>=<span class="Constant">&quot;HardLight&quot;</span><span class="Identifier">&gt;</span>
+        <span class="Identifier">&lt;</span><span class="Identifier">create_image</span><span class="Identifier"> </span><span class="Type">width</span>=<span class="Constant">&quot;300&quot;</span><span class="Identifier"> </span><span class="Type">height</span>=<span class="Constant">&quot;225&quot;</span><span class="Identifier"> </span><span class="Type">pseudo_format</span>=<span class="Constant">&quot;plasma:fractal&quot;</span><span class="Identifier">/&gt;</span>
+        <span class="Identifier">&lt;</span><span class="Identifier">edge</span><span class="Identifier"> </span><span class="Type">radius</span>=<span class="Constant">&quot;8.0&quot;</span><span class="Identifier">/&gt;</span>
+        <span class="Identifier">&lt;</span><span class="Identifier">blur</span><span class="Identifier"> </span><span class="Type">sigma</span>=<span class="Constant">&quot;4.0&quot;</span><span class="Identifier">/&gt;</span>
+        <span class="Identifier">&lt;</span><span class="Identifier">modulate</span><span class="Identifier"> </span><span class="Type">saturation</span>=<span class="Constant">&quot;60&quot;</span><span class="Identifier">/&gt;</span>
+      <span class="Identifier">&lt;/layer&gt;</span>
+      <span class="Identifier">&lt;</span><span class="Identifier">layer</span><span class="Identifier">&gt;</span>
+        <span class="Identifier">&lt;</span><span class="Identifier">create_image</span><span class="Identifier"> </span><span class="Type">width</span>=<span class="Constant">&quot;300&quot;</span><span class="Identifier"> </span><span class="Type">height</span>=<span class="Constant">&quot;225&quot;</span><span class="Identifier"> </span><span class="Type">pseudo_format</span>=<span class="Constant">&quot;pattern:hexagons&quot;</span><span class="Identifier">/&gt;</span>
+        <span class="Identifier">&lt;</span><span class="Identifier">modulate</span><span class="Identifier"> </span><span class="Type">brightness</span>=<span class="Constant">&quot;40&quot;</span><span class="Identifier">/&gt;</span>
+        <span class="Identifier">&lt;</span><span class="Identifier">shade</span><span class="Identifier"> </span><span class="Type">azimuth</span>=<span class="Constant">&quot;270&quot;</span><span class="Identifier"> </span><span class="Type">elevation</span>=<span class="Constant">&quot;30&quot;</span><span class="Identifier">/&gt;</span>
+      <span class="Identifier">&lt;/layer&gt;</span>
+    <span class="Identifier">&lt;/composite&gt;</span>
+    <span class="Identifier">&lt;</span><span class="Identifier">swirl</span><span class="Identifier"> </span><span class="Type">degrees</span>=<span class="Constant">&quot;80&quot;</span><span class="Identifier">/&gt;</span>
+  <span class="Identifier">&lt;/layer&gt;</span>
+  <span class="Identifier">&lt;</span><span class="Identifier">layer</span><span class="Identifier">&gt;</span>
+    <span class="Identifier">&lt;</span><span class="Identifier">create_image</span><span class="Identifier"> </span><span class="Type">width</span>=<span class="Constant">&quot;300&quot;</span><span class="Identifier"> </span><span class="Type">height</span>=<span class="Constant">&quot;225&quot;</span><span class="Identifier"> </span><span class="Type">pseudo_format</span>=<span class="Constant">&quot;gradient:#DB4-#26E&quot;</span><span class="Identifier">/&gt;</span>
+    <span class="Identifier">&lt;</span><span class="Identifier">normalize</span><span class="Identifier">/&gt;</span>
+    <span class="Identifier">&lt;</span><span class="Identifier">enhance</span><span class="Identifier">/&gt;</span>
+  <span class="Identifier">&lt;/layer&gt;</span>
+<span class="Identifier">&lt;/composite&gt;</span>
+</pre>
+</body>
+</html>

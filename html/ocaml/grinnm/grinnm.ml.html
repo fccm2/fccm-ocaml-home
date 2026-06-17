@@ -1,0 +1,536 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+ "http://www.w3.org/TR/html4/strict.dtd">
+<?xml version="1.0"?>
+<html>
+<head>
+<title>grinnm.ml.html</title>
+<meta name="Generator" content="Vim/6.3"/>
+<meta http-equiv="content-type" content="text/html; charset=utf8"/>
+<style type="text/css">
+<!--
+.Type { color: #00ff00; font-weight: bold; }
+.Identifier { color: #00ffff; font-weight: bold; }
+.Todo { color: #808080; background-color: #ffff00; }
+.Constant { color: #ff40ff; font-weight: bold; }
+.Statement { color: #ffff00; font-weight: bold; }
+pre { color: #ffffff; background-color: #000000; border: 1px solid #7F7F7F; padding: 2px; }
+body { color: #ffffff; background-color: #000000; }
+.Comment { color: #00ffff; font-weight: bold; }
+.PreProc { color: #8080ff; font-weight: bold; }
+-->
+</style>
+</head>
+<body>
+<pre>
+<span class="Comment">#! /usr/bin/env ocaml</span>
+<span class="PreProc">#directory</span> <span class="Constant">&quot;+libMagick/&quot;</span>
+<span class="PreProc">#load</span> <span class="Constant">&quot;magick.cma&quot;</span>
+
+<span class="PreProc">#directory</span> <span class="Constant">&quot;+xml-light/&quot;</span>
+<span class="PreProc">#load</span> <span class="Constant">&quot;xml-light.cma&quot;</span>
+
+<span class="Comment">(* {{{ types *)</span>
+
+<span class="Statement">type</span> layer <span class="Statement">=</span> <span class="PreProc">Magick</span>.image_handle
+<span class="Statement">type</span> parameters <span class="Statement">=</span> <span class="Statement">(</span><span class="Type">string</span> <span class="Statement">*</span> <span class="Type">string</span><span class="Statement">)</span> <span class="Type">list</span>
+
+<span class="Statement">type</span> source <span class="Statement">=</span> <span class="Statement">(</span>parameters <span class="Statement">-&gt;</span> layer<span class="Statement">)</span>
+<span class="Statement">type</span> filter <span class="Statement">=</span> <span class="Statement">(</span>layer <span class="Statement">-&gt;</span> parameters <span class="Statement">-&gt;</span> layer<span class="Statement">)</span>
+<span class="Statement">type</span> compositor <span class="Statement">=</span> <span class="Statement">(</span>layer <span class="Statement">-&gt;</span> layer <span class="Statement">-&gt;</span> parameters <span class="Statement">-&gt;</span> layer<span class="Statement">)</span>
+
+<span class="Statement">type</span> dag <span class="Statement">=</span>
+  <span class="Statement">|</span> <span class="Constant">Source</span> <span class="Statement">of</span> source <span class="Statement">*</span> parameters
+  <span class="Statement">|</span> <span class="Constant">Filter</span> <span class="Statement">of</span> filter <span class="Statement">*</span> parameters <span class="Statement">*</span> dag
+  <span class="Statement">|</span> <span class="Constant">Compositor</span> <span class="Statement">of</span> compositor <span class="Statement">*</span> parameters <span class="Statement">*</span> dag <span class="Statement">*</span> dag
+  <span class="Comment">(*</span>
+<span class="Comment">  | DeCompositor of ((string * dag) list) ref</span>
+<span class="Comment">  | DeCompositor of (string * dag) list</span>
+<span class="Comment">  *)</span>
+  <span class="Statement">|</span> <span class="Constant">DeCompositor</span> <span class="Statement">of</span> <span class="Type">string</span>
+
+<span class="Comment">(* }}} *)</span>
+
+<span class="Comment">(* {{{ sources *)</span>
+
+<span class="Comment">(* {{{ src_from_img *)</span>
+
+<span class="Statement">let</span> src_from_img <span class="Statement">=</span> <span class="Statement">(fun</span> params <span class="Statement">-&gt;</span>
+  <span class="Statement">let</span> filename <span class="Statement">=</span>
+    <span class="Statement">try</span> <span class="PreProc">List</span>.assoc <span class="Constant">&quot;filename&quot;</span> params
+    <span class="Statement">with</span> <span class="Constant">Not_found</span> <span class="Statement">-&gt;</span> invalid_arg <span class="Constant">&quot;filename&quot;</span>
+  <span class="Statement">in</span>
+  <span class="PreProc">Magick</span>.read_image filename : source<span class="Statement">)</span>
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* {{{ src_from_scratch *)</span>
+
+<span class="Statement">let</span> src_from_scratch <span class="Statement">=</span> <span class="Statement">(fun</span> params <span class="Statement">-&gt;</span>
+  <span class="Statement">let</span> width <span class="Statement">=</span>
+    <span class="Statement">try</span> int_of_string <span class="Statement">(</span><span class="PreProc">List</span>.assoc <span class="Constant">&quot;width&quot;</span> params<span class="Statement">)</span>
+    <span class="Statement">with</span> <span class="Constant">Not_found</span> <span class="Statement">-&gt;</span> invalid_arg <span class="Constant">&quot;width&quot;</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> height <span class="Statement">=</span>
+    <span class="Statement">try</span> int_of_string <span class="Statement">(</span><span class="PreProc">List</span>.assoc <span class="Constant">&quot;height&quot;</span> params<span class="Statement">)</span>
+    <span class="Statement">with</span> <span class="Constant">Not_found</span> <span class="Statement">-&gt;</span> invalid_arg <span class="Constant">&quot;height&quot;</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> pseudo_format <span class="Statement">=</span>
+    <span class="Statement">try</span> <span class="PreProc">List</span>.assoc <span class="Constant">&quot;pseudo_format&quot;</span> params
+    <span class="Statement">with</span> <span class="Constant">Not_found</span> <span class="Statement">-&gt;</span> invalid_arg <span class="Constant">&quot;pseudo_format&quot;</span>
+  <span class="Statement">in</span>
+  <span class="PreProc">Magick</span>.create_image <span class="Statement">~</span><span class="Identifier">width</span> <span class="Statement">~</span><span class="Identifier">height</span> <span class="Statement">~</span><span class="Identifier">pseudo_format</span> : source<span class="Statement">)</span>
+
+<span class="Comment">(* }}} *)</span>
+
+<span class="Comment">(* {{{ list of available sources *)</span>
+
+<span class="Statement">let</span> sources <span class="Statement">=</span> <span class="Statement">[</span>
+  <span class="Statement">(</span><span class="Constant">&quot;read_file&quot;</span>,    src_from_img<span class="Statement">)</span><span class="Statement">;</span>
+  <span class="Statement">(</span><span class="Constant">&quot;create_image&quot;</span>, src_from_scratch<span class="Statement">)</span><span class="Statement">;</span>
+<span class="Statement">]</span>
+
+<span class="Comment">(* }}} *)</span>
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* {{{ filters *)</span>
+
+<span class="Comment">(* {{{ flt_blur *)</span>
+
+<span class="Statement">let</span> flt_blur <span class="Statement">=</span> <span class="Statement">(fun</span> layout params <span class="Statement">-&gt;</span>
+  <span class="Statement">let</span> radius <span class="Statement">=</span>
+    <span class="Statement">try</span> float_of_string <span class="Statement">(</span><span class="PreProc">List</span>.assoc <span class="Constant">&quot;radius&quot;</span> params<span class="Statement">)</span>
+    <span class="Statement">with</span> <span class="Constant">Not_found</span> <span class="Statement">-&gt;</span> <span class="Constant">0.0</span>  <span class="Comment">(* default *)</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> sigma <span class="Statement">=</span>
+    <span class="Statement">try</span> float_of_string <span class="Statement">(</span><span class="PreProc">List</span>.assoc <span class="Constant">&quot;sigma&quot;</span> params<span class="Statement">)</span>
+    <span class="Statement">with</span> <span class="Constant">Not_found</span> <span class="Statement">-&gt;</span> invalid_arg <span class="Constant">&quot;sigma&quot;</span>
+  <span class="Statement">in</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.blur <span class="Statement">~</span><span class="Identifier">radius</span> <span class="Statement">~</span><span class="Identifier">sigma</span> <span class="Constant">()</span> <span class="Statement">~</span><span class="Identifier">img</span>:layout<span class="Statement">;</span>
+  : filter<span class="Statement">)</span>
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* {{{ flt_motion_blur *)</span>
+
+<span class="Statement">let</span> flt_motion_blur <span class="Statement">=</span> <span class="Statement">(fun</span> layout params <span class="Statement">-&gt;</span>
+  <span class="Statement">let</span> radius <span class="Statement">=</span>
+    <span class="Statement">try</span> float_of_string <span class="Statement">(</span><span class="PreProc">List</span>.assoc <span class="Constant">&quot;radius&quot;</span> params<span class="Statement">)</span>
+    <span class="Statement">with</span> <span class="Constant">Not_found</span> <span class="Statement">-&gt;</span> <span class="Constant">0.0</span>  <span class="Comment">(* default *)</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> sigma <span class="Statement">=</span>
+    <span class="Statement">try</span> float_of_string <span class="Statement">(</span><span class="PreProc">List</span>.assoc <span class="Constant">&quot;sigma&quot;</span> params<span class="Statement">)</span>
+    <span class="Statement">with</span> <span class="Constant">Not_found</span> <span class="Statement">-&gt;</span> invalid_arg <span class="Constant">&quot;sigma&quot;</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> angle <span class="Statement">=</span>
+    <span class="Statement">try</span> float_of_string <span class="Statement">(</span><span class="PreProc">List</span>.assoc <span class="Constant">&quot;angle&quot;</span> params<span class="Statement">)</span>
+    <span class="Statement">with</span> <span class="Constant">Not_found</span> <span class="Statement">-&gt;</span> invalid_arg <span class="Constant">&quot;angle&quot;</span>
+  <span class="Statement">in</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.motion_blur <span class="Statement">~</span><span class="Identifier">radius</span> <span class="Statement">~</span><span class="Identifier">sigma</span> <span class="Statement">~</span><span class="Identifier">angle</span> <span class="Constant">()</span> <span class="Statement">~</span><span class="Identifier">img</span>:layout<span class="Statement">;</span>
+  : filter<span class="Statement">)</span>
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* {{{ flt_radial_blur *)</span>
+
+<span class="Statement">let</span> flt_radial_blur <span class="Statement">=</span> <span class="Statement">(fun</span> layout params <span class="Statement">-&gt;</span>
+  <span class="Statement">let</span> angle <span class="Statement">=</span>
+    <span class="Statement">try</span> float_of_string <span class="Statement">(</span><span class="PreProc">List</span>.assoc <span class="Constant">&quot;angle&quot;</span> params<span class="Statement">)</span>
+    <span class="Statement">with</span> <span class="Constant">Not_found</span> <span class="Statement">-&gt;</span> invalid_arg <span class="Constant">&quot;angle&quot;</span>
+  <span class="Statement">in</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.radial_blur <span class="Statement">~</span><span class="Identifier">angle</span> <span class="Constant">()</span> <span class="Statement">~</span><span class="Identifier">img</span>:layout<span class="Statement">;</span>
+  : filter<span class="Statement">)</span>
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* {{{ flt_emboss *)</span>
+
+<span class="Statement">let</span> flt_emboss <span class="Statement">=</span> <span class="Statement">(fun</span> layout params <span class="Statement">-&gt;</span>
+  <span class="Statement">let</span> radius <span class="Statement">=</span>
+    <span class="Statement">try</span> float_of_string <span class="Statement">(</span><span class="PreProc">List</span>.assoc <span class="Constant">&quot;radius&quot;</span> params<span class="Statement">)</span>
+    <span class="Statement">with</span> <span class="Constant">Not_found</span> <span class="Statement">-&gt;</span> <span class="Constant">0.0</span>  <span class="Comment">(* default *)</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> sigma <span class="Statement">=</span>
+    <span class="Statement">try</span> float_of_string <span class="Statement">(</span><span class="PreProc">List</span>.assoc <span class="Constant">&quot;sigma&quot;</span> params<span class="Statement">)</span>
+    <span class="Statement">with</span> <span class="Constant">Not_found</span> <span class="Statement">-&gt;</span> invalid_arg <span class="Constant">&quot;sigma&quot;</span>
+  <span class="Statement">in</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.emboss <span class="Statement">~</span><span class="Identifier">radius</span> <span class="Statement">~</span><span class="Identifier">sigma</span> <span class="Constant">()</span> <span class="Statement">~</span><span class="Identifier">img</span>:layout<span class="Statement">;</span>
+  : filter<span class="Statement">)</span>
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* {{{ flt_charcoal *)</span>
+
+<span class="Statement">let</span> flt_charcoal <span class="Statement">=</span> <span class="Statement">(fun</span> layout params <span class="Statement">-&gt;</span>
+  <span class="Statement">let</span> radius <span class="Statement">=</span>
+    <span class="Statement">try</span> float_of_string <span class="Statement">(</span><span class="PreProc">List</span>.assoc <span class="Constant">&quot;radius&quot;</span> params<span class="Statement">)</span>
+    <span class="Statement">with</span> <span class="Constant">Not_found</span> <span class="Statement">-&gt;</span> <span class="Constant">0.0</span>  <span class="Comment">(* default *)</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> sigma <span class="Statement">=</span>
+    <span class="Statement">try</span> float_of_string <span class="Statement">(</span><span class="PreProc">List</span>.assoc <span class="Constant">&quot;sigma&quot;</span> params<span class="Statement">)</span>
+    <span class="Statement">with</span> <span class="Constant">Not_found</span> <span class="Statement">-&gt;</span> invalid_arg <span class="Constant">&quot;sigma&quot;</span>
+  <span class="Statement">in</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.charcoal <span class="Statement">~</span><span class="Identifier">radius</span> <span class="Statement">~</span><span class="Identifier">sigma</span> <span class="Constant">()</span> <span class="Statement">~</span><span class="Identifier">img</span>:layout<span class="Statement">;</span>
+  : filter<span class="Statement">)</span>
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* {{{ flt_edge *)</span>
+
+<span class="Statement">let</span> flt_edge <span class="Statement">=</span> <span class="Statement">(fun</span> layout params <span class="Statement">-&gt;</span>
+  <span class="Statement">let</span> radius <span class="Statement">=</span>
+    <span class="Statement">try</span> float_of_string <span class="Statement">(</span><span class="PreProc">List</span>.assoc <span class="Constant">&quot;radius&quot;</span> params<span class="Statement">)</span>
+    <span class="Statement">with</span> <span class="Constant">Not_found</span> <span class="Statement">-&gt;</span> <span class="Constant">0.0</span>  <span class="Comment">(* default *)</span>
+  <span class="Statement">in</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.edge <span class="Statement">~</span><span class="Identifier">radius</span> <span class="Constant">()</span> <span class="Statement">~</span><span class="Identifier">img</span>:layout<span class="Statement">;</span>
+  : filter<span class="Statement">)</span>
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* {{{ flt_modulate *)</span>
+
+<span class="Statement">let</span> flt_modulate <span class="Statement">=</span> <span class="Statement">(fun</span> layout params <span class="Statement">-&gt;</span>
+  <span class="Statement">let</span> brightness <span class="Statement">=</span>
+    <span class="Statement">try</span> int_of_string <span class="Statement">(</span><span class="PreProc">List</span>.assoc <span class="Constant">&quot;brightness&quot;</span> params<span class="Statement">)</span>
+    <span class="Statement">with</span> <span class="Constant">Not_found</span> <span class="Statement">-&gt;</span> <span class="Constant">100</span>  <span class="Comment">(* default *)</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> saturation <span class="Statement">=</span>
+    <span class="Statement">try</span> int_of_string <span class="Statement">(</span><span class="PreProc">List</span>.assoc <span class="Constant">&quot;saturation&quot;</span> params<span class="Statement">)</span>
+    <span class="Statement">with</span> <span class="Constant">Not_found</span> <span class="Statement">-&gt;</span> <span class="Constant">100</span>  <span class="Comment">(* default *)</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> hue <span class="Statement">=</span>
+    <span class="Statement">try</span> int_of_string <span class="Statement">(</span><span class="PreProc">List</span>.assoc <span class="Constant">&quot;hue&quot;</span> params<span class="Statement">)</span>
+    <span class="Statement">with</span> <span class="Constant">Not_found</span> <span class="Statement">-&gt;</span> <span class="Constant">100</span>  <span class="Comment">(* default *)</span>
+  <span class="Statement">in</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.modulate <span class="Statement">~</span><span class="Identifier">brightness</span> <span class="Statement">~</span><span class="Identifier">saturation</span> <span class="Statement">~</span><span class="Identifier">hue</span> <span class="Constant">()</span> <span class="Statement">~</span><span class="Identifier">img</span>:layout<span class="Statement">;</span>
+  : filter<span class="Statement">)</span>
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* {{{ flt_shade *)</span>
+
+<span class="Statement">let</span> flt_shade <span class="Statement">=</span> <span class="Statement">(fun</span> layout params <span class="Statement">-&gt;</span>
+  <span class="Statement">let</span> azimuth <span class="Statement">=</span>
+    <span class="Statement">try</span> float_of_string <span class="Statement">(</span><span class="PreProc">List</span>.assoc <span class="Constant">&quot;azimuth&quot;</span> params<span class="Statement">)</span>
+    <span class="Statement">with</span> <span class="Constant">Not_found</span> <span class="Statement">-&gt;</span> invalid_arg <span class="Constant">&quot;azimuth&quot;</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> elevation <span class="Statement">=</span>
+    <span class="Statement">try</span> float_of_string <span class="Statement">(</span><span class="PreProc">List</span>.assoc <span class="Constant">&quot;elevation&quot;</span> params<span class="Statement">)</span>
+    <span class="Statement">with</span> <span class="Constant">Not_found</span> <span class="Statement">-&gt;</span> invalid_arg <span class="Constant">&quot;elevation&quot;</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> gray <span class="Statement">=</span>
+    <span class="Statement">try</span>
+      <span class="Statement">match</span> <span class="PreProc">String</span>.lowercase <span class="Statement">(</span><span class="PreProc">List</span>.assoc <span class="Constant">&quot;gray&quot;</span> params<span class="Statement">)</span> <span class="Statement">with</span>
+      <span class="Statement">|</span> <span class="Constant">&quot;false&quot;</span> <span class="Statement">|</span> <span class="Constant">&quot;magickfalse&quot;</span>    <span class="Statement">-&gt;</span> <span class="PreProc">Magick</span>.<span class="Constant">MagickFalse</span>
+      <span class="Statement">|</span> <span class="Constant">&quot;true&quot;</span>  <span class="Statement">|</span> <span class="Constant">&quot;magicktrue&quot;</span> <span class="Statement">|</span> <span class="Statement">_</span> <span class="Statement">-&gt;</span> <span class="PreProc">Magick</span>.<span class="Constant">MagickTrue</span>
+    <span class="Statement">with</span>
+      <span class="Constant">Not_found</span> <span class="Statement">-&gt;</span> <span class="PreProc">Magick</span>.<span class="Constant">MagickTrue</span>  <span class="Comment">(* this is the default value *)</span>
+  <span class="Statement">in</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.shade <span class="Statement">~</span><span class="Identifier">gray</span> <span class="Statement">~</span><span class="Identifier">azimuth</span> <span class="Statement">~</span><span class="Identifier">elevation</span> <span class="Constant">()</span> <span class="Statement">~</span><span class="Identifier">img</span>:layout<span class="Statement">;</span>
+  : filter<span class="Statement">)</span>
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* {{{ flt_swirl *)</span>
+
+<span class="Statement">let</span> flt_swirl <span class="Statement">=</span> <span class="Statement">(fun</span> layout params <span class="Statement">-&gt;</span>
+  <span class="Statement">let</span> degrees <span class="Statement">=</span>
+    <span class="Statement">try</span> float_of_string <span class="Statement">(</span><span class="PreProc">List</span>.assoc <span class="Constant">&quot;degrees&quot;</span> params<span class="Statement">)</span>
+    <span class="Statement">with</span> <span class="Constant">Not_found</span> <span class="Statement">-&gt;</span> invalid_arg <span class="Constant">&quot;degrees&quot;</span>
+  <span class="Statement">in</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.swirl <span class="Statement">~</span><span class="Identifier">degrees</span> <span class="Constant">()</span> <span class="Statement">~</span><span class="Identifier">img</span>:layout<span class="Statement">;</span>
+  : filter<span class="Statement">)</span>
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* {{{ flt_normalize *)</span>
+
+<span class="Statement">let</span> flt_normalize <span class="Statement">=</span> <span class="Statement">(fun</span> layout params <span class="Statement">-&gt;</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.normalize <span class="Constant">()</span> <span class="Statement">~</span><span class="Identifier">img</span>:layout<span class="Statement">;</span>
+  : filter<span class="Statement">)</span>
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* {{{ flt_enhance *)</span>
+
+<span class="Statement">let</span> flt_enhance <span class="Statement">=</span> <span class="Statement">(fun</span> layout params <span class="Statement">-&gt;</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.enhance <span class="Constant">()</span> <span class="Statement">~</span><span class="Identifier">img</span>:layout<span class="Statement">;</span>
+  : filter<span class="Statement">)</span>
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* {{{ flt_negate *)</span>
+
+<span class="Statement">let</span> flt_negate <span class="Statement">=</span> <span class="Statement">(fun</span> layout params <span class="Statement">-&gt;</span>
+  <span class="Statement">let</span> grayscale <span class="Statement">=</span>
+    <span class="Statement">try</span>
+      <span class="Statement">match</span> <span class="PreProc">String</span>.lowercase <span class="Statement">(</span><span class="PreProc">List</span>.assoc <span class="Constant">&quot;grayscale&quot;</span> params<span class="Statement">)</span> <span class="Statement">with</span>
+      <span class="Statement">|</span> <span class="Constant">&quot;true&quot;</span>  <span class="Statement">|</span> <span class="Constant">&quot;magicktrue&quot;</span>      <span class="Statement">-&gt;</span> <span class="PreProc">Magick</span>.<span class="Constant">MagickTrue</span>
+      <span class="Statement">|</span> <span class="Constant">&quot;false&quot;</span> <span class="Statement">|</span> <span class="Constant">&quot;magickfalse&quot;</span> <span class="Statement">|</span> <span class="Statement">_</span> <span class="Statement">-&gt;</span> <span class="PreProc">Magick</span>.<span class="Constant">MagickFalse</span>
+    <span class="Statement">with</span>
+      <span class="Constant">Not_found</span> <span class="Statement">-&gt;</span> <span class="PreProc">Magick</span>.<span class="Constant">MagickFalse</span>  <span class="Comment">(* default *)</span>
+  <span class="Statement">in</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.negate <span class="Statement">~</span><span class="Identifier">grayscale</span> <span class="Constant">()</span> <span class="Statement">~</span><span class="Identifier">img</span>:layout<span class="Statement">;</span>
+  : filter<span class="Statement">)</span>
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* {{{ flt_contrast *)</span>
+
+<span class="Statement">let</span> flt_contrast <span class="Statement">=</span> <span class="Statement">(fun</span> layout params <span class="Statement">-&gt;</span>
+  <span class="Statement">let</span> sharpen <span class="Statement">=</span>
+    <span class="Statement">try</span>
+      <span class="Statement">match</span> <span class="PreProc">String</span>.lowercase <span class="Statement">(</span><span class="PreProc">List</span>.assoc <span class="Constant">&quot;sharpen&quot;</span> params<span class="Statement">)</span> <span class="Statement">with</span>
+      <span class="Statement">|</span> <span class="Constant">&quot;true&quot;</span>  <span class="Statement">|</span> <span class="Constant">&quot;magicktrue&quot;</span>  <span class="Statement">-&gt;</span> <span class="PreProc">Magick</span>.<span class="Constant">MagickTrue</span>
+      <span class="Statement">|</span> <span class="Constant">&quot;false&quot;</span> <span class="Statement">|</span> <span class="Constant">&quot;magickfalse&quot;</span> <span class="Statement">-&gt;</span> <span class="PreProc">Magick</span>.<span class="Constant">MagickFalse</span>
+      <span class="Statement">|</span> <span class="Statement">_</span> <span class="Statement">-&gt;</span> <span class="Statement">raise</span> <span class="Constant">Not_found</span>
+    <span class="Statement">with</span>
+      <span class="Constant">Not_found</span> <span class="Statement">-&gt;</span> invalid_arg <span class="Constant">&quot;sharpen&quot;</span>
+  <span class="Statement">in</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.contrast <span class="Statement">~</span><span class="Identifier">sharpen</span> <span class="Constant">()</span> <span class="Statement">~</span><span class="Identifier">img</span>:layout<span class="Statement">;</span>
+  : filter<span class="Statement">)</span>
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* {{{ flt_equalize *)</span>
+
+<span class="Statement">let</span> flt_equalize <span class="Statement">=</span> <span class="Statement">(fun</span> layout params <span class="Statement">-&gt;</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.equalize <span class="Constant">()</span> <span class="Statement">~</span><span class="Identifier">img</span>:layout<span class="Statement">;</span>
+  : filter<span class="Statement">)</span>
+
+<span class="Comment">(* }}} *)</span>
+
+<span class="Comment">(* {{{ flt_ *(</span>
+
+<span class="Comment">let flt_ = (fun layout params -&gt;</span>
+<span class="Comment">  let  =</span>
+<span class="Comment">    try float_of_string (List.assoc &quot;&quot; params)</span>
+<span class="Comment">    with Not_found -&gt; 0.0  (* default *)</span>
+<span class="Comment">    with Not_found -&gt; invalid_arg &quot;&quot;</span>
+<span class="Comment">  in</span>
+<span class="Comment">  Magick.Fun.  () ~img:layout;</span>
+<span class="Comment">  : filter)</span>
+
+<span class="Comment">)* }}} *)</span>
+
+<span class="Comment">(* {{{ </span><span class="Todo">TODO</span><span class="Comment">  </span>
+<span class="Comment">MagickFalse increases the contrast, otherwise reduced it.</span>
+<span class="Comment"> </span>
+<span class="Comment">val despeckle : image_handle -&gt; unit</span>
+<span class="Comment"> </span>
+<span class="Comment">val reduce_noise : image_handle -&gt; radius:float -&gt; unit</span>
+<span class="Comment"> </span>
+<span class="Comment">val median_filter : image_handle -&gt; float -&gt; unit</span>
+<span class="Comment">  </span>
+<span class="Comment">val level : image_handle -&gt; string -&gt; unit</span>
+
+<span class="Comment">}}} *)</span>
+
+<span class="Comment">(* {{{ list of available filters *)</span>
+
+<span class="Statement">let</span> filters <span class="Statement">=</span> <span class="Statement">[</span>
+  <span class="Statement">(</span><span class="Constant">&quot;blur&quot;</span>,        flt_blur<span class="Statement">)</span><span class="Statement">;</span>
+  <span class="Statement">(</span><span class="Constant">&quot;motion_blur&quot;</span>, flt_motion_blur<span class="Statement">)</span><span class="Statement">;</span>
+  <span class="Statement">(</span><span class="Constant">&quot;radial_blur&quot;</span>, flt_radial_blur<span class="Statement">)</span><span class="Statement">;</span>
+  <span class="Statement">(</span><span class="Constant">&quot;emboss&quot;</span>,      flt_emboss<span class="Statement">)</span><span class="Statement">;</span>
+  <span class="Statement">(</span><span class="Constant">&quot;charcoal&quot;</span>,    flt_charcoal<span class="Statement">)</span><span class="Statement">;</span>
+  <span class="Statement">(</span><span class="Constant">&quot;edge&quot;</span>,        flt_edge<span class="Statement">)</span><span class="Statement">;</span>
+  <span class="Statement">(</span><span class="Constant">&quot;modulate&quot;</span>,    flt_modulate<span class="Statement">)</span><span class="Statement">;</span>
+  <span class="Statement">(</span><span class="Constant">&quot;shade&quot;</span>,       flt_shade<span class="Statement">)</span><span class="Statement">;</span>
+  <span class="Statement">(</span><span class="Constant">&quot;swirl&quot;</span>,       flt_swirl<span class="Statement">)</span><span class="Statement">;</span>
+  <span class="Statement">(</span><span class="Constant">&quot;normalize&quot;</span>,   flt_normalize<span class="Statement">)</span><span class="Statement">;</span>
+  <span class="Statement">(</span><span class="Constant">&quot;enhance&quot;</span>,     flt_enhance<span class="Statement">)</span><span class="Statement">;</span>
+  <span class="Statement">(</span><span class="Constant">&quot;negate&quot;</span>,      flt_negate<span class="Statement">)</span><span class="Statement">;</span>
+  <span class="Statement">(</span><span class="Constant">&quot;contrast&quot;</span>,    flt_contrast<span class="Statement">)</span><span class="Statement">;</span>
+  <span class="Statement">(</span><span class="Constant">&quot;equalize&quot;</span>,    flt_equalize<span class="Statement">)</span><span class="Statement">;</span>
+  <span class="Comment">(*</span>
+<span class="Comment">  (&quot;&quot;,   flt_);</span>
+<span class="Comment">  *)</span>
+<span class="Statement">]</span>
+
+<span class="Comment">(* }}} *)</span>
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* {{{ compositors *)</span>
+
+<span class="Comment">(* {{{ cmp_composite *)</span>
+
+<span class="Statement">let</span> cmp_composite <span class="Statement">=</span> <span class="Statement">(fun</span> layout_1  layout_2  params <span class="Statement">-&gt;</span>
+  <span class="Statement">let</span> x <span class="Statement">=</span>
+    <span class="Statement">try</span> int_of_string <span class="Statement">(</span><span class="PreProc">List</span>.assoc <span class="Constant">&quot;x&quot;</span> params<span class="Statement">)</span>
+    <span class="Statement">with</span> <span class="Constant">Not_found</span> <span class="Statement">-&gt;</span> <span class="Constant">0</span>  <span class="Comment">(* default *)</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> y <span class="Statement">=</span>
+    <span class="Statement">try</span> int_of_string <span class="Statement">(</span><span class="PreProc">List</span>.assoc <span class="Constant">&quot;y&quot;</span> params<span class="Statement">)</span>
+    <span class="Statement">with</span> <span class="Constant">Not_found</span> <span class="Statement">-&gt;</span> <span class="Constant">0</span>  <span class="Comment">(* default *)</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> compose <span class="Statement">=</span>
+    <span class="Statement">try</span> <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.composite_operator_of_string <span class="Statement">(</span><span class="PreProc">List</span>.assoc <span class="Constant">&quot;compose&quot;</span> params<span class="Statement">)</span>
+    <span class="Statement">with</span> <span class="Constant">Not_found</span> <span class="Statement">-&gt;</span> invalid_arg <span class="Constant">&quot;compose&quot;</span>
+  <span class="Statement">in</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.composite_image  layout_1  layout_2 <span class="Statement">~</span><span class="Identifier">compose</span> <span class="Statement">~</span><span class="Identifier">x</span> <span class="Statement">~</span><span class="Identifier">y</span> <span class="Constant">()</span><span class="Statement">;</span>
+  layout_1 : compositor<span class="Statement">)</span>
+
+<span class="Comment">(* }}} *)</span>
+
+<span class="Comment">(* {{{ list of available compositors *)</span>
+
+<span class="Statement">let</span> compositors <span class="Statement">=</span> <span class="Statement">[</span>
+  <span class="Statement">(</span><span class="Constant">&quot;composite&quot;</span>, cmp_composite<span class="Statement">)</span><span class="Statement">;</span>
+<span class="Statement">]</span>
+
+<span class="Comment">(* }}} *)</span>
+
+<span class="Comment">(* }}} *)</span>
+
+<span class="Comment">(* {{{ process_dag *)</span>
+
+<span class="Statement">let</span> <span class="Statement">rec</span> process_dag dag o <span class="Statement">=</span>
+  <span class="Statement">let</span> <span class="Statement">rec</span> dig dag <span class="Statement">=</span>
+    <span class="Statement">match</span> dag <span class="Statement">with</span>
+    <span class="Statement">|</span> <span class="Constant">Source</span> <span class="Statement">(</span>src_fun, params<span class="Statement">)</span> <span class="Statement">-&gt;</span> src_fun  params
+    <span class="Statement">|</span> <span class="Constant">Filter</span> <span class="Statement">(</span>flt_fun, params, dag<span class="Statement">)</span> <span class="Statement">-&gt;</span> flt_fun <span class="Statement">(</span>dig dag<span class="Statement">)</span> params
+    <span class="Statement">|</span> <span class="Constant">Compositor</span> <span class="Statement">(</span>cmp_fun, params, dag1, dag2<span class="Statement">)</span> <span class="Statement">-&gt;</span> cmp_fun <span class="Statement">(</span>dig dag1<span class="Statement">)</span> <span class="Statement">(</span>dig dag2<span class="Statement">)</span> params
+    <span class="Statement">|</span> <span class="Constant">DeCompositor</span> <span class="Statement">(</span>str_ref<span class="Statement">)</span> <span class="Statement">-&gt;</span> <span class="Statement">let</span> dag <span class="Statement">=</span> <span class="PreProc">List</span>.assoc str_ref o <span class="Statement">in</span> dig dag
+  <span class="Statement">in</span>
+  dig dag
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* {{{ xml_of_dag *)</span>
+
+<span class="Statement">let</span> rev_assoc l <span class="Statement">=</span>
+  <span class="PreProc">List</span>.map <span class="Statement">(fun</span> <span class="Statement">(</span>a, b<span class="Statement">)</span> <span class="Statement">-&gt;</span> <span class="Statement">(</span>b, a<span class="Statement">))</span> l
+
+<span class="Comment">(* {{{ xml_of_params *)</span>
+
+<span class="Statement">let</span> xml_of_params params <span class="Statement">=</span>
+  <span class="Statement">let</span> <span class="Statement">rec</span> aux params p_xml <span class="Statement">=</span>
+    <span class="Statement">match</span> params <span class="Statement">with</span>
+    <span class="Statement">|</span> <span class="Constant">[]</span> <span class="Statement">-&gt;</span> p_xml
+    <span class="Statement">|</span> <span class="Statement">(</span>p_name, p_val<span class="Statement">)</span><span class="Statement">::</span>t <span class="Statement">-&gt;</span>
+        <span class="Statement">let</span> p_nv <span class="Statement">=</span> <span class="PreProc">Printf</span>.sprintf <span class="Constant">&quot; %s='%s'&quot;</span> p_name p_val <span class="Statement">in</span>
+        aux t <span class="Statement">(</span>p_xml <span class="Statement">^</span> p_nv<span class="Statement">)</span>
+  <span class="Statement">in</span>
+  aux params <span class="Constant">&quot;&quot;</span>
+
+<span class="Comment">(* }}} *)</span>
+
+<span class="Statement">let</span> xml_of_dag  dag  dag_assoc <span class="Statement">=</span>
+  <span class="Comment">(* {{{ utilities *)</span>
+  <span class="Statement">let</span> src_names <span class="Statement">=</span> rev_assoc sources
+  <span class="Statement">and</span> flt_names <span class="Statement">=</span> rev_assoc filters
+  <span class="Statement">and</span> cmp_names <span class="Statement">=</span> rev_assoc compositors
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> src_tag_name src_fun <span class="Statement">=</span> <span class="PreProc">List</span>.assq src_fun src_names
+  <span class="Statement">and</span> flt_tag_name flt_fun <span class="Statement">=</span> <span class="PreProc">List</span>.assq flt_fun flt_names
+  <span class="Statement">and</span> cmp_tag_name flt_fun <span class="Statement">=</span> <span class="PreProc">List</span>.assq flt_fun cmp_names
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> indent <span class="Statement">=</span> <span class="Constant">3</span> <span class="Statement">in</span>
+  <span class="Statement">let</span> pad depth <span class="Statement">=</span>
+    <span class="PreProc">String</span>.make <span class="Statement">(</span>depth <span class="Statement">*</span> indent<span class="Statement">)</span> <span class="Constant">' '</span>
+  <span class="Statement">in</span>
+  <span class="Comment">(* }}} *)</span>
+  <span class="Comment">(* {{{ dig dag depth *)</span>
+  <span class="Statement">let</span> <span class="Statement">rec</span> dig dag d <span class="Statement">=</span>
+    <span class="Statement">match</span> dag <span class="Statement">with</span>
+    <span class="Statement">|</span> <span class="Constant">Source</span> <span class="Statement">(</span>src_fun, params<span class="Statement">)</span> <span class="Statement">-&gt;</span>
+        <span class="PreProc">Printf</span>.sprintf <span class="Constant">&quot;%s&lt;%s%s /&gt;\n&quot;</span> <span class="Statement">(</span>pad d<span class="Statement">)</span> <span class="Statement">(</span>src_tag_name src_fun<span class="Statement">)</span> <span class="Statement">(</span>xml_of_params params<span class="Statement">)</span>
+    <span class="Statement">|</span> <span class="Constant">Filter</span> <span class="Statement">(</span>flt_fun, params, dag<span class="Statement">)</span> <span class="Statement">-&gt;</span>
+        <span class="Statement">let</span> tag_name <span class="Statement">=</span> flt_tag_name flt_fun <span class="Statement">in</span>
+        <span class="Statement">((</span>dig dag d<span class="Statement">)</span> <span class="Statement">^</span>
+         <span class="Statement">(</span><span class="PreProc">Printf</span>.sprintf <span class="Constant">&quot;%s&lt;%s%s /&gt;\n&quot;</span> <span class="Statement">(</span>pad d<span class="Statement">)</span> tag_name <span class="Statement">(</span>xml_of_params params<span class="Statement">))</span>
+        <span class="Statement">)</span>
+    <span class="Statement">|</span> <span class="Constant">Compositor</span> <span class="Statement">(</span>cmp_fun, params, dag1, dag2<span class="Statement">)</span> <span class="Statement">-&gt;</span>
+        <span class="Statement">let</span> tag_name <span class="Statement">=</span> cmp_tag_name cmp_fun <span class="Statement">in</span>
+        <span class="Statement">let</span> padding <span class="Statement">=</span> pad d
+        <span class="Statement">and</span> in_padding <span class="Statement">=</span> pad <span class="Statement">(</span>succ d<span class="Statement">)</span>
+        <span class="Statement">in</span>
+        <span class="Statement">((</span><span class="PreProc">Printf</span>.sprintf <span class="Constant">&quot;%s&lt;%s&gt;\n&quot;</span> padding tag_name<span class="Statement">)</span> <span class="Statement">^</span>
+         <span class="Statement">(</span><span class="PreProc">Printf</span>.sprintf <span class="Constant">&quot;%s&lt;layer%s&gt;\n&quot;</span> in_padding <span class="Statement">(</span>xml_of_params params<span class="Statement">))</span> <span class="Statement">^</span>
+         <span class="Statement">(</span>dig dag1 <span class="Statement">(</span>d + <span class="Constant">2</span><span class="Statement">))</span> <span class="Statement">^</span>
+         <span class="Statement">(</span><span class="PreProc">Printf</span>.sprintf <span class="Constant">&quot;%s&lt;/layer&gt;\n&quot;</span> in_padding<span class="Statement">)</span> <span class="Statement">^</span>
+         <span class="Statement">(</span><span class="PreProc">Printf</span>.sprintf <span class="Constant">&quot;%s&lt;layer&gt;\n&quot;</span> in_padding<span class="Statement">)</span> <span class="Statement">^</span>
+         <span class="Statement">(</span>dig dag2 <span class="Statement">(</span>d + <span class="Constant">2</span><span class="Statement">))</span> <span class="Statement">^</span>
+         <span class="Statement">(</span><span class="PreProc">Printf</span>.sprintf <span class="Constant">&quot;%s&lt;/layer&gt;\n&quot;</span> in_padding<span class="Statement">)</span> <span class="Statement">^</span>
+         <span class="Statement">(</span><span class="PreProc">Printf</span>.sprintf <span class="Constant">&quot;%s&lt;/%s&gt;\n&quot;</span> padding tag_name<span class="Statement">)</span>
+        <span class="Statement">)</span>
+    <span class="Statement">|</span> <span class="Constant">DeCompositor</span> <span class="Statement">(</span>ref_key<span class="Statement">)</span> <span class="Statement">-&gt;</span>
+        <span class="Statement">let</span> dag <span class="Statement">=</span> <span class="PreProc">List</span>.assoc ref_key dag_assoc <span class="Statement">in</span>
+        dig dag <span class="Statement">(</span>succ d<span class="Statement">)</span>
+  <span class="Statement">in</span>
+  <span class="Comment">(* }}} *)</span>
+  <span class="Constant">&quot;&lt;?xml version='1.0' ?&gt;\n&quot;</span> <span class="Statement">^</span>
+  <span class="Statement">(</span>dig dag <span class="Constant">0</span><span class="Statement">)</span>
+
+<span class="Comment">(* }}} *)</span>
+
+
+<span class="Comment">(* {{{ print_xml_struc *)</span>
+
+<span class="Statement">let</span> print_xml_struct  xml_data <span class="Statement">=</span>
+  <span class="Statement">let</span> indent <span class="Statement">=</span> <span class="Constant">2</span> <span class="Statement">in</span>
+  <span class="Statement">let</span> pad depth <span class="Statement">=</span>
+    <span class="PreProc">String</span>.make <span class="Statement">(</span>depth <span class="Statement">*</span> indent<span class="Statement">)</span> <span class="Constant">' '</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> <span class="Statement">rec</span> aux d x <span class="Statement">=</span>
+    <span class="Statement">match</span> x <span class="Statement">with</span>
+    <span class="Statement">|</span> <span class="PreProc">Xml</span>.<span class="Constant">PCData</span> data <span class="Statement">-&gt;</span> <span class="PreProc">Printf</span>.printf <span class="Constant">&quot;%s[%s]\n&quot;</span> <span class="Statement">(</span>pad d<span class="Statement">)</span> data
+    <span class="Statement">|</span> <span class="PreProc">Xml</span>.<span class="Constant">Element</span> <span class="Statement">(</span>tag, attrs_list, childrens<span class="Statement">)</span> <span class="Statement">-&gt;</span>
+        <span class="PreProc">Printf</span>.printf <span class="Constant">&quot;%s%s {\n&quot;</span> <span class="Statement">(</span>pad d<span class="Statement">)</span> tag<span class="Statement">;</span>
+        <span class="PreProc">List</span>.iter <span class="Statement">(fun</span> <span class="Statement">(</span>attr_name, attr_value<span class="Statement">)</span> <span class="Statement">-&gt;</span>
+          <span class="PreProc">Printf</span>.printf <span class="Constant">&quot;%s  (%s-&gt;%s)\n&quot;</span> <span class="Statement">(</span>pad d<span class="Statement">)</span> attr_name attr_value
+        <span class="Statement">)</span> attrs_list<span class="Statement">;</span>
+        <span class="PreProc">List</span>.iter <span class="Statement">(</span>aux <span class="Statement">(</span>succ d<span class="Statement">))</span> childrens<span class="Statement">;</span>
+        <span class="PreProc">Printf</span>.printf <span class="Constant">&quot;%s}\n&quot;</span> <span class="Statement">(</span>pad d<span class="Statement">)</span><span class="Statement">;</span>
+  <span class="Statement">in</span>
+  aux <span class="Constant">0</span> xml_data<span class="Statement">;</span>
+  flush stdout
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* {{{ main *)</span>
+
+<span class="Statement">let</span> <span class="Statement">_</span> <span class="Statement">=</span>
+  <span class="Comment">(* {{{ dag datas *)</span>
+  <span class="Statement">let</span> dag_1 <span class="Statement">=</span>
+    <span class="Statement">(</span><span class="Constant">Filter</span> <span class="Statement">(</span>flt_modulate, <span class="Statement">[(</span><span class="Constant">&quot;saturation&quot;</span>,<span class="Constant">&quot;60&quot;</span><span class="Statement">)]</span>,
+      <span class="Statement">(</span><span class="Constant">Filter</span> <span class="Statement">(</span>flt_blur, <span class="Statement">[(</span><span class="Constant">&quot;sigma&quot;</span>,<span class="Constant">&quot;4.0&quot;</span><span class="Statement">)]</span>,
+        <span class="Statement">(</span><span class="Constant">Filter</span> <span class="Statement">(</span>flt_edge, <span class="Statement">[(</span><span class="Constant">&quot;radius&quot;</span>,<span class="Constant">&quot;8.0&quot;</span><span class="Statement">)]</span>,
+          <span class="Statement">(</span><span class="Constant">Source</span> <span class="Statement">(</span>src_from_scratch,
+            <span class="Statement">[(</span><span class="Constant">&quot;width&quot;</span>,<span class="Constant">&quot;300&quot;</span><span class="Statement">)</span><span class="Statement">;</span> <span class="Statement">(</span><span class="Constant">&quot;height&quot;</span>,<span class="Constant">&quot;225&quot;</span><span class="Statement">)</span><span class="Statement">;</span> <span class="Statement">(</span><span class="Constant">&quot;pseudo_format&quot;</span>,<span class="Constant">&quot;plasma:fractal&quot;</span><span class="Statement">)]</span> <span class="Statement">))</span>
+        <span class="Statement">))</span>
+      <span class="Statement">))</span>
+    <span class="Statement">))</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> dag_2 <span class="Statement">=</span>
+    <span class="Statement">(</span><span class="Constant">Filter</span> <span class="Statement">(</span>flt_shade, <span class="Statement">[(</span><span class="Constant">&quot;azimuth&quot;</span>,<span class="Constant">&quot;270&quot;</span><span class="Statement">)</span><span class="Statement">;</span> <span class="Statement">(</span><span class="Constant">&quot;elevation&quot;</span>,<span class="Constant">&quot;30&quot;</span><span class="Statement">)]</span>,
+      <span class="Statement">(</span><span class="Constant">Filter</span> <span class="Statement">(</span>flt_modulate, <span class="Statement">[(</span><span class="Constant">&quot;brightness&quot;</span>,<span class="Constant">&quot;40&quot;</span><span class="Statement">)]</span>,
+        <span class="Statement">(</span><span class="Constant">Source</span> <span class="Statement">(</span>src_from_scratch,
+          <span class="Statement">[(</span><span class="Constant">&quot;width&quot;</span>,<span class="Constant">&quot;300&quot;</span><span class="Statement">)</span><span class="Statement">;</span> <span class="Statement">(</span><span class="Constant">&quot;height&quot;</span>,<span class="Constant">&quot;225&quot;</span><span class="Statement">)</span><span class="Statement">;</span> <span class="Statement">(</span><span class="Constant">&quot;pseudo_format&quot;</span>,<span class="Constant">&quot;pattern:hexagons&quot;</span><span class="Statement">)]</span> <span class="Statement">))</span>
+      <span class="Statement">))</span>
+    <span class="Statement">))</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> dag_3 <span class="Statement">=</span>
+    <span class="Statement">(</span><span class="Constant">Compositor</span> <span class="Statement">(</span>cmp_composite, <span class="Statement">[(</span><span class="Constant">&quot;compose&quot;</span>,<span class="Constant">&quot;HardLight&quot;</span><span class="Statement">)]</span>, dag_1, dag_2<span class="Statement">))</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> dag_4 <span class="Statement">=</span>
+    <span class="Statement">(</span><span class="Constant">Filter</span> <span class="Statement">(</span>flt_enhance, <span class="Constant">[]</span>,
+      <span class="Statement">(</span><span class="Constant">Filter</span> <span class="Statement">(</span>flt_normalize, <span class="Constant">[]</span>,
+        <span class="Statement">(</span><span class="Constant">Source</span> <span class="Statement">(</span>src_from_scratch,
+          <span class="Statement">[(</span><span class="Constant">&quot;width&quot;</span>,<span class="Constant">&quot;300&quot;</span><span class="Statement">)</span><span class="Statement">;</span> <span class="Statement">(</span><span class="Constant">&quot;height&quot;</span>,<span class="Constant">&quot;225&quot;</span><span class="Statement">)</span><span class="Statement">;</span> <span class="Statement">(</span><span class="Constant">&quot;pseudo_format&quot;</span>,<span class="Constant">&quot;gradient:#DB4-#26E&quot;</span><span class="Statement">)]</span> <span class="Statement">))</span>
+      <span class="Statement">))</span>
+    <span class="Statement">))</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> dag_5 <span class="Statement">=</span>
+    <span class="Statement">(</span><span class="Constant">Compositor</span> <span class="Statement">(</span>cmp_composite, <span class="Statement">[(</span><span class="Constant">&quot;compose&quot;</span>,<span class="Constant">&quot;Blend&quot;</span><span class="Statement">)]</span>,
+      <span class="Statement">(</span><span class="Constant">Filter</span> <span class="Statement">(</span>flt_swirl, <span class="Statement">[(</span><span class="Constant">&quot;degrees&quot;</span>,<span class="Constant">&quot;80&quot;</span><span class="Statement">)]</span>, dag_3<span class="Statement">))</span>,
+      dag_4
+    <span class="Statement">))</span>
+  <span class="Statement">in</span>
+  <span class="Comment">(* }}} *)</span>
+  <span class="Statement">let</span> references <span class="Statement">=</span> <span class="Statement">[(</span><span class="Constant">&quot;dag_1&quot;</span>,dag_1<span class="Statement">)</span><span class="Statement">;</span> <span class="Statement">(</span><span class="Constant">&quot;dag_2&quot;</span>,dag_2<span class="Statement">)</span><span class="Statement">;</span> <span class="Statement">(</span><span class="Constant">&quot;dag_3&quot;</span>,dag_3<span class="Statement">)]</span> <span class="Statement">in</span>
+
+  <span class="Statement">let</span> xml <span class="Statement">=</span> <span class="Statement">(</span>xml_of_dag dag_5 references<span class="Statement">)</span> <span class="Statement">in</span>
+  <span class="Statement">let</span> xml_dag <span class="Statement">=</span> <span class="PreProc">Xml</span>.parse_string xml <span class="Statement">in</span>
+
+  print_endline <span class="Statement">(</span><span class="PreProc">Xml</span>.to_string_fmt  xml_dag<span class="Statement">)</span><span class="Statement">;</span>
+  print_newline<span class="Constant">()</span><span class="Statement">;</span>
+
+  print_xml_struct  xml_dag<span class="Statement">;</span>
+
+  <span class="Statement">let</span> img <span class="Statement">=</span> process_dag dag_5 references <span class="Statement">in</span>
+  <span class="PreProc">Magick</span>.display img<span class="Statement">;</span>
+<span class="Statement">;;</span>
+
+<span class="Comment">(* }}} *)</span>
+
+
+<span class="Comment">(* vim: sw=2 sts=2 ts=2 et fdm=marker</span>
+<span class="Comment"> *)</span>
+</pre>
+</body>
+</html>

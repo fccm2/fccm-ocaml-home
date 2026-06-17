@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+ "http://www.w3.org/TR/html4/strict.dtd">
+<?xml version="1.0"?>
+<html>
+<head>
+<title>zipper.ml</title>
+<meta name="Generator" content="Vim/6.3"/>
+<meta http-equiv="content-type" content="text/html; charset=utf8"/>
+<style type="text/css">
+<!--
+.Type { color: #00ff00; font-weight: bold; }
+.Constant { color: #ff40ff; font-weight: bold; }
+.Identifier { color: #00ffff; font-weight: bold; }
+pre { color: #ffffff; background-color: #000000; border: 1px solid #7F7F7F; padding: 2px; }
+body { color: #ffffff; background-color: #000000; }
+.Comment { color: #00ffff; font-weight: bold; }
+.Statement { color: #ffff00; font-weight: bold; }
+-->
+</style>
+</head>
+<body>
+<pre>
+<span class="Comment">#! /usr/bin/env ocaml</span>
+
+<span class="Comment">(* {{{ lay types *)</span>
+
+<span class="Statement">type</span> src <span class="Statement">=</span> <span class="Type">int</span> <span class="Statement">;;</span>
+<span class="Statement">type</span> flt <span class="Statement">=</span> <span class="Statement">(</span><span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">int</span><span class="Statement">)</span> <span class="Statement">;;</span>
+<span class="Statement">type</span> cmp <span class="Statement">=</span> <span class="Statement">(</span><span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">int</span><span class="Statement">)</span> <span class="Statement">;;</span>
+
+<span class="Statement">type</span> lay_tree <span class="Statement">=</span>
+  <span class="Statement">|</span> <span class="Constant">Src</span> <span class="Statement">of</span> src
+  <span class="Statement">|</span> <span class="Constant">Edge</span> <span class="Statement">of</span> flt <span class="Statement">*</span> lay_tree
+  <span class="Statement">|</span> <span class="Constant">Junc</span> <span class="Statement">of</span> cmp <span class="Statement">*</span> lay_tree <span class="Statement">*</span> lay_tree <span class="Statement">;;</span>
+
+<span class="Statement">type</span> lay_tree <span class="Statement">=</span>
+  <span class="Statement">|</span> <span class="Constant">Src_type</span>
+  <span class="Statement">|</span> <span class="Constant">Edge_type</span>
+  <span class="Statement">|</span> <span class="Constant">Junc_type</span> <span class="Statement">;;</span>
+
+<span class="Statement">type</span> lay_back <span class="Statement">=</span>
+  <span class="Statement">|</span> <span class="Constant">Root</span>
+  <span class="Statement">|</span> <span class="Constant">Left</span>  <span class="Statement">of</span> cmp <span class="Statement">*</span> lay_tree <span class="Statement">*</span> lay_back
+  <span class="Statement">|</span> <span class="Constant">Right</span> <span class="Statement">of</span> cmp <span class="Statement">*</span> lay_tree <span class="Statement">*</span> lay_back
+  <span class="Statement">|</span> <span class="Constant">Straight</span> <span class="Statement">of</span> flt <span class="Statement">*</span> lay_back <span class="Statement">;;</span>
+
+<span class="Statement">type</span> lay_pointed <span class="Statement">=</span> <span class="Constant">Ptr</span> <span class="Statement">of</span> lay_tree <span class="Statement">*</span> lay_back <span class="Statement">;;</span>
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* {{{ shifts *)</span>
+
+<span class="Statement">let</span> shift_layer_left <span class="Statement">(</span><span class="Constant">Ptr</span> <span class="Statement">(</span>layers, backup<span class="Statement">))</span> <span class="Statement">=</span> <span class="Statement">match</span> layers <span class="Statement">with</span>
+  <span class="Statement">|</span> <span class="Constant">Src</span> <span class="Statement">_</span> <span class="Statement">-&gt;</span> failwith <span class="Constant">&quot;Leaf&quot;</span>
+  <span class="Statement">|</span> <span class="Constant">Edge</span>  <span class="Statement">-&gt;</span> failwith <span class="Constant">&quot;Edge&quot;</span>
+  <span class="Statement">|</span> <span class="Constant">Junc</span> <span class="Statement">(</span>cmp, lay1, lay2<span class="Statement">)</span> <span class="Statement">-&gt;</span> <span class="Constant">Ptr</span> <span class="Statement">(</span>lay1, <span class="Constant">Left</span> <span class="Statement">(</span>cmp, lay2, backup<span class="Statement">))</span> <span class="Statement">;;</span>
+
+<span class="Statement">let</span> shift_layer_right <span class="Statement">(</span><span class="Constant">Ptr</span> <span class="Statement">(</span>layers, backup<span class="Statement">))</span> <span class="Statement">=</span> <span class="Statement">match</span> layers <span class="Statement">with</span>
+  <span class="Statement">|</span> <span class="Constant">Src</span> <span class="Statement">_</span> <span class="Statement">-&gt;</span> failwith <span class="Constant">&quot;Leaf&quot;</span>
+  <span class="Statement">|</span> <span class="Constant">Edge</span>  <span class="Statement">-&gt;</span> failwith <span class="Constant">&quot;Edge&quot;</span>
+  <span class="Statement">|</span> <span class="Constant">Junc</span> <span class="Statement">(</span>cmp, lay1, lay2<span class="Statement">)</span> <span class="Statement">-&gt;</span> <span class="Constant">Ptr</span> <span class="Statement">(</span>lay2, <span class="Constant">Right</span> <span class="Statement">(</span>cmp, lay1, backup<span class="Statement">))</span> <span class="Statement">;;</span>
+
+<span class="Statement">let</span> shift_through_edge <span class="Statement">(</span><span class="Constant">Ptr</span> <span class="Statement">(</span>layers, backup<span class="Statement">))</span> <span class="Statement">=</span> <span class="Statement">match</span> layers <span class="Statement">with</span>
+  <span class="Statement">|</span> <span class="Constant">Src</span> <span class="Statement">_</span> <span class="Statement">-&gt;</span> failwith <span class="Constant">&quot;Leaf&quot;</span>
+  <span class="Statement">|</span> <span class="Constant">Edge</span> <span class="Statement">(</span>flt, lay<span class="Statement">)</span> <span class="Statement">-&gt;</span> <span class="Constant">Ptr</span> <span class="Statement">(</span>lay, <span class="Constant">Straight</span> <span class="Statement">(</span>flt, backup<span class="Statement">))</span>
+  <span class="Statement">|</span> <span class="Constant">Junc</span> <span class="Statement">_</span> <span class="Statement">-&gt;</span> failwith <span class="Constant">&quot;Junction&quot;</span> <span class="Statement">;;</span>
+
+<span class="Statement">let</span> shift_up_back <span class="Statement">(</span><span class="Constant">Ptr</span> <span class="Statement">(</span>layers, backup<span class="Statement">))</span> <span class="Statement">=</span> <span class="Statement">match</span> backup <span class="Statement">with</span>
+  <span class="Statement">|</span> <span class="Constant">Root</span> <span class="Statement">-&gt;</span> failwith <span class="Constant">&quot;Root&quot;</span>
+  <span class="Statement">|</span> <span class="Constant">Left</span>  <span class="Statement">(</span>cmp, lay_, backup_tail<span class="Statement">)</span> <span class="Statement">-&gt;</span> <span class="Constant">Ptr</span> <span class="Statement">(</span><span class="Constant">Junc</span> <span class="Statement">(</span>cmp, layers, lay_<span class="Statement">)</span>, backup_tail<span class="Statement">)</span>
+  <span class="Statement">|</span> <span class="Constant">Right</span> <span class="Statement">(</span>cmp, lay_, backup_tail<span class="Statement">)</span> <span class="Statement">-&gt;</span> <span class="Constant">Ptr</span> <span class="Statement">(</span><span class="Constant">Junc</span> <span class="Statement">(</span>cmp, lay_, layers<span class="Statement">)</span>, backup_tail<span class="Statement">)</span>
+  <span class="Statement">|</span> <span class="Constant">Straight</span>    <span class="Statement">(</span>flt, backup_tail<span class="Statement">)</span> <span class="Statement">-&gt;</span> <span class="Constant">Ptr</span> <span class="Statement">(</span><span class="Constant">Edge</span> <span class="Statement">(</span>flt, layers<span class="Statement">)</span>,  backup_tail<span class="Statement">)</span> <span class="Statement">;;</span>
+
+<span class="Statement">let</span> get_node_type <span class="Statement">(</span><span class="Constant">Ptr</span> <span class="Statement">(</span>layers, <span class="Statement">_</span><span class="Statement">))</span> <span class="Statement">=</span> <span class="Statement">match</span> layers <span class="Statement">with</span>
+  <span class="Statement">|</span> <span class="Constant">Src</span>  <span class="Statement">_</span> <span class="Statement">-&gt;</span> <span class="Constant">Src_type</span>
+  <span class="Statement">|</span> <span class="Constant">Edge</span> <span class="Statement">_</span> <span class="Statement">-&gt;</span> <span class="Constant">Edge_type</span>
+  <span class="Statement">|</span> <span class="Constant">Junc</span> <span class="Statement">_</span> <span class="Statement">-&gt;</span> <span class="Constant">Junc_type</span> <span class="Statement">;;</span>
+
+<span class="Statement">let</span> <span class="Statement">rec</span> shift_all <span class="Statement">~</span><span class="Identifier">func</span> switch <span class="Statement">=</span>
+  func switch<span class="Statement">;</span>
+  <span class="Statement">match</span> get_node_type switch <span class="Statement">with</span>
+  <span class="Statement">|</span> <span class="Constant">Src_type</span>  <span class="Statement">-&gt;</span> <span class="Constant">()</span>
+  <span class="Statement">|</span> <span class="Constant">Edge_type</span> <span class="Statement">-&gt;</span> shift_all <span class="Statement">~</span><span class="Identifier">func</span> <span class="Statement">(</span>shift_through_edge  switch<span class="Statement">)</span>
+  <span class="Statement">|</span> <span class="Constant">Junc_type</span> <span class="Statement">-&gt;</span> shift_all <span class="Statement">~</span><span class="Identifier">func</span> <span class="Statement">(</span>shift_layer_right  switch<span class="Statement">)</span>
+                 shift_all <span class="Statement">~</span><span class="Identifier">func</span> <span class="Statement">(</span>shift_layer_left  switch<span class="Statement">)</span> <span class="Statement">;;</span>
+
+<span class="Comment">(* }}} *)</span>
+
+<span class="Comment">(* {{{ types *)</span>
+
+<span class="Statement">type</span> 'a bintree <span class="Statement">=</span>
+  <span class="Statement">|</span> <span class="Constant">BLeaf</span>
+  <span class="Statement">|</span> <span class="Constant">BNode</span> <span class="Statement">of</span> 'a <span class="Statement">*</span> 'a bintree <span class="Statement">*</span> 'a bintree<span class="Statement">;;</span>
+
+<span class="Statement">type</span> 'a path <span class="Statement">=</span>
+  <span class="Statement">|</span> <span class="Constant">BRoot</span>
+  <span class="Statement">|</span> <span class="Constant">BLeft</span> <span class="Statement">of</span> 'a <span class="Statement">*</span> 'a bintree <span class="Statement">*</span> 'a path
+  <span class="Statement">|</span> <span class="Constant">BRight</span> <span class="Statement">of</span> 'a <span class="Statement">*</span> 'a bintree <span class="Statement">*</span> 'a path<span class="Statement">;;</span>
+
+<span class="Statement">type</span> 'a zipper <span class="Statement">=</span> <span class="Constant">BZip</span> <span class="Statement">of</span> 'a bintree <span class="Statement">*</span> 'a path<span class="Statement">;;</span>
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* {{{ moves *)</span>
+
+<span class="Statement">let</span> move_left <span class="Statement">(</span><span class="Constant">BZip</span> <span class="Statement">(</span>tree, path<span class="Statement">))</span> <span class="Statement">=</span> <span class="Statement">match</span> tree <span class="Statement">with</span>
+  <span class="Statement">|</span> <span class="Constant">BLeaf</span> <span class="Statement">-&gt;</span> failwith <span class="Constant">&quot;Leaf&quot;</span>
+  <span class="Statement">|</span> <span class="Constant">BNode</span> <span class="Statement">(</span>x, t1, t2<span class="Statement">)</span> <span class="Statement">-&gt;</span> <span class="Constant">BZip</span> <span class="Statement">(</span>t1, <span class="Constant">BLeft</span> <span class="Statement">(</span>x, t2, path<span class="Statement">))</span> <span class="Statement">;;</span>
+
+<span class="Statement">let</span> move_right <span class="Statement">(</span><span class="Constant">BZip</span> <span class="Statement">(</span>tree, path<span class="Statement">))</span> <span class="Statement">=</span> <span class="Statement">match</span> tree <span class="Statement">with</span>
+  <span class="Statement">|</span> <span class="Constant">BLeaf</span> <span class="Statement">-&gt;</span> failwith <span class="Constant">&quot;Leaf&quot;</span>
+  <span class="Statement">|</span> <span class="Constant">BNode</span> <span class="Statement">(</span>x, t1, t2<span class="Statement">)</span> <span class="Statement">-&gt;</span> <span class="Constant">BZip</span> <span class="Statement">(</span>t2, <span class="Constant">BRight</span> <span class="Statement">(</span>x, t1, path<span class="Statement">))</span> <span class="Statement">;;</span>
+
+<span class="Statement">let</span> move_up <span class="Statement">(</span><span class="Constant">BZip</span> <span class="Statement">(</span>tree, path<span class="Statement">))</span> <span class="Statement">=</span> <span class="Statement">match</span> path <span class="Statement">with</span>
+  <span class="Statement">|</span> <span class="Constant">BRoot</span> <span class="Statement">-&gt;</span> failwith <span class="Constant">&quot;Root&quot;</span>
+  <span class="Statement">|</span> <span class="Constant">BLeft</span>  <span class="Statement">(</span>x, t, path_tail<span class="Statement">)</span> <span class="Statement">-&gt;</span> <span class="Constant">BZip</span> <span class="Statement">(</span><span class="Constant">BNode</span> <span class="Statement">(</span>x, tree, t<span class="Statement">)</span>, path_tail<span class="Statement">)</span>
+  <span class="Statement">|</span> <span class="Constant">BRight</span> <span class="Statement">(</span>x, t, path_tail<span class="Statement">)</span> <span class="Statement">-&gt;</span> <span class="Constant">BZip</span> <span class="Statement">(</span><span class="Constant">BNode</span> <span class="Statement">(</span>x, t, tree<span class="Statement">)</span>, path_tail<span class="Statement">)</span> <span class="Statement">;;</span>
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* {{{ test *)</span>
+
+<span class="Statement">let</span> <span class="Statement">_</span> <span class="Statement">=</span>
+  <span class="Statement">let</span> b1 <span class="Statement">=</span>
+    <span class="Constant">BNode</span><span class="Statement">(</span><span class="Constant">2</span>, <span class="Constant">BNode</span><span class="Statement">(</span><span class="Constant">3</span>, <span class="Constant">BNode</span><span class="Statement">(</span><span class="Constant">5</span>, <span class="Constant">BLeaf</span>, <span class="Constant">BLeaf</span><span class="Statement">)</span>,
+                      <span class="Constant">BNode</span><span class="Statement">(</span><span class="Constant">6</span>, <span class="Constant">BLeaf</span>, <span class="Constant">BLeaf</span><span class="Statement">)</span> <span class="Statement">)</span>,
+             <span class="Constant">BNode</span><span class="Statement">(</span><span class="Constant">4</span>, <span class="Constant">BNode</span><span class="Statement">(</span><span class="Constant">7</span>, <span class="Constant">BLeaf</span>, <span class="Constant">BLeaf</span><span class="Statement">)</span>,
+                      <span class="Constant">BNode</span><span class="Statement">(</span><span class="Constant">8</span>, <span class="Constant">BLeaf</span>, <span class="Constant">BLeaf</span><span class="Statement">)</span> <span class="Statement">)</span>
+    <span class="Statement">)</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> z1 <span class="Statement">=</span> <span class="Constant">Zip</span> <span class="Statement">(</span>b1, <span class="Constant">Root</span><span class="Statement">)</span> <span class="Statement">in</span>
+  <span class="Statement">let</span> z2 <span class="Statement">=</span> move_left z1 <span class="Statement">in</span>
+  <span class="Statement">let</span> z2' <span class="Statement">=</span>
+    <span class="Constant">Zip</span>
+     <span class="Statement">(</span><span class="Constant">BNode</span><span class="Statement">(</span><span class="Constant">3</span>, <span class="Constant">BNode</span> <span class="Statement">(</span><span class="Constant">5</span>, <span class="Constant">BLeaf</span>, <span class="Constant">BLeaf</span><span class="Statement">)</span>,
+               <span class="Constant">BNode</span> <span class="Statement">(</span><span class="Constant">6</span>, <span class="Constant">BLeaf</span>, <span class="Constant">BLeaf</span><span class="Statement">)</span> <span class="Statement">)</span>,
+      <span class="Constant">Left</span> <span class="Statement">(</span><span class="Constant">2</span>, <span class="Constant">BNode</span> <span class="Statement">(</span><span class="Constant">4</span>, <span class="Constant">BNode</span> <span class="Statement">(</span><span class="Constant">7</span>, <span class="Constant">BLeaf</span>, <span class="Constant">BLeaf</span><span class="Statement">)</span>,
+                         <span class="Constant">BNode</span> <span class="Statement">(</span><span class="Constant">8</span>, <span class="Constant">BLeaf</span>, <span class="Constant">BLeaf</span><span class="Statement">)</span> <span class="Statement">)</span>,
+      <span class="Constant">Root</span><span class="Statement">)</span>
+     <span class="Statement">)</span>
+  <span class="Statement">in</span> <span class="Statement">if</span> z2 <span class="Statement">=</span> z2' <span class="Statement">then</span> print_endline <span class="Constant">&quot; z2 OK&quot;</span><span class="Statement">;</span>
+  <span class="Statement">let</span> z3 <span class="Statement">=</span> move_left z2 <span class="Statement">in</span>
+  <span class="Statement">let</span> z3' <span class="Statement">=</span>
+    <span class="Constant">Zip</span>
+     <span class="Statement">(</span><span class="Constant">BNode</span> <span class="Statement">(</span><span class="Constant">5</span>, <span class="Constant">BLeaf</span>, <span class="Constant">BLeaf</span><span class="Statement">)</span>,
+       <span class="Constant">Left</span> <span class="Statement">(</span><span class="Constant">3</span>, <span class="Constant">BNode</span> <span class="Statement">(</span><span class="Constant">6</span>, <span class="Constant">BLeaf</span>, <span class="Constant">BLeaf</span><span class="Statement">)</span>,
+         <span class="Constant">Left</span> <span class="Statement">(</span><span class="Constant">2</span>, <span class="Constant">BNode</span> <span class="Statement">(</span><span class="Constant">4</span>, <span class="Constant">BNode</span> <span class="Statement">(</span><span class="Constant">7</span>, <span class="Constant">BLeaf</span>, <span class="Constant">BLeaf</span><span class="Statement">)</span>,
+                            <span class="Constant">BNode</span> <span class="Statement">(</span><span class="Constant">8</span>, <span class="Constant">BLeaf</span>, <span class="Constant">BLeaf</span><span class="Statement">))</span>,
+         <span class="Constant">Root</span><span class="Statement">))</span>
+     <span class="Statement">)</span>
+  <span class="Statement">in</span> <span class="Statement">if</span> z3 <span class="Statement">=</span> z3' <span class="Statement">then</span> print_endline <span class="Constant">&quot; z3 OK&quot;</span><span class="Statement">;</span>
+<span class="Statement">;;</span>
+<span class="Comment">(* }}} *)</span>
+
+<span class="Comment">(* vim: sw=2 sts=2 ts=2 et fdm=marker</span>
+<span class="Comment"> *)</span>
+</pre>
+</body>
+</html>

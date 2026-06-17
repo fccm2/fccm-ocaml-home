@@ -1,0 +1,82 @@
+<html>
+<!-- {{{ head -->
+<head>
+  <title>Grinnm - higher-level UI for ImageMagick</title>
+
+  <meta name="keywords" content="ocaml caml ImageMagick image magick UI imagery graphics" />
+  <meta name="description" content="The goal of this sandbox is to provide a higher-level UI for OCaml-libMagick, in order to be the engine of a futur ImageMagick GUI (graphical user interface)." />
+  <meta name="author" content="Florent Monnier" />
+  <link href="../ocaml-icon.png" rel="shortcut icon" />
+
+<style type="text/css">
+body {
+  background: #CCCDD2;
+  color: #555;
+}
+div {
+  border: 2px solid #888;
+  margin: 1.6em;
+  padding: 0.8em;
+}
+hr {
+  border: 1px solid #888;
+  margin: 1.4em;
+}
+</style>
+
+</head>
+<!-- }}} -->
+<body>
+
+<h1>Grinnm</h1>
+<h2>Sandbox for a higher-level OCaml-libMagick UI</h2>
+
+<p>
+  The goal of this very early sandbox is to provide a higher-level UI for
+  <a href="http://decapode314.free.fr/ocaml/ImageMagick/">OCaml-libMagick</a>,
+  in order to be the engine of a futur ImageMagick GUI (graphical user interface).
+</p>
+
+<div>
+  <h3>First attempt with assoc-lists</h3>
+  <ul>
+    <li><a href="./grinnm.ml.html">grinnm.A.ml</a></li>
+    <li><a href="./grinnm.simplified.ml.html">grinnm.A.simplified.ml</a> (shorter version, easier to read)</li>
+    <li>
+      <a href="./result.png">result.png</a>
+      (the result of the execution of <a href="./grinnm.ml.html">grinnm.A.ml</a>)
+    </li>
+    <li>different possible file-format syntaxes:
+      <ul>
+        <li><a href="./syn.xml.html">syn.xml</a> (close to the MSL)</li>
+        <li><a href="./syn.wrl.html">syn.wrl</a> (some peoples find the previous one too verbose)</li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
+<div>
+  <h3>Second attempt with different nodes types for each functions</h3>
+  <ul>
+    <li><a href="./grinnm.B.ml.html">grinnm.B1.ml</a></li>
+    <li>the result of this script: <a href="./videmo-2.mpg">videmo-2.mpg</a></li>
+  </ul>
+  <hr />
+  <p>
+    <a href="./grinnm.B2.ml.html">grinnm.B2.ml</a> (this version is a further version made from the B1)<br />
+    This version (B2) provides some functions to animate the parameters through the time,<br />
+    here is an <a href="./script.B2.ml.html">exemple of use</a>.
+  </p>
+  <hr />
+  <p>
+    The next step will be to implement the handling of the data structure.<br />
+    A possible way to achieve this could perhaps be to use the <a href="./huet.ml.html">Huet method</a>.<br />
+    Here is an early attempt to adapt it to Grinnm: <a href="./zipper.ml.html">zipper.ml.html</a>.
+  </p>
+</div>
+
+
+</body>
+</html>
+<!-- vim: filetype=php sw=2 sts=2 ts=2 et fdm=marker
+-->

@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+ "http://www.w3.org/TR/html4/strict.dtd">
+<?xml version="1.0"?>
+<html>
+<head>
+<title>huet.ml</title>
+<meta name="Generator" content="Vim/6.3"/>
+<meta http-equiv="content-type" content="text/html; charset=utf8"/>
+<style type="text/css">
+<!--
+.Constant { color: #ff40ff; font-weight: bold; }
+pre { color: #ffffff; background-color: #000000; border: 1px solid #7F7F7F; padding: 2px; }
+body { color: #ffffff; background-color: #000000; }
+.Comment { color: #00ffff; font-weight: bold; }
+.Statement { color: #ffff00; font-weight: bold; }
+-->
+</style>
+</head>
+<body>
+<pre>
+<span class="Comment">(*</span>
+<span class="Comment">   Programmation fonctionnelle, g&eacute;n&eacute;rique et objet</span>
+<span class="Comment">   (Une introduction avec le langage OCaml)</span>
+<span class="Comment">   Ph. Narbel,  Vuibert, 2005</span>
+<span class="Comment">&nbsp;</span>
+<span class="Comment">   Ces programmes ont pour but d'illustrer les sujets trait&eacute;s dans</span>
+<span class="Comment">   le livre. Il n'est donn&eacute; aucune garantie quant &agrave; leur utilisation</span>
+<span class="Comment">   dans le cadre d'une activit&eacute; professionnelle ou commerciale.</span>
+<span class="Comment">   Ces programmes peuvent &ecirc;tre copi&eacute;s sous r&eacute;serve que leur provenance</span>
+<span class="Comment">   soit cit&eacute;e et que cet avertissement soit inclus.</span>
+
+<span class="Comment">   These programs are provided without warranty of any kind. Their
+   purpose is just to serve as illustrations in the book.  Permission
+   to copy is granted provided that citation and this disclaimer of</span>
+<span class="Comment">   warranty are included.</span>
+<span class="Comment">*)</span>
+
+<span class="Statement">type</span> 'a bintree <span class="Statement">=</span>
+  <span class="Statement">|</span> <span class="Constant">BinEmpty</span>
+  <span class="Statement">|</span> <span class="Constant">BinNode</span> <span class="Statement">of</span> 'a <span class="Statement">*</span> 'a bintree <span class="Statement">*</span> 'a bintree
+
+<span class="Statement">type</span> 'a path <span class="Statement">=</span>
+  <span class="Statement">|</span> <span class="Constant">Root</span>
+  <span class="Statement">|</span> <span class="Constant">Left</span> <span class="Statement">of</span> 'a <span class="Statement">*</span> 'a bintree <span class="Statement">*</span> 'a path
+  <span class="Statement">|</span> <span class="Constant">Right</span> <span class="Statement">of</span> 'a <span class="Statement">*</span> 'a bintree <span class="Statement">*</span> 'a path
+
+<span class="Statement">type</span> 'a zipper <span class="Statement">=</span> <span class="Constant">Zip</span> <span class="Statement">of</span> 'a bintree <span class="Statement">*</span> 'a path
+
+<span class="Statement">let</span> move_left <span class="Statement">(</span><span class="Constant">Zip</span> <span class="Statement">(</span>tree, path<span class="Statement">))</span> <span class="Statement">=</span> <span class="Statement">match</span> tree <span class="Statement">with</span>
+  <span class="Statement">|</span> <span class="Constant">BinEmpty</span> <span class="Statement">-&gt;</span> failwith <span class="Constant">&quot;Empty&quot;</span>
+  <span class="Statement">|</span> <span class="Constant">BinNode</span> <span class="Statement">(</span>x, t1, t2<span class="Statement">)</span> <span class="Statement">-&gt;</span> <span class="Constant">Zip</span> <span class="Statement">(</span>t1, <span class="Constant">Left</span> <span class="Statement">(</span>x, t2, path<span class="Statement">))</span>
+
+<span class="Statement">let</span> move_right <span class="Statement">(</span><span class="Constant">Zip</span> <span class="Statement">(</span>tree, path<span class="Statement">))</span> <span class="Statement">=</span> <span class="Statement">match</span> tree <span class="Statement">with</span>
+  <span class="Statement">|</span> <span class="Constant">BinEmpty</span> <span class="Statement">-&gt;</span> failwith <span class="Constant">&quot;Empty&quot;</span>
+  <span class="Statement">|</span> <span class="Constant">BinNode</span> <span class="Statement">(</span>x, t1, t2<span class="Statement">)</span> <span class="Statement">-&gt;</span> <span class="Constant">Zip</span> <span class="Statement">(</span>t2, <span class="Constant">Right</span> <span class="Statement">(</span>x, t1, path<span class="Statement">))</span>
+
+<span class="Statement">let</span> move_up <span class="Statement">(</span><span class="Constant">Zip</span> <span class="Statement">(</span>tree, path<span class="Statement">))</span> <span class="Statement">=</span> <span class="Statement">match</span> path <span class="Statement">with</span>
+  <span class="Statement">|</span> <span class="Constant">Root</span> <span class="Statement">-&gt;</span> failwith <span class="Constant">&quot;Root&quot;</span>
+  <span class="Statement">|</span> <span class="Constant">Left</span> <span class="Statement">(</span>x, t, path_tail<span class="Statement">)</span>  <span class="Statement">-&gt;</span> <span class="Constant">Zip</span> <span class="Statement">(</span><span class="Constant">BinNode</span> <span class="Statement">(</span>x, tree, t<span class="Statement">)</span>, path_tail<span class="Statement">)</span>
+  <span class="Statement">|</span> <span class="Constant">Right</span> <span class="Statement">(</span>x, t, path_tail<span class="Statement">)</span> <span class="Statement">-&gt;</span> <span class="Constant">Zip</span> <span class="Statement">(</span><span class="Constant">BinNode</span> <span class="Statement">(</span>x, t, tree<span class="Statement">)</span>, path_tail<span class="Statement">)</span>
+
+</pre>
+</body>
+</html>

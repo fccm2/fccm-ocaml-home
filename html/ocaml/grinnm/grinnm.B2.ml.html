@@ -1,0 +1,877 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+ "http://www.w3.org/TR/html4/strict.dtd">
+<?xml version="1.0"?>
+<html>
+<head>
+<title>Grinnm/grinnm.ml</title>
+<meta name="Generator" content="Vim/6.3"/>
+<meta http-equiv="content-type" content="text/html; charset=utf8"/>
+<style type="text/css">
+<!--
+.Constant { color: #ff40ff; font-weight: bold; }
+.Type { color: #00ff00; font-weight: bold; }
+.Identifier { color: #00ffff; font-weight: bold; }
+.PreProc { color: #8080ff; font-weight: bold; }
+pre { color: #ffffff; background-color: #000000; border: 1px solid #7F7F7F; padding: 2px; }
+body { color: #ffffff; background-color: #000000; }
+.Comment { color: #00ffff; font-weight: bold; }
+.Statement { color: #ffff00; font-weight: bold; }
+-->
+</style>
+</head>
+<body>
+<pre>
+<span class="Comment">(* {{{ COPYING *)</span>
+<span class="Comment">(*</span>
+<span class="Comment"> * +-----------------------------------------------------------------+</span>
+<span class="Comment"> * | Copyright (C) 2006 Florent Monnier                              |</span>
+<span class="Comment"> * +-----------------------------------------------------------------+</span>
+<span class="Comment"> * | This is a sandbox to provide higher level UI to OCaml-libMagick |</span>
+<span class="Comment"> * +-----------------------------------------------------------------+</span>
+<span class="Comment"> * |                                                                 |</span>
+<span class="Comment"> * | This program is free software; you can redistribute it and/or   |</span>
+<span class="Comment"> * | modify it under the terms of the GNU General Public License     |</span>
+<span class="Comment"> * | as published by the Free Software Foundation; either version 2  |</span>
+<span class="Comment"> * | of the License, or (at your option) any later version.          |</span>
+<span class="Comment"> * |                                                                 |</span>
+<span class="Comment"> * | This program is distributed in the hope that it will be useful, |</span>
+<span class="Comment"> * | but WITHOUT ANY WARRANTY; without even the implied warranty of  |</span>
+<span class="Comment"> * | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the   |</span>
+<span class="Comment"> * | GNU General Public License for more details.                    |</span>
+<span class="Comment"> * |                                                                 |</span>
+<span class="Comment"> * | <A HREF="http://www.fsf.org/licensing/licenses/gpl.html">http://www.fsf.org/licensing/licenses/gpl.html</A>                  |</span>
+<span class="Comment"> * |                                                                 |</span>
+<span class="Comment"> * | You should have received a copy of the GNU General Public       |</span>
+<span class="Comment"> * | License along with this program; if not,                        |</span>
+<span class="Comment"> * | write to the Free Software Foundation, Inc.,                    |</span>
+<span class="Comment"> * | 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA    |</span>
+<span class="Comment"> * |                                                                 |</span>
+<span class="Comment"> * +-----------------------------------------------------------------+</span>
+<span class="Comment"> * | Author: Florent Monnier &lt;monnier.florent(_)gmail.com&gt;           |</span>
+<span class="Comment"> * +-----------------------------------------------------------------+</span>
+<span class="Comment"> *</span>
+<span class="Comment"> * }}} *)</span>
+
+<span class="Comment">(* {{{ Utilities *)</span>
+
+<span class="Comment">(* {{{ is_dir_writable *)</span>
+
+<span class="Statement">let</span> is_dir_writable <span class="Statement">~</span><span class="Identifier">path</span> <span class="Statement">=</span>
+  <span class="Statement">let</span> stats <span class="Statement">=</span> <span class="PreProc">Unix</span>.stat path <span class="Statement">in</span>
+  <span class="Statement">if</span> stats.<span class="PreProc">Unix</span>.st_kind <span class="Statement">&lt;&gt;</span> <span class="PreProc">Unix</span>.<span class="Constant">S_DIR</span>  <span class="Comment">(* is it a directory? *)</span>
+  <span class="Statement">then</span> <span class="Constant">false</span>
+  <span class="Statement">else</span> <span class="Statement">if</span> <span class="Statement">(</span>stats.<span class="PreProc">Unix</span>.st_perm <span class="Statement">land</span> <span class="Constant">0o200</span><span class="Statement">)</span> <span class="Statement">=</span> <span class="Constant">0</span>  <span class="Comment">(* is the directory writable? *)</span>
+    <span class="Statement">then</span> <span class="Constant">false</span>
+    <span class="Statement">else</span> <span class="Constant">true</span>
+<span class="Statement">;;</span>
+<span class="Comment">(* }}} *)</span>
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* {{{ Types *)</span>
+
+<span class="Comment">(* {{{ parameters types *)</span>
+
+<span class="Statement">type</span> int_t <span class="Statement">=</span>
+  <span class="Statement">|</span> <span class="Constant">Int</span> <span class="Statement">of</span> <span class="Type">int</span>
+  <span class="Statement">|</span> <span class="Constant">Int_t</span> <span class="Statement">of</span> <span class="Statement">(</span>t:<span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">int</span><span class="Statement">)</span>
+  <span class="Statement">|</span> <span class="Constant">Int_p</span> <span class="Statement">of</span> <span class="Statement">(</span>percent:<span class="Type">float</span> <span class="Statement">-&gt;</span> <span class="Type">int</span><span class="Statement">)</span>
+  <span class="Statement">|</span> <span class="Constant">Int_ft</span> <span class="Statement">of</span> <span class="Statement">(</span>frames:<span class="Type">int</span> <span class="Statement">-&gt;</span> t:<span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">int</span><span class="Statement">)</span>
+
+<span class="Statement">type</span> float_t <span class="Statement">=</span>
+  <span class="Statement">|</span> <span class="Constant">Float</span> <span class="Statement">of</span> <span class="Type">float</span>
+  <span class="Statement">|</span> <span class="Constant">Float_t</span> <span class="Statement">of</span> <span class="Statement">(</span>t:<span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">float</span><span class="Statement">)</span>
+  <span class="Statement">|</span> <span class="Constant">Float_p</span> <span class="Statement">of</span> <span class="Statement">(</span>percent:<span class="Type">float</span> <span class="Statement">-&gt;</span> <span class="Type">float</span><span class="Statement">)</span>
+  <span class="Statement">|</span> <span class="Constant">Float_ft</span> <span class="Statement">of</span> <span class="Statement">(</span>frames:<span class="Type">int</span> <span class="Statement">-&gt;</span> t:<span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">float</span><span class="Statement">)</span>
+
+<span class="Statement">type</span> string_t <span class="Statement">=</span>
+  <span class="Statement">|</span> <span class="Constant">String</span> <span class="Statement">of</span> <span class="Type">string</span>
+  <span class="Statement">|</span> <span class="Constant">String_t</span> <span class="Statement">of</span> <span class="Statement">(</span>t:<span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">string</span><span class="Statement">)</span>
+  <span class="Statement">|</span> <span class="Constant">String_p</span> <span class="Statement">of</span> <span class="Statement">(</span>percent:<span class="Type">float</span> <span class="Statement">-&gt;</span> <span class="Type">string</span><span class="Statement">)</span>
+  <span class="Statement">|</span> <span class="Constant">String_ft</span> <span class="Statement">of</span> <span class="Statement">(</span>frames:<span class="Type">int</span> <span class="Statement">-&gt;</span> t:<span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">string</span><span class="Statement">)</span>
+
+<span class="Statement">type</span> bz_t <span class="Statement">=</span>
+  <span class="Statement">|</span> <span class="Constant">BZ</span> <span class="Statement">of</span> <span class="Statement">(</span><span class="Type">int</span> <span class="Statement">*</span> <span class="Type">int</span><span class="Statement">)</span> <span class="Type">array</span>
+  <span class="Statement">|</span> <span class="Constant">BZ_t</span> <span class="Statement">of</span> <span class="Statement">(</span>t:<span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Statement">(</span><span class="Type">int</span> <span class="Statement">*</span> <span class="Type">int</span><span class="Statement">)</span> <span class="Type">array</span><span class="Statement">)</span>
+  <span class="Statement">|</span> <span class="Constant">BZ_p</span> <span class="Statement">of</span> <span class="Statement">(</span>percent:<span class="Type">float</span> <span class="Statement">-&gt;</span> <span class="Statement">(</span><span class="Type">int</span> <span class="Statement">*</span> <span class="Type">int</span><span class="Statement">)</span> <span class="Type">array</span><span class="Statement">)</span>
+  <span class="Statement">|</span> <span class="Constant">BZ_ft</span> <span class="Statement">of</span> <span class="Statement">(</span>frames:<span class="Type">int</span> <span class="Statement">-&gt;</span> t:<span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Statement">(</span><span class="Type">int</span> <span class="Statement">*</span> <span class="Type">int</span><span class="Statement">)</span> <span class="Type">array</span><span class="Statement">)</span>
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* {{{ layer tree types *)</span>
+
+<span class="Statement">type</span> layer <span class="Statement">=</span> <span class="PreProc">Magick</span>.image_handle
+
+<span class="Statement">type</span> source <span class="Statement">=</span>
+  <span class="Statement">|</span> <span class="Constant">Source_A</span> <span class="Statement">of</span> <span class="Statement">(</span><span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">string</span> <span class="Statement">-&gt;</span> <span class="Type">unit</span> <span class="Statement">-&gt;</span> layer<span class="Statement">)</span> <span class="Statement">*</span> int_t <span class="Statement">*</span> int_t <span class="Statement">*</span> string_t
+  <span class="Statement">|</span> <span class="Constant">Source_B</span> <span class="Statement">of</span> <span class="Statement">(</span><span class="Type">string</span> <span class="Statement">-&gt;</span> <span class="Type">unit</span> <span class="Statement">-&gt;</span> layer<span class="Statement">)</span> <span class="Statement">*</span> string_t
+  <span class="Statement">|</span> <span class="Constant">Source_ext</span> <span class="Statement">of</span> layer
+
+<span class="Statement">type</span> filter <span class="Statement">=</span>
+  <span class="Statement">|</span> <span class="Constant">Filter_0</span>  <span class="Statement">of</span> <span class="Statement">(</span>img:layer <span class="Statement">-&gt;</span> layer<span class="Statement">)</span>
+  <span class="Statement">|</span> <span class="Constant">Filter_1i</span> <span class="Statement">of</span> <span class="Statement">(</span><span class="Type">int</span> <span class="Statement">-&gt;</span> img:layer <span class="Statement">-&gt;</span> layer<span class="Statement">)</span> <span class="Statement">*</span> int_t
+  <span class="Statement">|</span> <span class="Constant">Filter_1s</span> <span class="Statement">of</span> <span class="Statement">(</span><span class="Type">string</span> <span class="Statement">-&gt;</span> img:layer <span class="Statement">-&gt;</span> layer<span class="Statement">)</span> <span class="Statement">*</span> string_t
+  <span class="Statement">|</span> <span class="Constant">Filter_1f</span> <span class="Statement">of</span> <span class="Statement">(</span><span class="Type">float</span> <span class="Statement">-&gt;</span> img:layer <span class="Statement">-&gt;</span> layer<span class="Statement">)</span> <span class="Statement">*</span> float_t
+  <span class="Statement">|</span> <span class="Constant">Filter_2f</span> <span class="Statement">of</span> <span class="Statement">(</span><span class="Type">float</span> <span class="Statement">-&gt;</span> <span class="Type">float</span> <span class="Statement">-&gt;</span> img:layer <span class="Statement">-&gt;</span> layer<span class="Statement">)</span> <span class="Statement">*</span> float_t <span class="Statement">*</span> float_t
+  <span class="Statement">|</span> <span class="Constant">Filter_3f</span> <span class="Statement">of</span> <span class="Statement">(</span><span class="Type">float</span> <span class="Statement">-&gt;</span> <span class="Type">float</span> <span class="Statement">-&gt;</span> <span class="Type">float</span> <span class="Statement">-&gt;</span> img:layer <span class="Statement">-&gt;</span> layer<span class="Statement">)</span> <span class="Statement">*</span> float_t <span class="Statement">*</span> float_t <span class="Statement">*</span> float_t
+  <span class="Statement">|</span> <span class="Constant">Filter_2i</span> <span class="Statement">of</span> <span class="Statement">(</span><span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">int</span> <span class="Statement">-&gt;</span> img:layer <span class="Statement">-&gt;</span> layer<span class="Statement">)</span> <span class="Statement">*</span> int_t <span class="Statement">*</span> int_t
+  <span class="Statement">|</span> <span class="Constant">Filter_3i</span> <span class="Statement">of</span> <span class="Statement">(</span><span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">int</span> <span class="Statement">-&gt;</span> img:layer <span class="Statement">-&gt;</span> layer<span class="Statement">)</span> <span class="Statement">*</span> int_t <span class="Statement">*</span> int_t <span class="Statement">*</span> int_t
+  <span class="Statement">|</span> <span class="Constant">Filter_4i</span> <span class="Statement">of</span> <span class="Statement">(</span><span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">int</span> <span class="Statement">-&gt;</span> img:layer <span class="Statement">-&gt;</span> layer<span class="Statement">)</span> <span class="Statement">*</span> int_t <span class="Statement">*</span> int_t <span class="Statement">*</span> int_t <span class="Statement">*</span> int_t
+  <span class="Statement">|</span> <span class="Constant">Filter_BZ</span> <span class="Statement">of</span> <span class="Statement">(</span><span class="Type">string</span> <span class="Statement">-&gt;</span> <span class="Type">float</span> <span class="Statement">-&gt;</span> <span class="Statement">(</span><span class="Type">int</span> <span class="Statement">*</span> <span class="Type">int</span><span class="Statement">)</span> <span class="Type">array</span> <span class="Statement">-&gt;</span> img:layer <span class="Statement">-&gt;</span> layer<span class="Statement">)</span> <span class="Statement">*</span> string_t <span class="Statement">*</span> float_t <span class="Statement">*</span> bz_t
+  <span class="Statement">|</span> <span class="Constant">Filter_sf4i</span> <span class="Statement">of</span> <span class="Statement">(</span><span class="Type">string</span> <span class="Statement">-&gt;</span> <span class="Type">float</span> <span class="Statement">-&gt;</span> <span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">int</span> <span class="Statement">-&gt;</span> img:layer <span class="Statement">-&gt;</span> layer<span class="Statement">)</span>
+                   <span class="Statement">*</span> string_t <span class="Statement">*</span> float_t <span class="Statement">*</span> int_t <span class="Statement">*</span> int_t <span class="Statement">*</span> int_t <span class="Statement">*</span> int_t
+  <span class="Statement">|</span> <span class="Constant">Filter_1T</span> <span class="Statement">of</span> <span class="Statement">(</span><span class="PreProc">Magick</span>.image_type <span class="Statement">-&gt;</span> img:layer <span class="Statement">-&gt;</span> layer<span class="Statement">)</span> <span class="Statement">*</span> <span class="PreProc">Magick</span>.image_type
+
+<span class="Statement">type</span> compositor <span class="Statement">=</span>
+  <span class="Statement">|</span> <span class="Constant">Compose_0</span>  <span class="Statement">of</span> <span class="Statement">(</span>img_a:layer <span class="Statement">-&gt;</span> img_b:layer <span class="Statement">-&gt;</span> layer<span class="Statement">)</span>
+  <span class="Statement">|</span> <span class="Constant">Compose_1C</span> <span class="Statement">of</span> <span class="Statement">(</span><span class="PreProc">Magick</span>.composite_operator <span class="Statement">-&gt;</span> img_a:layer <span class="Statement">-&gt;</span> img_b:layer <span class="Statement">-&gt;</span> layer<span class="Statement">)</span> <span class="Statement">*</span> <span class="PreProc">Magick</span>.composite_operator
+  <span class="Statement">|</span> <span class="Constant">Compose_1f</span> <span class="Statement">of</span> <span class="Statement">(</span><span class="Type">float</span> <span class="Statement">-&gt;</span> img_a:layer <span class="Statement">-&gt;</span> img_b:layer <span class="Statement">-&gt;</span> layer<span class="Statement">)</span> <span class="Statement">*</span> float_t
+
+<span class="Statement">type</span> clipper <span class="Statement">=</span>
+  <span class="Statement">|</span> <span class="Constant">Clipper_0</span> <span class="Statement">of</span> <span class="Statement">(</span>img_a:layer <span class="Statement">-&gt;</span> img_b:layer <span class="Statement">-&gt;</span> img_c:layer <span class="Statement">-&gt;</span> layer<span class="Statement">)</span>
+
+<span class="Statement">type</span> layers_tree <span class="Statement">=</span>
+  <span class="Statement">|</span> <span class="Constant">Leaf</span> <span class="Statement">of</span> <span class="Statement">(</span>source<span class="Statement">)</span>
+  <span class="Statement">|</span> <span class="Constant">Edge</span> <span class="Statement">of</span> <span class="Statement">(</span>filter <span class="Statement">*</span> layers_tree<span class="Statement">)</span>
+  <span class="Statement">|</span> <span class="Constant">Node2</span> <span class="Statement">of</span> <span class="Statement">(</span>compositor <span class="Statement">*</span> layers_tree <span class="Statement">*</span> layers_tree<span class="Statement">)</span>
+  <span class="Statement">|</span> <span class="Constant">Node3</span> <span class="Statement">of</span> <span class="Statement">(</span>clipper <span class="Statement">*</span> layers_tree <span class="Statement">*</span> layers_tree <span class="Statement">*</span> layers_tree<span class="Statement">)</span>
+  <span class="Statement">|</span> <span class="Constant">Cached</span> <span class="Statement">of</span> layer
+
+<span class="Comment">(* }}} *)</span>
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* {{{ Main *)</span>
+
+<span class="Comment">(* {{{ get_frame_at_t *)</span>
+
+<span class="Statement">let</span> get_frame_at_t <span class="Statement">~</span><span class="Identifier">layers</span> <span class="Statement">~</span><span class="Identifier">t</span> <span class="Statement">~</span><span class="Identifier">frames</span> <span class="Statement">=</span>
+  <span class="Comment">(* {{{ process parameters *)</span>
+  <span class="Comment">(* the first rendered ~t = 0 *)</span>
+  <span class="Comment">(* the last rendered ~t = (pred frames) *)</span>
+  <span class="Statement">let</span> percent <span class="Statement">=</span> <span class="Statement">(</span><span class="Type">float</span> t<span class="Statement">)</span>/.<span class="Statement">(</span><span class="Type">float</span><span class="Statement">(</span>pred frames<span class="Statement">))</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> process_param_i <span class="Statement">=</span> <span class="Statement">function</span>
+    <span class="Statement">|</span> <span class="Constant">Int</span> p <span class="Statement">-&gt;</span> p
+    <span class="Statement">|</span> <span class="Constant">Int_t</span> func <span class="Statement">-&gt;</span> func <span class="Statement">~</span><span class="Identifier">t</span>
+    <span class="Statement">|</span> <span class="Constant">Int_p</span> func <span class="Statement">-&gt;</span> func <span class="Statement">~</span><span class="Identifier">percent</span>
+    <span class="Statement">|</span> <span class="Constant">Int_ft</span> func <span class="Statement">-&gt;</span> func <span class="Statement">~</span><span class="Identifier">frames</span> <span class="Statement">~</span><span class="Identifier">t</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> process_param_f <span class="Statement">=</span> <span class="Statement">function</span>
+    <span class="Statement">|</span> <span class="Constant">Float</span> p <span class="Statement">-&gt;</span> p
+    <span class="Statement">|</span> <span class="Constant">Float_t</span> func <span class="Statement">-&gt;</span> func <span class="Statement">~</span><span class="Identifier">t</span>
+    <span class="Statement">|</span> <span class="Constant">Float_p</span> func <span class="Statement">-&gt;</span> func <span class="Statement">~</span><span class="Identifier">percent</span>
+    <span class="Statement">|</span> <span class="Constant">Float_ft</span> func <span class="Statement">-&gt;</span> func <span class="Statement">~</span><span class="Identifier">frames</span> <span class="Statement">~</span><span class="Identifier">t</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> process_param_s <span class="Statement">=</span> <span class="Statement">function</span>
+    <span class="Statement">|</span> <span class="Constant">String</span> p <span class="Statement">-&gt;</span> p
+    <span class="Statement">|</span> <span class="Constant">String_t</span> func <span class="Statement">-&gt;</span> func <span class="Statement">~</span><span class="Identifier">t</span>
+    <span class="Statement">|</span> <span class="Constant">String_p</span> func <span class="Statement">-&gt;</span> func <span class="Statement">~</span><span class="Identifier">percent</span>
+    <span class="Statement">|</span> <span class="Constant">String_ft</span> func <span class="Statement">-&gt;</span> func <span class="Statement">~</span><span class="Identifier">frames</span> <span class="Statement">~</span><span class="Identifier">t</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> process_param_bz <span class="Statement">=</span> <span class="Statement">function</span>
+    <span class="Statement">|</span> <span class="Constant">BZ</span> p <span class="Statement">-&gt;</span> p
+    <span class="Statement">|</span> <span class="Constant">BZ_t</span> func <span class="Statement">-&gt;</span> func <span class="Statement">~</span><span class="Identifier">t</span>
+    <span class="Statement">|</span> <span class="Constant">BZ_p</span> func <span class="Statement">-&gt;</span> func <span class="Statement">~</span><span class="Identifier">percent</span>
+    <span class="Statement">|</span> <span class="Constant">BZ_ft</span> func <span class="Statement">-&gt;</span> func <span class="Statement">~</span><span class="Identifier">frames</span> <span class="Statement">~</span><span class="Identifier">t</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> _f, _i, _s, _bz <span class="Statement">=</span> process_param_f, process_param_i, process_param_s, process_param_bz
+  <span class="Statement">in</span>
+  <span class="Comment">(* }}} *)</span>
+  <span class="Comment">(* {{{ process the layer tree *)</span>
+  <span class="Statement">let</span> process_source <span class="Statement">=</span> <span class="Statement">function</span>
+    <span class="Statement">|</span> <span class="Constant">Source_ext</span> layer <span class="Statement">-&gt;</span> layer
+    <span class="Statement">|</span> <span class="Constant">Source_A</span> <span class="Statement">(</span>func, a, b, c<span class="Statement">)</span> <span class="Statement">-&gt;</span> func <span class="Statement">(</span>_i a<span class="Statement">)</span> <span class="Statement">(</span>_i b<span class="Statement">)</span> <span class="Statement">(</span>_s c<span class="Statement">)</span> <span class="Constant">()</span>
+    <span class="Statement">|</span> <span class="Constant">Source_B</span> <span class="Statement">(</span>func, a<span class="Statement">)</span> <span class="Statement">-&gt;</span> func <span class="Statement">(</span>_s a<span class="Statement">)</span> <span class="Constant">()</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> process_filter <span class="Statement">=</span> <span class="Statement">function</span>
+    <span class="Statement">|</span> <span class="Constant">Filter_0</span>  func <span class="Statement">-&gt;</span> func
+    <span class="Statement">|</span> <span class="Constant">Filter_1T</span> <span class="Statement">(</span>func, a<span class="Statement">)</span> <span class="Statement">-&gt;</span> func a
+    <span class="Statement">|</span> <span class="Constant">Filter_1s</span> <span class="Statement">(</span>func, a<span class="Statement">)</span> <span class="Statement">-&gt;</span> func <span class="Statement">(</span>_s a<span class="Statement">)</span>
+    <span class="Statement">|</span> <span class="Constant">Filter_1i</span> <span class="Statement">(</span>func, a<span class="Statement">)</span> <span class="Statement">-&gt;</span> func <span class="Statement">(</span>_i a<span class="Statement">)</span>
+    <span class="Statement">|</span> <span class="Constant">Filter_1f</span> <span class="Statement">(</span>func, a<span class="Statement">)</span> <span class="Statement">-&gt;</span> func <span class="Statement">(</span>_f a<span class="Statement">)</span>
+    <span class="Statement">|</span> <span class="Constant">Filter_2f</span> <span class="Statement">(</span>func, a, b<span class="Statement">)</span> <span class="Statement">-&gt;</span> func <span class="Statement">(</span>_f a<span class="Statement">)</span> <span class="Statement">(</span>_f b<span class="Statement">)</span>
+    <span class="Statement">|</span> <span class="Constant">Filter_2i</span> <span class="Statement">(</span>func, a, b<span class="Statement">)</span> <span class="Statement">-&gt;</span> func <span class="Statement">(</span>_i a<span class="Statement">)</span> <span class="Statement">(</span>_i b<span class="Statement">)</span>
+    <span class="Statement">|</span> <span class="Constant">Filter_3f</span> <span class="Statement">(</span>func, a, b, c<span class="Statement">)</span> <span class="Statement">-&gt;</span> func <span class="Statement">(</span>_f a<span class="Statement">)</span> <span class="Statement">(</span>_f b<span class="Statement">)</span> <span class="Statement">(</span>_f c<span class="Statement">)</span>
+    <span class="Statement">|</span> <span class="Constant">Filter_3i</span> <span class="Statement">(</span>func, a, b, c<span class="Statement">)</span> <span class="Statement">-&gt;</span> func <span class="Statement">(</span>_i a<span class="Statement">)</span> <span class="Statement">(</span>_i b<span class="Statement">)</span> <span class="Statement">(</span>_i c<span class="Statement">)</span>
+    <span class="Statement">|</span> <span class="Constant">Filter_BZ</span> <span class="Statement">(</span>func, a, b, c<span class="Statement">)</span> <span class="Statement">-&gt;</span> func <span class="Statement">(</span>_s a<span class="Statement">)</span> <span class="Statement">(</span>_f b<span class="Statement">)</span> <span class="Statement">(</span>_bz c<span class="Statement">)</span>
+    <span class="Statement">|</span> <span class="Constant">Filter_4i</span> <span class="Statement">(</span>func, a, b, c, d<span class="Statement">)</span> <span class="Statement">-&gt;</span> func <span class="Statement">(</span>_i a<span class="Statement">)</span> <span class="Statement">(</span>_i b<span class="Statement">)</span> <span class="Statement">(</span>_i c<span class="Statement">)</span> <span class="Statement">(</span>_i d<span class="Statement">)</span>
+    <span class="Statement">|</span> <span class="Constant">Filter_sf4i</span> <span class="Statement">(</span>func, a, b, c, d, e, f<span class="Statement">)</span> <span class="Statement">-&gt;</span> func <span class="Statement">(</span>_s a<span class="Statement">)</span> <span class="Statement">(</span>_f b<span class="Statement">)</span> <span class="Statement">(</span>_i c<span class="Statement">)</span> <span class="Statement">(</span>_i d<span class="Statement">)</span> <span class="Statement">(</span>_i e<span class="Statement">)</span> <span class="Statement">(</span>_i f<span class="Statement">)</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> process_compositor <span class="Statement">=</span> <span class="Statement">function</span>
+    <span class="Statement">|</span> <span class="Constant">Compose_0</span>  <span class="Statement">(</span>func<span class="Statement">)</span> <span class="Statement">-&gt;</span> func
+    <span class="Statement">|</span> <span class="Constant">Compose_1C</span> <span class="Statement">(</span>func, a<span class="Statement">)</span> <span class="Statement">-&gt;</span> func a
+    <span class="Statement">|</span> <span class="Constant">Compose_1f</span> <span class="Statement">(</span>func, a<span class="Statement">)</span> <span class="Statement">-&gt;</span> func <span class="Statement">(</span>_f a<span class="Statement">)</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> process_clipper <span class="Statement">=</span> <span class="Statement">function</span>
+    <span class="Statement">|</span> <span class="Constant">Clipper_0</span> <span class="Statement">(</span>func<span class="Statement">)</span> <span class="Statement">-&gt;</span> func
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> <span class="Statement">rec</span> process_layer <span class="Statement">=</span> <span class="Statement">function</span>
+    <span class="Statement">|</span> <span class="Constant">Cached</span> layer <span class="Statement">-&gt;</span> layer
+    <span class="Statement">|</span> <span class="Constant">Leaf</span> <span class="Statement">(</span>src<span class="Statement">)</span> <span class="Statement">-&gt;</span> <span class="Statement">(</span>process_source src<span class="Statement">)</span>
+    <span class="Statement">|</span> <span class="Constant">Edge</span> <span class="Statement">(</span>flt, lay<span class="Statement">)</span> <span class="Statement">-&gt;</span> <span class="Statement">(</span>process_filter flt<span class="Statement">)</span> <span class="Statement">~</span><span class="Identifier">img</span>:<span class="Statement">(</span>process_layer lay<span class="Statement">)</span>
+    <span class="Statement">|</span> <span class="Constant">Node2</span> <span class="Statement">(</span>cmp, lay_a, lay_b<span class="Statement">)</span> <span class="Statement">-&gt;</span>
+        <span class="Statement">(</span>process_compositor cmp<span class="Statement">)</span>
+            <span class="Statement">~</span><span class="Identifier">img_a</span>:<span class="Statement">(</span>process_layer lay_a<span class="Statement">)</span>
+            <span class="Statement">~</span><span class="Identifier">img_b</span>:<span class="Statement">(</span>process_layer lay_b<span class="Statement">)</span>
+    <span class="Statement">|</span> <span class="Constant">Node3</span> <span class="Statement">(</span>cmp, lay_a, lay_b, lay_c<span class="Statement">)</span> <span class="Statement">-&gt;</span>
+        <span class="Statement">(</span>process_clipper cmp<span class="Statement">)</span>
+            <span class="Statement">~</span><span class="Identifier">img_a</span>:<span class="Statement">(</span>process_layer lay_a<span class="Statement">)</span>
+            <span class="Statement">~</span><span class="Identifier">img_b</span>:<span class="Statement">(</span>process_layer lay_b<span class="Statement">)</span>
+            <span class="Statement">~</span><span class="Identifier">img_c</span>:<span class="Statement">(</span>process_layer lay_c<span class="Statement">)</span>
+  <span class="Statement">in</span>
+  <span class="Comment">(* }}} *)</span>
+  process_layer layers<span class="Statement">;</span>
+<span class="Statement">;;</span>
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* {{{ BOOT: render_layers *)</span>
+
+<span class="Statement">let</span> render_layers <span class="Statement">?</span><span class="Statement">(</span><span class="Identifier">frames</span><span class="Statement">=</span><span class="Constant">1</span><span class="Statement">)</span> <span class="Statement">?</span><span class="Statement">(</span><span class="Identifier">save</span><span class="Statement">=</span><span class="Constant">None</span><span class="Statement">)</span> <span class="Statement">?</span><span class="Statement">(</span><span class="Identifier">animate</span><span class="Statement">=</span><span class="Constant">false</span><span class="Statement">)</span> <span class="Statement">?</span><span class="Statement">(</span><span class="Identifier">delay</span><span class="Statement">=</span><span class="Constant">50</span><span class="Statement">)</span> <span class="Statement">~</span><span class="Identifier">layers</span> <span class="Constant">()</span> <span class="Statement">=</span>
+  <span class="Comment">(* ~frames is the number of frames to be rendered *)</span>
+  <span class="Statement">if</span> frames <span class="Statement">&lt;</span><span class="Statement">=</span> <span class="Constant">0</span> <span class="Statement">then</span> invalid_arg <span class="Constant">&quot;~frames should be positive strict&quot;</span><span class="Statement">;</span>
+  <span class="Comment">(* {{{ save *)</span>
+  <span class="Statement">let</span> save, path <span class="Statement">=</span>
+    <span class="Statement">match</span> save <span class="Statement">with</span>
+    <span class="Statement">|</span> <span class="Constant">None</span> <span class="Statement">-&gt;</span> <span class="Statement">(</span><span class="Constant">false</span>, <span class="Constant">&quot;&quot;</span><span class="Statement">)</span>
+    <span class="Statement">|</span> <span class="Constant">Some</span> _save <span class="Statement">-&gt;</span>
+        <span class="Statement">match</span> _save <span class="Statement">with</span> <span class="Constant">`where</span> path
+        <span class="Statement">|</span> <span class="Constant">`path</span> path <span class="Statement">-&gt;</span> <span class="Statement">if</span> is_dir_writable <span class="Statement">~</span><span class="Identifier">path</span>
+            <span class="Statement">then</span> <span class="Statement">(</span><span class="Constant">true</span>, path<span class="Statement">)</span> <span class="Statement">else</span> failwith <span class="Statement">(</span><span class="PreProc">Printf</span>.sprintf <span class="Constant">&quot;cannot write in path %s&quot;</span> path<span class="Statement">)</span>
+        <span class="Statement">|</span> <span class="Constant">`tmp</span> <span class="Statement">-&gt;</span> <span class="Statement">if</span> is_dir_writable <span class="Statement">~</span><span class="Identifier">path</span>:<span class="Constant">&quot;/tmp&quot;</span>
+            <span class="Statement">then</span> <span class="Statement">(</span><span class="Constant">true</span>, <span class="Constant">&quot;/tmp&quot;</span><span class="Statement">)</span> <span class="Statement">else</span> <span class="Statement">(</span><span class="Constant">false</span>, <span class="Constant">&quot;&quot;</span><span class="Statement">)</span>
+  <span class="Statement">in</span>
+  <span class="Comment">(* }}} *)</span>
+  <span class="Statement">let</span> <span class="Statement">rec</span> aux <span class="Statement">~</span><span class="Identifier">t</span> acc <span class="Statement">=</span>
+    <span class="Statement">if</span> t <span class="Statement">&gt;</span><span class="Statement">=</span> frames <span class="Statement">then</span> <span class="Statement">begin</span> print_newline<span class="Constant">()</span><span class="Statement">;</span> <span class="PreProc">List</span>.rev acc <span class="Statement">end</span>
+    <span class="Statement">else</span> <span class="Statement">let</span> layer <span class="Statement">=</span> get_frame_at_t <span class="Statement">~</span><span class="Identifier">layers</span> <span class="Statement">~</span><span class="Identifier">frames</span> <span class="Statement">~</span><span class="Identifier">t</span> <span class="Statement">in</span>
+      <span class="Comment">(* {{{ save frames *)</span>
+      <span class="Statement">if</span> save <span class="Statement">then</span> <span class="Statement">begin</span>
+        <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.set_compression_quality layer <span class="Constant">96</span><span class="Statement">;</span>
+        <span class="PreProc">Magick</span>.write_image layer <span class="Statement">(</span><span class="PreProc">Printf</span>.sprintf <span class="Constant">&quot;%s/frame-%d.jpg&quot;</span> path t<span class="Statement">)</span>
+      <span class="Statement">end</span><span class="Statement">;</span>
+      <span class="Comment">(* }}} *)</span>
+      <span class="PreProc">Printf</span>.printf <span class="Constant">&quot; %d%!&quot;</span> t<span class="Statement">;</span>
+      aux <span class="Statement">~</span><span class="Identifier">t</span>:<span class="Statement">(</span>succ t<span class="Statement">)</span> <span class="Statement">(</span>layer<span class="Statement">::</span>acc<span class="Statement">)</span>
+  <span class="Statement">in</span>
+  <span class="Statement">if</span> <span class="Statement">not</span> animate <span class="Statement">then</span>
+    aux <span class="Statement">~</span><span class="Identifier">t</span>:<span class="Constant">0</span> <span class="Constant">[]</span>
+  <span class="Statement">else</span>
+    <span class="Comment">(* show the result with 'animate' *)</span>
+    <span class="Statement">begin</span>
+      <span class="Statement">let</span> frames <span class="Statement">=</span> aux <span class="Statement">~</span><span class="Identifier">t</span>:<span class="Constant">0</span> <span class="Constant">[]</span>
+      <span class="Statement">and</span> preserve_frames <span class="Statement">=</span> ref <span class="Constant">[]</span>
+      <span class="Statement">and</span> anim <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.new_image_list <span class="Constant">()</span>
+      <span class="Statement">in</span>
+      <span class="PreProc">List</span>.iter <span class="Statement">(fun</span> frame <span class="Statement">-&gt;</span>
+        <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.append_image_to_list  anim  frame <span class="Statement">~</span><span class="Identifier">delay</span> <span class="Constant">()</span><span class="Statement">;</span>
+        preserve_frames <span class="Statement">:=</span> frame <span class="Statement">::</span> <span class="Statement">!</span>preserve_frames<span class="Statement">;</span>
+      <span class="Statement">)</span> frames<span class="Statement">;</span>
+      <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.animate_images  anim<span class="Statement">;</span>
+      <span class="PreProc">List</span>.iter <span class="Statement">(fun</span> frame <span class="Statement">-&gt;</span> <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.no_op frame<span class="Statement">)</span> <span class="Statement">!</span>preserve_frames<span class="Statement">;</span> <span class="Comment">(* work-around for the GC *)</span>
+      frames
+    <span class="Statement">end</span><span class="Statement">;</span>
+<span class="Statement">;;</span>
+
+<span class="Comment">(* }}} *)</span>
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* {{{ Wraps *)</span>
+<span class="Comment">(* Wraps the functions of the libMagick interface *)</span>
+
+<span class="Comment">(* {{{ Sources *)</span>
+
+<span class="Comment">(* Source_A *)</span>
+<span class="Statement">let</span> _create a b c <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.create_image <span class="Statement">~</span><span class="Identifier">width</span>:a <span class="Statement">~</span><span class="Identifier">height</span>:b <span class="Statement">~</span><span class="Identifier">pseudo_format</span>:c
+<span class="Statement">let</span> _canvas a b c <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.get_canvas <span class="Statement">~</span><span class="Identifier">width</span>:a <span class="Statement">~</span><span class="Identifier">height</span>:b <span class="Statement">~</span><span class="Identifier">color</span>:c
+
+<span class="Comment">(* Source_B *)</span>
+<span class="Statement">let</span> _read c <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.read_image <span class="Statement">~</span><span class="Identifier">filename</span>:c
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* {{{ Composers *)</span>
+
+<span class="Comment">(* Compose_0 *)</span>
+<span class="Statement">let</span> _texture <span class="Statement">~</span><span class="Identifier">img_a</span> <span class="Statement">~</span><span class="Identifier">img_b</span> <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.texture_image <span class="Statement">~</span><span class="Identifier">img</span>:img_b <span class="Statement">~</span><span class="Identifier">tex_img</span>:img_a
+<span class="Comment">(* Compose_1C *)</span>
+<span class="Statement">let</span> _compose a <span class="Statement">~</span><span class="Identifier">img_a</span> <span class="Statement">~</span><span class="Identifier">img_b</span> <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.composite_image <span class="Statement">~</span><span class="Identifier">compose</span>:a <span class="Constant">()</span> <span class="Statement">~</span><span class="Identifier">img_above</span>:img_a <span class="Statement">~</span><span class="Identifier">img_below</span>:img_b
+<span class="Comment">(* Compose_1f *)</span>
+<span class="Comment">(* {{{ transition `Macro *)</span>
+
+<span class="Statement">let</span> _transition a <span class="Statement">~</span><span class="Identifier">img_a</span> <span class="Statement">~</span><span class="Identifier">img_b</span> <span class="Statement">=</span>
+  <span class="Statement">let</span> _img_a <span class="Statement">=</span> <span class="PreProc">Magick</span>.clone_image img_a
+  <span class="Statement">and</span> _img_b <span class="Statement">=</span> <span class="PreProc">Magick</span>.clone_image img_b
+  <span class="Statement">in</span>
+  <span class="Statement">if</span> a <span class="Statement">&lt;</span> <span class="Constant">0.0</span> <span class="Statement">then</span> invalid_arg <span class="Constant">&quot;less than 0.0&quot;</span><span class="Statement">;</span>
+  <span class="Statement">if</span> a <span class="Statement">&gt;</span> <span class="Constant">1.0</span> <span class="Statement">then</span> invalid_arg <span class="Constant">&quot;more than 1.0&quot;</span><span class="Statement">;</span>
+  <span class="Statement">let</span> v_a <span class="Statement">=</span> int_of_float<span class="Statement">(</span>a <span class="Statement">*</span>. <span class="Constant">255</span>.<span class="Statement">)</span> <span class="Statement">in</span>
+  <span class="Statement">let</span> v_b <span class="Statement">=</span> <span class="Constant">255</span> - v_a <span class="Statement">in</span>
+  <span class="Statement">let</span> sub_layer itn img <span class="Statement">=</span>
+    <span class="Statement">let</span> color <span class="Statement">=</span> <span class="PreProc">Printf</span>.sprintf <span class="Constant">&quot;#%02X%02X%02X&quot;</span> itn itn itn
+    <span class="Statement">and</span> width  <span class="Statement">=</span> <span class="PreProc">Magick</span>.get_image_width  img
+    <span class="Statement">and</span> height <span class="Statement">=</span> <span class="PreProc">Magick</span>.get_image_height img
+    <span class="Statement">in</span>
+    <span class="PreProc">Magick</span>.get_canvas <span class="Statement">~</span><span class="Identifier">width</span> <span class="Statement">~</span><span class="Identifier">height</span> <span class="Statement">~</span><span class="Identifier">color</span>
+  <span class="Statement">in</span>
+
+  <span class="Statement">let</span> sub_a <span class="Statement">=</span> sub_layer v_a _img_a <span class="Statement">in</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.composite_image _img_a sub_a <span class="PreProc">Magick</span>.<span class="Constant">Lighten</span> <span class="Constant">()</span><span class="Statement">;</span>
+
+  <span class="Statement">let</span> sub_b <span class="Statement">=</span> sub_layer v_b _img_b <span class="Statement">in</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.composite_image _img_b sub_b <span class="PreProc">Magick</span>.<span class="Constant">Lighten</span> <span class="Constant">()</span><span class="Statement">;</span>
+
+  <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.composite_image _img_a _img_b <span class="PreProc">Magick</span>.<span class="Constant">Multiply</span> <span class="Constant">()</span><span class="Statement">;</span>
+
+  _img_a
+<span class="Statement">;;</span>
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* Compose_1s *)</span>
+<span class="Comment">(* {{{ threshold_negate `Macro *)</span>
+
+<span class="Statement">let</span> _threshold_negate a <span class="Statement">~</span><span class="Identifier">img</span> <span class="Statement">=</span>
+  <span class="Statement">if</span> a <span class="Statement">&lt;</span> <span class="Constant">0.0</span> <span class="Statement">then</span> invalid_arg <span class="Constant">&quot;less than 0.0&quot;</span><span class="Statement">;</span>
+  <span class="Statement">if</span> a <span class="Statement">&gt;</span> <span class="Constant">1.0</span> <span class="Statement">then</span> invalid_arg <span class="Constant">&quot;more than 1.0&quot;</span><span class="Statement">;</span>
+  <span class="Statement">let</span> max <span class="Statement">=</span> <span class="Type">float</span> <span class="Constant">65535</span> <span class="Statement">in</span>
+  <span class="Statement">let</span> level <span class="Statement">=</span> int_of_float<span class="Statement">(</span>max <span class="Statement">*</span>. a<span class="Statement">)</span> <span class="Statement">in</span>
+  <span class="Statement">let</span> threshold <span class="Statement">=</span> <span class="PreProc">Printf</span>.sprintf <span class="Constant">&quot;%d,%d,%d&quot;</span> level level level <span class="Statement">in</span>
+  <span class="Statement">let</span> new_img <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.black_threshold <span class="Statement">~</span><span class="Identifier">threshold</span> <span class="Constant">()</span> <span class="Statement">~</span><span class="Identifier">img</span> <span class="Statement">in</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.negate new_img <span class="Constant">()</span><span class="Statement">;</span>
+  <span class="Statement">let</span> level <span class="Statement">=</span> <span class="Constant">65535</span> - level <span class="Statement">in</span>
+  <span class="Statement">let</span> threshold <span class="Statement">=</span> <span class="PreProc">Printf</span>.sprintf <span class="Constant">&quot;%d,%d,%d&quot;</span> level level level <span class="Statement">in</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.black_threshold new_img <span class="Statement">~</span><span class="Identifier">threshold</span><span class="Statement">;</span>
+  new_img
+<span class="Statement">;;</span>
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* Clipper_0 *)</span>
+<span class="Comment">(* {{{ mask_transition `Macro *)</span>
+
+
+<span class="Statement">let</span> _mask_transition_V1 <span class="Statement">~</span><span class="Identifier">img_a</span> <span class="Statement">~</span><span class="Identifier">img_b</span> <span class="Statement">~</span><span class="Identifier">img_c</span> <span class="Statement">=</span>
+  <span class="Statement">let</span> _img_a <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.negate <span class="Constant">()</span> <span class="Statement">~</span><span class="Identifier">img</span>:img_a
+  <span class="Statement">and</span> _img_b <span class="Statement">=</span> <span class="PreProc">Magick</span>.clone_image img_b
+  <span class="Statement">and</span> _img_c <span class="Statement">=</span> <span class="PreProc">Magick</span>.clone_image img_c <span class="Statement">in</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.composite_image _img_b  img_a <span class="PreProc">Magick</span>.<span class="Constant">Lighten</span> <span class="Constant">()</span><span class="Statement">;</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.composite_image _img_c _img_a <span class="PreProc">Magick</span>.<span class="Constant">Lighten</span> <span class="Constant">()</span><span class="Statement">;</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.composite_image _img_b _img_c <span class="PreProc">Magick</span>.<span class="Constant">Multiply</span> <span class="Constant">()</span><span class="Statement">;</span>
+  _img_b
+<span class="Statement">;;</span>
+
+<span class="Statement">let</span> _mask_transition_V2 <span class="Statement">~</span><span class="Identifier">img_a</span> <span class="Statement">~</span><span class="Identifier">img_b</span> <span class="Statement">~</span><span class="Identifier">img_c</span> <span class="Statement">=</span>
+  <span class="Statement">let</span> _img_b <span class="Statement">=</span> <span class="PreProc">Magick</span>.clone_image img_b
+  <span class="Statement">and</span> _img_c <span class="Statement">=</span> <span class="PreProc">Magick</span>.clone_image img_c <span class="Statement">in</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.composite_image _img_b  img_a <span class="PreProc">Magick</span>.<span class="Constant">Lighten</span> <span class="Constant">()</span><span class="Statement">;</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.negate _img_c <span class="Constant">()</span><span class="Statement">;</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.composite_image _img_c  img_a <span class="PreProc">Magick</span>.<span class="Constant">Multiply</span> <span class="Constant">()</span><span class="Statement">;</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.negate _img_c <span class="Constant">()</span><span class="Statement">;</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.composite_image _img_b _img_c <span class="PreProc">Magick</span>.<span class="Constant">Multiply</span> <span class="Constant">()</span><span class="Statement">;</span>
+  _img_b
+<span class="Statement">;;</span>
+
+<span class="Statement">let</span> _mask_transition <span class="Statement">=</span> _mask_transition_V1 <span class="Statement">;;</span>
+<span class="Statement">let</span> _mask_transition <span class="Statement">=</span> _mask_transition_V2 <span class="Statement">;;</span>
+
+<span class="Comment">(* }}} *)</span>
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* {{{ Filters *)</span>
+
+<span class="Comment">(* Filter_0 *)</span>
+<span class="Statement">let</span> _view <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.view <span class="Constant">()</span>
+<span class="Statement">let</span> _negate <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.negate <span class="Constant">()</span>
+<span class="Statement">let</span> _enhance <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.enhance <span class="Constant">()</span>
+<span class="Statement">let</span> _equalize <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.equalize <span class="Constant">()</span>
+<span class="Statement">let</span> _normalize <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.normalize <span class="Constant">()</span>
+<span class="Comment">(* {{{ check `Macro *)</span>
+<span class="Statement">let</span> _check <span class="Statement">~</span><span class="Identifier">img</span> <span class="Statement">=</span>
+  <span class="Statement">let</span> width <span class="Statement">=</span> <span class="PreProc">Magick</span>.get_image_width img
+  <span class="Statement">and</span> height <span class="Statement">=</span> <span class="PreProc">Magick</span>.get_image_height img <span class="Statement">in</span>
+  <span class="Statement">let</span> tmp <span class="Statement">=</span> <span class="PreProc">Magick</span>.create_image <span class="Statement">~</span><span class="Identifier">width</span> <span class="Statement">~</span><span class="Identifier">height</span> <span class="Statement">~</span><span class="Identifier">pseudo_format</span>:<span class="Constant">&quot;pattern:checkerboard&quot;</span> <span class="Statement">in</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.composite_image tmp img <span class="PreProc">Magick</span>.<span class="Constant">Over</span> <span class="Constant">()</span><span class="Statement">;</span>
+  <span class="PreProc">Magick</span>.display tmp<span class="Statement">;</span> img<span class="Statement">;;</span>
+<span class="Comment">(* }}} *)</span>
+<span class="Statement">let</span> _minify <span class="Statement">~</span><span class="Identifier">img</span> <span class="Statement">=</span>
+  <span class="Statement">let</span> new_img <span class="Statement">=</span> <span class="PreProc">Magick</span>.clone_image img <span class="Statement">in</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.minify new_img<span class="Statement">;</span> new_img<span class="Statement">;;</span>
+<span class="Statement">let</span> _magnify <span class="Statement">~</span><span class="Identifier">img</span> <span class="Statement">=</span>
+  <span class="Statement">let</span> new_img <span class="Statement">=</span> <span class="PreProc">Magick</span>.clone_image img <span class="Statement">in</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.magnify new_img<span class="Statement">;</span> new_img<span class="Statement">;;</span>
+
+<span class="Comment">(* Filter_1f *)</span>
+<span class="Statement">let</span> _medianfilter a <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.medianfilter <span class="Statement">~</span><span class="Identifier">radius</span>:a <span class="Constant">()</span>
+<span class="Statement">let</span> _radial_blur a <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.radial_blur <span class="Statement">~</span><span class="Identifier">angle</span>:a <span class="Constant">()</span>
+<span class="Statement">let</span> _oilpaint a <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.oilpaint <span class="Statement">~</span><span class="Identifier">radius</span>:a <span class="Constant">()</span>
+<span class="Statement">let</span> _implode a <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.implode <span class="Statement">~</span><span class="Identifier">amount</span>:a <span class="Constant">()</span>
+<span class="Statement">let</span> _rotate a <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.rotate <span class="Statement">~</span><span class="Identifier">degrees</span>:a <span class="Constant">()</span>
+<span class="Statement">let</span> _spread a <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.spread <span class="Statement">~</span><span class="Identifier">radius</span>:a <span class="Constant">()</span>
+<span class="Statement">let</span> _swirl a <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.swirl <span class="Statement">~</span><span class="Identifier">degrees</span>:a <span class="Constant">()</span>
+<span class="Statement">let</span> _edge a <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.edge <span class="Statement">~</span><span class="Identifier">radius</span>:a <span class="Constant">()</span>
+<span class="Comment">(* {{{ rotate_middle_crop `Macro *)</span>
+
+<span class="Statement">let</span> _rotate_middle_crop a <span class="Statement">~</span><span class="Identifier">img</span> <span class="Statement">=</span>
+  <span class="Statement">let</span> get_dim func g <span class="Statement">=</span>
+    <span class="Statement">let</span> dim <span class="Statement">=</span> func g <span class="Statement">in</span>
+    <span class="Statement">let</span> half_dim <span class="Statement">=</span> dim / <span class="Constant">2</span> <span class="Statement">in</span>
+    <span class="Statement">(</span>dim, half_dim<span class="Statement">)</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> new_img <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.rotate <span class="Statement">~</span><span class="Identifier">degrees</span>:a <span class="Constant">()</span> <span class="Statement">~</span><span class="Identifier">img</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> orig_width,  orig_half_width  <span class="Statement">=</span> get_dim <span class="PreProc">Magick</span>.get_image_width  img
+  <span class="Statement">and</span> orig_height, orig_half_height <span class="Statement">=</span> get_dim <span class="PreProc">Magick</span>.get_image_height img
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> new_width,  new_half_width  <span class="Statement">=</span> get_dim <span class="PreProc">Magick</span>.get_image_width  new_img
+  <span class="Statement">and</span> new_height, new_half_height <span class="Statement">=</span> get_dim <span class="PreProc">Magick</span>.get_image_height new_img
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> x <span class="Statement">=</span> new_half_width  - orig_half_width
+  <span class="Statement">and</span> y <span class="Statement">=</span> new_half_height - orig_half_height
+  <span class="Statement">in</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.crop <span class="Statement">~</span><span class="Identifier">x</span> <span class="Statement">~</span><span class="Identifier">y</span> <span class="Statement">~</span><span class="Identifier">width</span>:orig_width <span class="Statement">~</span><span class="Identifier">height</span>:orig_height <span class="Constant">()</span> <span class="Statement">~</span><span class="Identifier">img</span>:new_img<span class="Statement">;</span>
+<span class="Statement">;;</span>
+<span class="Comment">(* }}} *)</span>
+
+<span class="Comment">(* Filter_1s *)</span>
+<span class="Statement">let</span> _black_threshold a <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.black_threshold <span class="Statement">~</span><span class="Identifier">threshold</span>:a <span class="Constant">()</span>
+<span class="Statement">let</span> _white_threshold a <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.white_threshold <span class="Statement">~</span><span class="Identifier">threshold</span>:a <span class="Constant">()</span>
+<span class="Statement">let</span> _write a <span class="Statement">~</span><span class="Identifier">img</span> <span class="Statement">=</span> <span class="PreProc">Magick</span>.write_image img <span class="Statement">~</span><span class="Identifier">filename</span>:a<span class="Statement">;</span> img
+<span class="Statement">let</span> _level a <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.level <span class="Statement">~</span><span class="Identifier">levels</span>:a <span class="Constant">()</span>
+
+<span class="Comment">(* Filter_1i *)</span>
+<span class="Statement">let</span> _set_quality a <span class="Statement">~</span><span class="Identifier">img</span> <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.set_compression_quality img a<span class="Statement">;</span> img
+
+<span class="Comment">(* Filter_2f *)</span>
+<span class="Statement">let</span> _charcoal a b <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.charcoal <span class="Statement">~</span><span class="Identifier">radius</span>:a <span class="Statement">~</span><span class="Identifier">sigma</span>:b <span class="Constant">()</span>
+<span class="Statement">let</span> _sharpen a b <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.sharpen <span class="Statement">~</span><span class="Identifier">radius</span>:a <span class="Statement">~</span><span class="Identifier">sigma</span>:b <span class="Constant">()</span>
+<span class="Statement">let</span> _emboss a b <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.emboss <span class="Statement">~</span><span class="Identifier">radius</span>:a <span class="Statement">~</span><span class="Identifier">sigma</span>:b <span class="Constant">()</span>
+<span class="Statement">let</span> _shade a b <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.shade <span class="Statement">~</span><span class="Identifier">azimuth</span>:a <span class="Statement">~</span><span class="Identifier">elevation</span>:b <span class="Constant">()</span>
+<span class="Statement">let</span> _blur a b <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.blur <span class="Statement">~</span><span class="Identifier">radius</span>:a <span class="Statement">~</span><span class="Identifier">sigma</span>:b <span class="Constant">()</span>
+<span class="Statement">let</span> _gaussian_blur a b <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.gaussian_blur <span class="Statement">~</span><span class="Identifier">radius</span>:a <span class="Statement">~</span><span class="Identifier">sigma</span>:b <span class="Constant">()</span>
+<span class="Comment">(* {{{ swirl `Macro *)</span>
+
+<span class="Statement">let</span> _swirl_m a b <span class="Statement">~</span><span class="Identifier">img</span> <span class="Statement">=</span>
+  <span class="Statement">let</span> width <span class="Statement">=</span> <span class="PreProc">Magick</span>.get_image_width img
+  <span class="Statement">and</span> height <span class="Statement">=</span> <span class="PreProc">Magick</span>.get_image_height img
+  <span class="Statement">in</span>
+  <span class="Statement">if</span> width <span class="Statement">=</span> height <span class="Statement">then</span>
+    <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.swirl <span class="Statement">~</span><span class="Identifier">degrees</span>:a <span class="Constant">()</span> <span class="Statement">~</span><span class="Identifier">img</span>
+  <span class="Statement">else</span> <span class="Statement">if</span> width <span class="Statement">&gt;</span> height <span class="Statement">then</span>
+    <span class="Statement">(let</span> x <span class="Statement">=</span> int_of_float <span class="Statement">(</span>b <span class="Statement">*</span>. <span class="Type">float</span><span class="Statement">(</span>width - height<span class="Statement">))</span> <span class="Statement">in</span>
+     <span class="Statement">let</span> rectangle_swirled <span class="Statement">=</span>
+       <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.swirl <span class="Statement">~</span><span class="Identifier">degrees</span>:a <span class="Constant">()</span>
+          <span class="Statement">~</span><span class="Identifier">img</span>:<span class="Statement">(</span><span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.crop <span class="Statement">~</span><span class="Identifier">x</span> <span class="Statement">~</span><span class="Identifier">y</span>:<span class="Constant">0</span> <span class="Statement">~</span><span class="Identifier">width</span>:height <span class="Statement">~</span><span class="Identifier">height</span> <span class="Constant">()</span> <span class="Statement">~</span><span class="Identifier">img</span><span class="Statement">)</span>
+     <span class="Statement">in</span>
+     <span class="PreProc">Magick</span>.display rectangle_swirled<span class="Statement">;</span>
+     <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.composite_image <span class="Statement">~</span><span class="Identifier">compose</span>:<span class="PreProc">Magick</span>.<span class="Constant">Replace</span> <span class="Statement">~</span><span class="Identifier">x</span> <span class="Statement">~</span><span class="Identifier">y</span>:<span class="Constant">0</span> <span class="Constant">()</span>
+           <span class="Statement">~</span><span class="Identifier">img_above</span>:rectangle_swirled
+           <span class="Statement">~</span><span class="Identifier">img_below</span>:img
+    <span class="Statement">)</span>
+  <span class="Statement">else</span>
+    <span class="Statement">(let</span> y <span class="Statement">=</span> int_of_float <span class="Statement">(</span>b <span class="Statement">*</span>. <span class="Type">float</span><span class="Statement">(</span>height - width<span class="Statement">))</span> <span class="Statement">in</span>
+     <span class="Statement">let</span> rectangle_swirled <span class="Statement">=</span>
+       <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.swirl <span class="Statement">~</span><span class="Identifier">degrees</span>:a <span class="Constant">()</span>
+          <span class="Statement">~</span><span class="Identifier">img</span>:<span class="Statement">(</span><span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.crop <span class="Statement">~</span><span class="Identifier">x</span>:<span class="Constant">0</span> <span class="Statement">~</span><span class="Identifier">y</span> <span class="Statement">~</span><span class="Identifier">width</span> <span class="Statement">~</span><span class="Identifier">height</span>:width <span class="Constant">()</span> <span class="Statement">~</span><span class="Identifier">img</span><span class="Statement">)</span>
+     <span class="Statement">in</span>
+     <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.composite_image <span class="Statement">~</span><span class="Identifier">compose</span>:<span class="PreProc">Magick</span>.<span class="Constant">Replace</span> <span class="Statement">~</span><span class="Identifier">x</span>:<span class="Constant">0</span> <span class="Statement">~</span><span class="Identifier">y</span> <span class="Constant">()</span>
+           <span class="Statement">~</span><span class="Identifier">img_above</span>:rectangle_swirled
+           <span class="Statement">~</span><span class="Identifier">img_below</span>:img
+    <span class="Statement">)</span>
+<span class="Statement">;;</span>
+<span class="Comment">(* }}} *)</span>
+
+<span class="Comment">(* Filter_3f *)</span>
+<span class="Statement">let</span> _motion_blur a b c <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.motion_blur <span class="Statement">~</span><span class="Identifier">radius</span>:a <span class="Statement">~</span><span class="Identifier">sigma</span>:b <span class="Statement">~</span><span class="Identifier">angle</span>:c <span class="Constant">()</span>
+
+<span class="Comment">(* Filter_2i *)</span>
+<span class="Statement">let</span> _sample a b <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.sample <span class="Statement">~</span><span class="Identifier">width</span>:a <span class="Statement">~</span><span class="Identifier">height</span>:b <span class="Constant">()</span>
+<span class="Statement">let</span> _scale a b <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.scale <span class="Statement">~</span><span class="Identifier">width</span>:a <span class="Statement">~</span><span class="Identifier">height</span>:b <span class="Constant">()</span>
+<span class="Statement">let</span> _roll a b <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.roll <span class="Statement">~</span><span class="Identifier">x</span>:a <span class="Statement">~</span><span class="Identifier">y</span>:b <span class="Constant">()</span>
+
+<span class="Comment">(* Filter_3i *)</span>
+<span class="Statement">let</span> _modulate a b c <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.modulate <span class="Statement">~</span><span class="Identifier">brightness</span>:a <span class="Statement">~</span><span class="Identifier">saturation</span>:b <span class="Statement">~</span><span class="Identifier">hue</span>:c <span class="Constant">()</span>
+
+<span class="Comment">(* Filter_4i *)</span>
+<span class="Statement">let</span> _crop a b c d <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.crop <span class="Statement">~</span><span class="Identifier">x</span>:a <span class="Statement">~</span><span class="Identifier">y</span>:b <span class="Statement">~</span><span class="Identifier">width</span>:c <span class="Statement">~</span><span class="Identifier">height</span>:d <span class="Constant">()</span>
+
+<span class="Comment">(* Filter_1T *)</span>
+<span class="Statement">let</span> _set_type a <span class="Statement">~</span><span class="Identifier">img</span> <span class="Statement">=</span>
+  <span class="Statement">let</span> new_img <span class="Statement">=</span> <span class="PreProc">Magick</span>.clone_image img <span class="Statement">in</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.set_image_type img <span class="Statement">~</span><span class="Identifier">image_type</span>:a<span class="Statement">;</span> new_img<span class="Statement">;;</span>
+
+<span class="Comment">(* Filter_sf4i *)</span>
+<span class="Statement">let</span> _draw_line a b c d e f <span class="Statement">~</span><span class="Identifier">img</span> <span class="Statement">=</span>
+  <span class="Statement">let</span> new_img <span class="Statement">=</span> <span class="PreProc">Magick</span>.clone_image img <span class="Statement">in</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.draw_line  new_img
+      <span class="Statement">~</span><span class="Identifier">stroke_color</span>:<span class="Statement">(</span><span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.color_of_string a<span class="Statement">)</span>
+      <span class="Statement">~</span><span class="Identifier">stroke_width</span>:b <span class="Statement">~</span><span class="Identifier">x0</span>:c <span class="Statement">~</span><span class="Identifier">y0</span>:d <span class="Statement">~</span><span class="Identifier">x1</span>:e <span class="Statement">~</span><span class="Identifier">y1</span>:f <span class="Constant">()</span><span class="Statement">;</span> new_img<span class="Statement">;;</span>
+
+<span class="Statement">let</span> _draw_circle a b c d e f <span class="Statement">~</span><span class="Identifier">img</span> <span class="Statement">=</span>
+  <span class="Statement">let</span> new_img <span class="Statement">=</span> <span class="PreProc">Magick</span>.clone_image img <span class="Statement">in</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.draw_circle  new_img
+      <span class="Statement">~</span><span class="Identifier">fill_color</span>:<span class="Statement">(</span><span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.color_of_string a<span class="Statement">)</span>
+      <span class="Statement">~</span><span class="Identifier">stroke_width</span>:b <span class="Statement">~</span><span class="Identifier">x0</span>:c <span class="Statement">~</span><span class="Identifier">y0</span>:d <span class="Statement">~</span><span class="Identifier">x1</span>:e <span class="Statement">~</span><span class="Identifier">y1</span>:f <span class="Constant">()</span><span class="Statement">;</span> new_img<span class="Statement">;;</span>
+
+<span class="Statement">let</span> _draw_rectangle a b c d e f <span class="Statement">~</span><span class="Identifier">img</span> <span class="Statement">=</span>
+  <span class="Statement">let</span> new_img <span class="Statement">=</span> <span class="PreProc">Magick</span>.clone_image img <span class="Statement">in</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.draw_rectangle  new_img
+      <span class="Statement">~</span><span class="Identifier">fill_color</span>:<span class="Statement">(</span><span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.color_of_string a<span class="Statement">)</span>
+      <span class="Statement">~</span><span class="Identifier">stroke_width</span>:b <span class="Statement">~</span><span class="Identifier">x0</span>:c <span class="Statement">~</span><span class="Identifier">y0</span>:d <span class="Statement">~</span><span class="Identifier">x1</span>:e <span class="Statement">~</span><span class="Identifier">y1</span>:f <span class="Constant">()</span><span class="Statement">;</span> new_img<span class="Statement">;;</span>
+
+<span class="Comment">(* Filter_BZ *)</span>
+<span class="Statement">let</span> _draw_bezier a b c <span class="Statement">~</span><span class="Identifier">img</span> <span class="Statement">=</span>
+  <span class="Statement">let</span> new_img <span class="Statement">=</span> <span class="PreProc">Magick</span>.clone_image img <span class="Statement">in</span>
+  <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.draw_bezier  new_img
+      <span class="Statement">~</span><span class="Identifier">stroke_color</span>:<span class="Statement">(</span><span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.color_of_string a<span class="Statement">)</span>
+      <span class="Statement">~</span><span class="Identifier">stroke_width</span>:b  <span class="Statement">~</span><span class="Identifier">coords</span>:c <span class="Constant">()</span><span class="Statement">;</span> new_img<span class="Statement">;;</span>
+
+<span class="Comment">(* }}} *)</span>
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* {{{ Facilities *)</span>
+
+<span class="Comment">(* Provides functions to make parameters evolve through time *)</span>
+<span class="Comment">(* {{{ ._param_evolve *)</span>
+
+<span class="Statement">let</span> _PI <span class="Statement">=</span> <span class="Constant">4.0</span> <span class="Statement">*</span>. atan <span class="Constant">1.0</span> <span class="Statement">;;</span>
+
+<span class="Comment">(* {{{ doc *)</span>
+<span class="Comment">(*</span>
+<span class="Comment">  ~param  specifies the value of the parameter to make evolve</span>
+<span class="Comment">    `min_max   gives the minimum and the maximum value of the parameter</span>
+<span class="Comment">    `min_amplitude  gives the minimum value and the amplitude of the parameter</span>
+<span class="Comment">     with `amplitude  or `max  the minimum value is 0</span>
+
+<span class="Comment">  ~cycles_nb  is the number of cycles to do</span>
+
+<span class="Comment">  ~cycle_type  is the type of cycle to do</span>
+<span class="Comment">     `COS_01  is cosinus function which returns 0 at the first frame</span>
+<span class="Comment">              and the max parameter value at the end</span>
+<span class="Comment">     `COS_010 is cosinus function which returns 0 at the first and</span>
+<span class="Comment">              at the last frame, and the max parameter value in the middle</span>
+<span class="Comment">*)</span>
+<span class="Comment">(* }}} *)</span>
+<span class="Statement">let</span> f_param_evolve <span class="Statement">?</span><span class="Statement">(</span><span class="Identifier">param</span><span class="Statement">=</span><span class="Constant">`max</span> <span class="Constant">1.0</span><span class="Statement">)</span> <span class="Statement">?</span><span class="Statement">(</span><span class="Identifier">cycle_type</span><span class="Statement">=</span><span class="Constant">`ID</span><span class="Statement">)</span> <span class="Statement">?</span><span class="Statement">(</span><span class="Identifier">cycles_nb</span><span class="Statement">=</span><span class="Constant">1.0</span><span class="Statement">)</span> <span class="Constant">()</span> <span class="Statement">=</span>
+  <span class="Comment">(* {{{ let min, amplitude = match param with *)</span>
+  <span class="Statement">let</span> min, amplitude <span class="Statement">=</span> <span class="Statement">match</span> param <span class="Statement">with</span>
+  <span class="Statement">|</span> <span class="Constant">`min_amplitude</span> <span class="Statement">(</span>_min, amplit<span class="Statement">)</span> <span class="Statement">-&gt;</span> <span class="Statement">(</span>_min, amplit<span class="Statement">)</span>
+  <span class="Statement">|</span> <span class="Constant">`amplitude</span> amplit <span class="Statement">-&gt;</span> <span class="Statement">(</span><span class="Constant">0.0</span>, amplit<span class="Statement">)</span>
+  <span class="Statement">|</span> <span class="Constant">`max</span> _max <span class="Statement">-&gt;</span> <span class="Statement">(</span><span class="Constant">0.0</span>, _max<span class="Statement">)</span>
+  <span class="Statement">|</span> <span class="Constant">`min_max</span> <span class="Statement">(</span>_min, _max<span class="Statement">)</span> <span class="Statement">-&gt;</span> <span class="Statement">(</span>_min, _max -. _min<span class="Statement">)</span>
+  <span class="Statement">in</span>
+  <span class="Comment">(* }}} *)</span>
+  <span class="Statement">match</span> cycle_type <span class="Statement">with</span>
+  <span class="Comment">(* {{{ more readable version without optimisations *(</span>
+<span class="Comment">  | `COS_01 -&gt;</span>
+<span class="Comment">      (fun ~frames ~t -&gt;</span>
+<span class="Comment">        let angle = (_PI ) *. cycles_nb *. (float t) /. (float frames) in</span>
+<span class="Comment">        amplitude *. ((cos angle) /. (-2.) +. 0.5) +. min</span>
+<span class="Comment">      )</span>
+<span class="Comment">  | `COS_10 -&gt;</span>
+<span class="Comment">      (fun ~frames ~t -&gt;</span>
+<span class="Comment">        let angle = (_PI ) *. cycles_nb *. (float t) /. (float frames) in</span>
+<span class="Comment">        amplitude *. ((cos angle) /. (2.) +. 0.5) +. min</span>
+<span class="Comment">      )</span>
+<span class="Comment">  | `COS_101 -&gt;</span>
+<span class="Comment">      (fun ~frames ~t -&gt;</span>
+<span class="Comment">        let angle = (_PI *. 2.) *. cycles_nb *. (float t) /. (float frames) in</span>
+<span class="Comment">        amplitude *. ((cos angle) /. (2.) +. 0.5) +. min</span>
+<span class="Comment">      )</span>
+<span class="Comment">  | `COS_010 -&gt;</span>
+<span class="Comment">      (fun ~frames ~t -&gt;</span>
+<span class="Comment">        let angle = (_PI *. 2.) *. cycles_nb *. (float t) /. (float frames) in</span>
+<span class="Comment">        amplitude *. ((cos angle) /. (-2.) +. 0.5) +. min</span>
+<span class="Comment">      )</span>
+<span class="Comment">  )* }}} *)</span>
+  <span class="Statement">|</span> <span class="Constant">`COS_01</span> <span class="Statement">-&gt;</span>
+      <span class="Comment">(* {{{ *)</span>
+      <span class="Statement">let</span> _ng <span class="Statement">=</span> <span class="Statement">(</span>_PI <span class="Statement">)</span> <span class="Statement">*</span>. cycles_nb
+      <span class="Statement">and</span> cache1 <span class="Statement">=</span> amplitude /. <span class="Statement">(</span>-<span class="Constant">2</span>.<span class="Statement">)</span> <span class="Statement">and</span> cache2 <span class="Statement">=</span> <span class="Statement">(</span>amplitude <span class="Statement">*</span>. <span class="Constant">0.5</span><span class="Statement">)</span> +. min <span class="Statement">in</span>
+      <span class="Statement">(fun</span> <span class="Statement">~</span><span class="Identifier">frames</span> <span class="Statement">~</span><span class="Identifier">t</span> <span class="Statement">-&gt;</span>
+        <span class="Statement">let</span> angle <span class="Statement">=</span> _ng <span class="Statement">*</span>. <span class="Statement">(</span><span class="Type">float</span> t<span class="Statement">)</span> /. <span class="Statement">(</span><span class="Type">float</span> frames<span class="Statement">)</span> <span class="Statement">in</span>
+        <span class="Statement">((</span>cos angle<span class="Statement">)</span> <span class="Statement">*</span>. cache1<span class="Statement">)</span> +. cache2
+      <span class="Statement">)</span>
+      <span class="Comment">(* }}} *)</span>
+  <span class="Statement">|</span> <span class="Constant">`COS_10</span> <span class="Statement">-&gt;</span>
+      <span class="Comment">(* {{{ *)</span>
+      <span class="Statement">let</span> _ng <span class="Statement">=</span> <span class="Statement">(</span>_PI <span class="Statement">)</span> <span class="Statement">*</span>. cycles_nb
+      <span class="Statement">and</span> cache1 <span class="Statement">=</span> amplitude /. <span class="Statement">(</span><span class="Constant">2</span>.<span class="Statement">)</span> <span class="Statement">and</span> cache2 <span class="Statement">=</span> <span class="Statement">(</span>amplitude <span class="Statement">*</span>. <span class="Constant">0.5</span><span class="Statement">)</span> +. min <span class="Statement">in</span>
+      <span class="Statement">(fun</span> <span class="Statement">~</span><span class="Identifier">frames</span> <span class="Statement">~</span><span class="Identifier">t</span> <span class="Statement">-&gt;</span>
+        <span class="Statement">let</span> angle <span class="Statement">=</span> _ng <span class="Statement">*</span>. <span class="Statement">(</span><span class="Type">float</span> t<span class="Statement">)</span> /. <span class="Statement">(</span><span class="Type">float</span> frames<span class="Statement">)</span> <span class="Statement">in</span>
+        <span class="Statement">((</span>cos angle<span class="Statement">)</span> <span class="Statement">*</span>. cache1<span class="Statement">)</span> +. cache2
+      <span class="Statement">)</span>
+      <span class="Comment">(* }}} *)</span>
+  <span class="Statement">|</span> <span class="Constant">`COS_101</span> <span class="Statement">-&gt;</span>
+      <span class="Comment">(* {{{ *)</span>
+      <span class="Statement">let</span> _ng <span class="Statement">=</span> <span class="Statement">(</span>_PI <span class="Statement">*</span>. <span class="Constant">2</span>.<span class="Statement">)</span> <span class="Statement">*</span>. cycles_nb
+      <span class="Statement">and</span> cache1 <span class="Statement">=</span> amplitude /. <span class="Statement">(</span><span class="Constant">2</span>.<span class="Statement">)</span> <span class="Statement">and</span> cache2 <span class="Statement">=</span> <span class="Statement">(</span>amplitude <span class="Statement">*</span>. <span class="Constant">0.5</span><span class="Statement">)</span> +. min <span class="Statement">in</span>
+      <span class="Statement">(fun</span> <span class="Statement">~</span><span class="Identifier">frames</span> <span class="Statement">~</span><span class="Identifier">t</span> <span class="Statement">-&gt;</span>
+        <span class="Statement">let</span> angle <span class="Statement">=</span> _ng <span class="Statement">*</span>. <span class="Statement">(</span><span class="Type">float</span> t<span class="Statement">)</span> /. <span class="Statement">(</span><span class="Type">float</span> frames<span class="Statement">)</span> <span class="Statement">in</span>
+        <span class="Statement">((</span>cos angle<span class="Statement">)</span> <span class="Statement">*</span>. cache1<span class="Statement">)</span> +. cache2
+      <span class="Statement">)</span>
+      <span class="Comment">(* }}} *)</span>
+  <span class="Statement">|</span> <span class="Constant">`COS_010</span> <span class="Statement">-&gt;</span>
+      <span class="Comment">(* {{{ *)</span>
+      <span class="Statement">let</span> _ng <span class="Statement">=</span> <span class="Statement">(</span>_PI <span class="Statement">*</span>. <span class="Constant">2</span>.<span class="Statement">)</span> <span class="Statement">*</span>. cycles_nb
+      <span class="Statement">and</span> cache1 <span class="Statement">=</span> amplitude /. <span class="Statement">(</span>-<span class="Constant">2</span>.<span class="Statement">)</span> <span class="Statement">and</span> cache2 <span class="Statement">=</span> <span class="Statement">(</span>amplitude <span class="Statement">*</span>. <span class="Constant">0.5</span><span class="Statement">)</span> +. min <span class="Statement">in</span>
+      <span class="Statement">(fun</span> <span class="Statement">~</span><span class="Identifier">frames</span> <span class="Statement">~</span><span class="Identifier">t</span> <span class="Statement">-&gt;</span>
+        <span class="Statement">let</span> angle <span class="Statement">=</span> _ng <span class="Statement">*</span>. <span class="Statement">(</span><span class="Type">float</span> t<span class="Statement">)</span> /. <span class="Statement">(</span><span class="Type">float</span> frames<span class="Statement">)</span> <span class="Statement">in</span>
+        <span class="Statement">((</span>cos angle<span class="Statement">)</span> <span class="Statement">*</span>. cache1<span class="Statement">)</span> +. cache2
+      <span class="Statement">)</span>
+      <span class="Comment">(* }}} *)</span>
+  <span class="Statement">|</span> <span class="Constant">`COS_010_decal</span> decal <span class="Statement">-&gt;</span>
+      <span class="Comment">(* {{{ *)</span>
+      <span class="Statement">let</span> _ng <span class="Statement">=</span> <span class="Statement">(</span>_PI <span class="Statement">*</span>. <span class="Constant">2</span>.<span class="Statement">)</span> <span class="Statement">*</span>. cycles_nb <span class="Statement">in</span>
+      <span class="Statement">let</span> decal_ng <span class="Statement">=</span> decal <span class="Statement">*</span>. _ng
+      <span class="Statement">and</span> cache1 <span class="Statement">=</span> amplitude /. <span class="Statement">(</span>-<span class="Constant">2</span>.<span class="Statement">)</span> <span class="Statement">and</span> cache2 <span class="Statement">=</span> <span class="Statement">(</span>amplitude <span class="Statement">*</span>. <span class="Constant">0.5</span><span class="Statement">)</span> +. min <span class="Statement">in</span>
+      <span class="Statement">(fun</span> <span class="Statement">~</span><span class="Identifier">frames</span> <span class="Statement">~</span><span class="Identifier">t</span> <span class="Statement">-&gt;</span>
+        <span class="Statement">let</span> angle <span class="Statement">=</span> _ng <span class="Statement">*</span>. <span class="Statement">(</span><span class="Type">float</span> t<span class="Statement">)</span> /. <span class="Statement">(</span><span class="Type">float</span> frames<span class="Statement">)</span> -. decal_ng <span class="Statement">in</span>
+        <span class="Statement">((</span>cos angle<span class="Statement">)</span> <span class="Statement">*</span>. cache1<span class="Statement">)</span> +. cache2
+      <span class="Statement">)</span>
+      <span class="Comment">(* }}} *)</span>
+  <span class="Statement">|</span> <span class="Constant">`COS_10_disc</span> <span class="Statement">-&gt;</span>
+      <span class="Comment">(* {{{ *)</span>
+      <span class="Statement">let</span> _ng <span class="Statement">=</span> <span class="Statement">(</span>_PI <span class="Statement">)</span> <span class="Statement">*</span>. cycles_nb
+      <span class="Statement">and</span> cache1 <span class="Statement">=</span> amplitude /. <span class="Statement">(</span><span class="Constant">2</span>.<span class="Statement">)</span> <span class="Statement">and</span> cache2 <span class="Statement">=</span> <span class="Statement">(</span>amplitude <span class="Statement">*</span>. <span class="Constant">0.5</span><span class="Statement">)</span> +. min <span class="Statement">in</span>
+      <span class="Statement">(fun</span> <span class="Statement">~</span><span class="Identifier">frames</span> <span class="Statement">~</span><span class="Identifier">t</span> <span class="Statement">-&gt;</span>
+        <span class="Statement">let</span> f_frames <span class="Statement">=</span> <span class="Type">float</span> <span class="Statement">(</span>succ frames<span class="Statement">)</span> <span class="Statement">and</span> f_t <span class="Statement">=</span> <span class="Type">float</span> <span class="Statement">(</span>t<span class="Statement">)</span> <span class="Statement">in</span>
+        <span class="Statement">let</span> segment <span class="Statement">=</span> f_frames /. cycles_nb <span class="Statement">in</span>
+        <span class="Statement">let</span> f_t <span class="Statement">=</span> mod_float  f_t  segment
+        <span class="Statement">in</span>
+        <span class="Statement">let</span> angle <span class="Statement">=</span> _ng <span class="Statement">*</span>. f_t /. f_frames <span class="Statement">in</span>
+        <span class="Statement">((</span>cos angle<span class="Statement">)</span> <span class="Statement">*</span>. cache1<span class="Statement">)</span> +. cache2
+      <span class="Statement">)</span>
+      <span class="Comment">(* }}} *)</span>
+  <span class="Statement">|</span> <span class="Constant">`COS_01_disc</span> <span class="Statement">-&gt;</span>
+      <span class="Comment">(* {{{ *)</span>
+      <span class="Statement">let</span> _ng <span class="Statement">=</span> <span class="Statement">(</span>_PI <span class="Statement">)</span> <span class="Statement">*</span>. cycles_nb
+      <span class="Statement">and</span> cache1 <span class="Statement">=</span> amplitude /. <span class="Statement">(</span>-<span class="Constant">2</span>.<span class="Statement">)</span> <span class="Statement">and</span> cache2 <span class="Statement">=</span> <span class="Statement">(</span>amplitude <span class="Statement">*</span>. <span class="Constant">0.5</span><span class="Statement">)</span> +. min <span class="Statement">in</span>
+      <span class="Statement">(fun</span> <span class="Statement">~</span><span class="Identifier">frames</span> <span class="Statement">~</span><span class="Identifier">t</span> <span class="Statement">-&gt;</span>
+        <span class="Statement">let</span> f_frames <span class="Statement">=</span> <span class="Type">float</span> <span class="Statement">(</span>succ frames<span class="Statement">)</span> <span class="Statement">and</span> f_t <span class="Statement">=</span> <span class="Type">float</span> <span class="Statement">(</span>t<span class="Statement">)</span> <span class="Statement">in</span>
+        <span class="Statement">let</span> segment <span class="Statement">=</span> f_frames /. cycles_nb <span class="Statement">in</span>
+        <span class="Statement">let</span> f_t <span class="Statement">=</span> mod_float  f_t  segment
+        <span class="Statement">in</span>
+        <span class="Statement">let</span> angle <span class="Statement">=</span> _ng <span class="Statement">*</span>. f_t /. f_frames <span class="Statement">in</span>
+        <span class="Statement">((</span>cos angle<span class="Statement">)</span> <span class="Statement">*</span>. cache1<span class="Statement">)</span> +. cache2
+      <span class="Statement">)</span>
+      <span class="Comment">(* }}} *)</span>
+  <span class="Statement">|</span> <span class="Constant">`LINEAR_01_disc</span> <span class="Statement">-&gt;</span>
+      <span class="Comment">(* {{{ *)</span>
+      <span class="Statement">let</span> cache <span class="Statement">=</span> <span class="Statement">(</span>amplitude <span class="Statement">*</span>. cycles_nb<span class="Statement">)</span> <span class="Statement">in</span>
+      <span class="Statement">(fun</span> <span class="Statement">~</span><span class="Identifier">frames</span> <span class="Statement">~</span><span class="Identifier">t</span> <span class="Statement">-&gt;</span>
+        <span class="Statement">let</span> f_frames <span class="Statement">=</span> <span class="Type">float</span> <span class="Statement">(</span>succ frames<span class="Statement">)</span> <span class="Statement">and</span> f_t <span class="Statement">=</span> <span class="Type">float</span> <span class="Statement">(</span>t<span class="Statement">)</span>
+        <span class="Statement">in</span>
+        <span class="Statement">let</span> segment <span class="Statement">=</span> f_frames /. cycles_nb <span class="Statement">in</span>
+        <span class="Statement">let</span> f_t <span class="Statement">=</span> mod_float  f_t  segment
+        <span class="Statement">in</span>
+        <span class="Statement">let</span> percent_pos <span class="Statement">=</span> <span class="Statement">(</span>f_t /. f_frames<span class="Statement">)</span> <span class="Statement">in</span>
+        <span class="Statement">(</span>cache <span class="Statement">*</span>. percent_pos<span class="Statement">)</span> +. min
+      <span class="Statement">)</span>
+      <span class="Comment">(* }}} *)</span>
+  <span class="Statement">|</span> <span class="Constant">`LINEAR_01_decal</span> decal <span class="Statement">-&gt;</span>
+      <span class="Comment">(* {{{ *)</span>
+      <span class="Statement">let</span> cache <span class="Statement">=</span> <span class="Statement">(</span>amplitude <span class="Statement">*</span>. cycles_nb<span class="Statement">)</span> <span class="Statement">in</span>
+      <span class="Statement">(fun</span> <span class="Statement">~</span><span class="Identifier">frames</span> <span class="Statement">~</span><span class="Identifier">t</span> <span class="Statement">-&gt;</span>
+        <span class="Statement">let</span> f_frames <span class="Statement">=</span> <span class="Type">float</span> <span class="Statement">(</span>succ frames<span class="Statement">)</span> <span class="Statement">and</span> f_t <span class="Statement">=</span> <span class="Type">float</span> <span class="Statement">(</span>t<span class="Statement">)</span>
+        <span class="Statement">in</span>
+        <span class="Statement">let</span> segment <span class="Statement">=</span> f_frames /. cycles_nb <span class="Statement">in</span>
+        <span class="Statement">let</span> f_t <span class="Statement">=</span> f_t +. <span class="Statement">(</span>segment <span class="Statement">*</span>. decal<span class="Statement">)</span> <span class="Statement">in</span>
+        <span class="Statement">let</span> f_t <span class="Statement">=</span> mod_float  f_t  segment
+        <span class="Statement">in</span>
+        <span class="Statement">let</span> percent_pos <span class="Statement">=</span> <span class="Statement">(</span>f_t /. f_frames<span class="Statement">)</span> <span class="Statement">in</span>
+        <span class="Statement">(</span>cache <span class="Statement">*</span>. percent_pos<span class="Statement">)</span> +. min
+      <span class="Statement">)</span>
+      <span class="Comment">(* }}} *)</span>
+  <span class="Statement">|</span> <span class="Constant">`ID</span> <span class="Statement">-&gt;</span> <span class="Statement">(fun</span> <span class="Statement">~</span><span class="Identifier">frames</span> <span class="Statement">~</span><span class="Identifier">t</span> <span class="Statement">-&gt;</span> amplitude<span class="Statement">)</span>
+<span class="Statement">;;</span>
+
+<span class="Statement">let</span> i_param_evolve <span class="Statement">?</span><span class="Statement">(</span><span class="Identifier">param</span><span class="Statement">=</span><span class="Constant">`max</span> <span class="Constant">1</span><span class="Statement">)</span> <span class="Statement">?</span><span class="Statement">(</span><span class="Identifier">cycle_type</span><span class="Statement">=</span><span class="Constant">`ID</span><span class="Statement">)</span> <span class="Statement">?</span><span class="Statement">(</span><span class="Identifier">cycles_nb</span><span class="Statement">=</span><span class="Constant">1.0</span><span class="Statement">)</span> <span class="Constant">()</span> <span class="Statement">=</span>
+  <span class="Comment">(* {{{ param =&gt; float *)</span>
+  <span class="Statement">let</span> param <span class="Statement">=</span> <span class="Statement">match</span> param <span class="Statement">with</span>
+  <span class="Statement">|</span> <span class="Constant">`max</span> prm <span class="Statement">-&gt;</span> <span class="Constant">`max</span> <span class="Statement">(</span><span class="Type">float</span> prm<span class="Statement">)</span>
+  <span class="Statement">|</span> <span class="Constant">`amplitude</span> prm <span class="Statement">-&gt;</span> <span class="Constant">`amplitude</span> <span class="Statement">(</span><span class="Type">float</span> prm<span class="Statement">)</span>
+  <span class="Statement">|</span> <span class="Constant">`min_max</span> <span class="Statement">(</span>min, prm<span class="Statement">)</span> <span class="Statement">-&gt;</span> <span class="Constant">`min_max</span> <span class="Statement">(</span><span class="Type">float</span> min, <span class="Type">float</span> prm<span class="Statement">)</span>
+  <span class="Statement">|</span> <span class="Constant">`min_amplitude</span> <span class="Statement">(</span>min, prm<span class="Statement">)</span> <span class="Statement">-&gt;</span> <span class="Constant">`min_amplitude</span> <span class="Statement">(</span><span class="Type">float</span> min, <span class="Type">float</span> prm<span class="Statement">)</span>
+  <span class="Statement">in</span>
+  <span class="Comment">(* }}} *)</span>
+  <span class="Statement">let</span> func <span class="Statement">=</span> <span class="Statement">(</span>f_param_evolve <span class="Statement">~</span><span class="Identifier">param</span> <span class="Statement">~</span><span class="Identifier">cycle_type</span> <span class="Statement">~</span><span class="Identifier">cycles_nb</span> <span class="Constant">()</span><span class="Statement">)</span> <span class="Statement">in</span>
+  <span class="Statement">(fun</span> <span class="Statement">~</span><span class="Identifier">frames</span> <span class="Statement">~</span><span class="Identifier">t</span> <span class="Statement">-&gt;</span>
+    int_of_float <span class="Statement">(</span>func <span class="Statement">~</span><span class="Identifier">frames</span> <span class="Statement">~</span><span class="Identifier">t</span><span class="Statement">)</span>
+  <span class="Statement">)</span>
+<span class="Statement">;;</span>
+
+<span class="Statement">let</span> i_id prm <span class="Statement">=</span>
+  <span class="Statement">(</span>i_param_evolve <span class="Statement">~</span><span class="Identifier">param</span>:<span class="Statement">(</span><span class="Constant">`max</span> prm<span class="Statement">)</span> <span class="Constant">()</span><span class="Statement">)</span>
+<span class="Statement">;;</span>
+
+<span class="Statement">let</span> f_id prm <span class="Statement">=</span>
+  <span class="Statement">(</span>f_param_evolve <span class="Statement">~</span><span class="Identifier">param</span>:<span class="Statement">(</span><span class="Constant">`max</span> prm<span class="Statement">)</span> <span class="Constant">()</span><span class="Statement">)</span>
+<span class="Statement">;;</span>
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* Show as a curve a function which makes evolve a parameter through the time *)</span>
+<span class="Comment">(* {{{ test_func *)</span>
+
+<span class="Statement">let</span> test_func <span class="Statement">~</span><span class="Identifier">func</span> <span class="Statement">~</span><span class="Identifier">frames</span> <span class="Statement">~</span><span class="Identifier">width</span> <span class="Statement">~</span><span class="Identifier">height</span> <span class="Statement">=</span>
+  <span class="Statement">let</span> <span class="Statement">rec</span> aux_xs x acc <span class="Statement">=</span>
+    <span class="Statement">if</span> x <span class="Statement">&lt;</span> <span class="Constant">0</span> <span class="Statement">then</span> acc
+    <span class="Statement">else</span> aux_xs <span class="Statement">(</span>pred x<span class="Statement">)</span> <span class="Statement">(</span>x<span class="Statement">::</span>acc<span class="Statement">)</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> xs <span class="Statement">=</span> aux_xs frames <span class="Constant">[]</span> <span class="Statement">in</span>
+
+  <span class="Statement">let</span> img <span class="Statement">=</span> <span class="PreProc">Magick</span>.get_canvas <span class="Statement">~</span><span class="Identifier">width</span> <span class="Statement">~</span><span class="Identifier">height</span> <span class="Statement">~</span><span class="Identifier">color</span>:<span class="Constant">&quot;#FFF&quot;</span> <span class="Statement">in</span>
+  <span class="Statement">let</span> dot <span class="Statement">~</span><span class="Identifier">x</span> <span class="Statement">~</span><span class="Identifier">y</span> <span class="Statement">=</span>
+    <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.draw_circle img <span class="Statement">~</span><span class="Identifier">x0</span>:x <span class="Statement">~</span><span class="Identifier">y0</span>:y <span class="Statement">~</span><span class="Identifier">x1</span>:x <span class="Statement">~</span><span class="Identifier">y1</span>:<span class="Statement">(</span>y+<span class="Constant">2</span><span class="Statement">)</span> <span class="Statement">~</span><span class="Identifier">fill_color</span>:<span class="Statement">(</span><span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.color_of_string <span class="Constant">&quot;#F009&quot;</span><span class="Statement">)</span> <span class="Constant">()</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> line <span class="Statement">~</span><span class="Identifier">x0</span> <span class="Statement">~</span><span class="Identifier">y0</span> <span class="Statement">~</span><span class="Identifier">x1</span> <span class="Statement">~</span><span class="Identifier">y1</span> <span class="Statement">=</span>
+    <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.draw_line img <span class="Statement">~</span><span class="Identifier">x0</span> <span class="Statement">~</span><span class="Identifier">y0</span> <span class="Statement">~</span><span class="Identifier">x1</span> <span class="Statement">~</span><span class="Identifier">y1</span> <span class="Statement">~</span><span class="Identifier">stroke_color</span>:<span class="Statement">(</span><span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.color_of_string <span class="Constant">&quot;#000&quot;</span><span class="Statement">)</span> <span class="Constant">()</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> <span class="Statement">rec</span> apply_func xs acc <span class="Statement">=</span> <span class="Statement">match</span> xs <span class="Statement">with</span>
+    <span class="Statement">|</span> <span class="Constant">[]</span> <span class="Statement">-&gt;</span> acc
+    <span class="Statement">|</span> x<span class="Statement">::</span>xtl <span class="Statement">-&gt;</span>
+        <span class="Statement">let</span> x <span class="Statement">=</span> int_of_float<span class="Statement">(</span><span class="Type">float</span><span class="Statement">(</span>x<span class="Statement">*</span>width<span class="Statement">)</span>/.<span class="Statement">(</span><span class="Type">float</span> frames<span class="Statement">))</span>
+        <span class="Statement">and</span> y <span class="Statement">=</span> <span class="Statement">match</span> func <span class="Statement">with</span>
+        <span class="Statement">|</span> <span class="Constant">`Int</span> func <span class="Statement">-&gt;</span> <span class="Statement">(</span>func <span class="Statement">~</span><span class="Identifier">frames</span> <span class="Statement">~</span><span class="Identifier">t</span>:x<span class="Statement">)</span>
+        <span class="Statement">|</span> <span class="Constant">`Float</span> func <span class="Statement">-&gt;</span> int_of_float<span class="Statement">(</span>func <span class="Statement">~</span><span class="Identifier">frames</span> <span class="Statement">~</span><span class="Identifier">t</span>:x<span class="Statement">)</span>
+        <span class="Statement">in</span>
+        <span class="Statement">let</span> y <span class="Statement">=</span> height - y <span class="Statement">in</span>
+        apply_func xtl <span class="Statement">((</span>x,y<span class="Statement">)</span><span class="Statement">::</span>acc<span class="Statement">)</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> xys <span class="Statement">=</span> apply_func xs <span class="Constant">[]</span> <span class="Statement">in</span>
+  <span class="Statement">let</span> <span class="Statement">rec</span> draw_line <span class="Statement">(</span>x0,y0<span class="Statement">)</span> l <span class="Statement">=</span> <span class="Statement">match</span> l <span class="Statement">with</span>
+    <span class="Statement">|</span> <span class="Constant">[]</span> <span class="Statement">-&gt;</span> <span class="Constant">()</span>
+    <span class="Statement">|</span> <span class="Statement">(</span>x1,y1<span class="Statement">)</span><span class="Statement">::</span>tl <span class="Statement">-&gt;</span> line <span class="Statement">~</span><span class="Identifier">x0</span> <span class="Statement">~</span><span class="Identifier">y0</span> <span class="Statement">~</span><span class="Identifier">x1</span> <span class="Statement">~</span><span class="Identifier">y1</span><span class="Statement">;</span> draw_line <span class="Statement">(</span>x1,y1<span class="Statement">)</span> tl
+  <span class="Statement">in</span>
+  draw_line <span class="Statement">(</span><span class="PreProc">List</span>.hd xys<span class="Statement">)</span> <span class="Statement">(</span><span class="PreProc">List</span>.tl xys<span class="Statement">)</span><span class="Statement">;</span>
+
+  <span class="Statement">let</span> <span class="Statement">rec</span> draw_dots l <span class="Statement">=</span> <span class="Statement">match</span> l <span class="Statement">with</span>
+    <span class="Statement">|</span> <span class="Constant">[]</span> <span class="Statement">-&gt;</span> <span class="Constant">()</span>
+    <span class="Statement">|</span> <span class="Statement">(</span>x,y<span class="Statement">)</span><span class="Statement">::</span>tl <span class="Statement">-&gt;</span> dot <span class="Statement">~</span><span class="Identifier">x</span> <span class="Statement">~</span><span class="Identifier">y</span><span class="Statement">;</span> draw_dots tl
+  <span class="Statement">in</span>
+  draw_dots xys<span class="Statement">;</span>
+  <span class="PreProc">Magick</span>.display img<span class="Statement">;</span>
+<span class="Statement">;;</span>
+<span class="Comment">(* }}} *)</span>
+
+<span class="Comment">(* Facilities to build structures *)</span>
+<span class="Comment">(* {{{ Leaves *)</span>
+
+<span class="Statement">let</span> extern source <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Leaf</span><span class="Statement">(</span> <span class="Constant">Source_ext</span><span class="Statement">(</span>source<span class="Statement">)</span> <span class="Statement">))</span>
+
+<span class="Statement">let</span> create_source <span class="Statement">~</span><span class="Identifier">width</span> <span class="Statement">~</span><span class="Identifier">height</span> <span class="Statement">~</span><span class="Identifier">pseudo_format</span> <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Leaf</span><span class="Statement">(</span> <span class="Constant">Source_A</span><span class="Statement">(</span>_create, <span class="Constant">Int</span> width, <span class="Constant">Int</span> height, <span class="Constant">String</span> pseudo_format<span class="Statement">)</span> <span class="Statement">))</span>
+
+<span class="Statement">let</span> create_canvas <span class="Statement">~</span><span class="Identifier">width</span> <span class="Statement">~</span><span class="Identifier">height</span> <span class="Statement">~</span><span class="Identifier">color</span> <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Leaf</span><span class="Statement">(</span> <span class="Constant">Source_A</span><span class="Statement">(</span>_canvas, <span class="Constant">Int</span> width, <span class="Constant">Int</span> height, <span class="Constant">String</span> color<span class="Statement">)</span> <span class="Statement">))</span>
+
+<span class="Statement">let</span> read <span class="Statement">~</span><span class="Identifier">filename</span> <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Leaf</span><span class="Statement">(</span> <span class="Constant">Source_B</span><span class="Statement">(</span>_read, <span class="Constant">String</span> filename<span class="Statement">)</span> <span class="Statement">))</span>
+
+<span class="Statement">let</span> read_t <span class="Statement">~</span><span class="Identifier">filename</span> <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Leaf</span><span class="Statement">(</span> <span class="Constant">Source_B</span><span class="Statement">(</span>_read, <span class="Constant">String_t</span> filename<span class="Statement">)</span> <span class="Statement">))</span>
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* {{{ Edges *)</span>
+
+<span class="Statement">let</span> blur <span class="Statement">~</span><span class="Identifier">radius</span> <span class="Statement">~</span><span class="Identifier">sigma</span> lay <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Edge</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Filter_2f</span><span class="Statement">(</span>_blur, <span class="Constant">Float</span> radius, <span class="Constant">Float</span> sigma<span class="Statement">))</span>, lay <span class="Statement">))</span>
+
+<span class="Statement">let</span> emboss <span class="Statement">~</span><span class="Identifier">radius</span> <span class="Statement">~</span><span class="Identifier">sigma</span> lay <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Edge</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Filter_2f</span><span class="Statement">(</span>_emboss, <span class="Constant">Float</span> radius, <span class="Constant">Float</span> sigma<span class="Statement">))</span>, lay <span class="Statement">))</span>
+
+<span class="Statement">let</span> shade <span class="Statement">~</span><span class="Identifier">azimuth</span> <span class="Statement">~</span><span class="Identifier">elevation</span> lay <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Edge</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Filter_2f</span><span class="Statement">(</span>_shade, <span class="Constant">Float</span> azimuth, <span class="Constant">Float</span> elevation<span class="Statement">))</span>, lay <span class="Statement">))</span>
+
+<span class="Statement">let</span> sample <span class="Statement">~</span><span class="Identifier">width</span> <span class="Statement">~</span><span class="Identifier">height</span> lay <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Edge</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Filter_2i</span><span class="Statement">(</span>_sample, <span class="Constant">Int</span> width, <span class="Constant">Int</span> height<span class="Statement">))</span>, lay <span class="Statement">))</span>
+
+<span class="Statement">let</span> scale <span class="Statement">~</span><span class="Identifier">width</span> <span class="Statement">~</span><span class="Identifier">height</span> lay <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Edge</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Filter_2i</span><span class="Statement">(</span>_scale, <span class="Constant">Int</span> width, <span class="Constant">Int</span> height<span class="Statement">))</span>, lay <span class="Statement">))</span>
+
+<span class="Statement">let</span> minify lay <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Edge</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Filter_0</span><span class="Statement">(</span>_minify<span class="Statement">))</span>, lay <span class="Statement">))</span>
+
+<span class="Statement">let</span> magnify lay <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Edge</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Filter_0</span><span class="Statement">(</span>_magnify<span class="Statement">))</span>, lay <span class="Statement">))</span>
+
+<span class="Statement">let</span> roll <span class="Statement">~</span><span class="Identifier">x</span> <span class="Statement">~</span><span class="Identifier">y</span> lay <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Edge</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Filter_2i</span><span class="Statement">(</span>_roll, <span class="Constant">Int</span> x, <span class="Constant">Int</span> y<span class="Statement">))</span>, lay <span class="Statement">))</span>
+
+<span class="Statement">let</span> roll_ft <span class="Statement">~</span><span class="Identifier">x</span> <span class="Statement">~</span><span class="Identifier">y</span> lay <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Edge</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Filter_2i</span><span class="Statement">(</span>_roll, <span class="Constant">Int_ft</span> x, <span class="Constant">Int_ft</span> y<span class="Statement">))</span>, lay <span class="Statement">))</span>
+
+<span class="Statement">let</span> crop <span class="Statement">~</span><span class="Identifier">x</span> <span class="Statement">~</span><span class="Identifier">y</span> <span class="Statement">~</span><span class="Identifier">width</span> <span class="Statement">~</span><span class="Identifier">height</span> lay <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Edge</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Filter_4i</span><span class="Statement">(</span>_crop, <span class="Constant">Int</span> x, <span class="Constant">Int</span> y, <span class="Constant">Int</span> width, <span class="Constant">Int</span> height<span class="Statement">))</span>, lay <span class="Statement">))</span>
+
+<span class="Statement">let</span> crop_ft <span class="Statement">~</span><span class="Identifier">x</span> <span class="Statement">~</span><span class="Identifier">y</span> <span class="Statement">~</span><span class="Identifier">width</span> <span class="Statement">~</span><span class="Identifier">height</span> lay <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Edge</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Filter_4i</span><span class="Statement">(</span>_crop, <span class="Constant">Int_ft</span> x, <span class="Constant">Int_ft</span> y, <span class="Constant">Int_ft</span> width, <span class="Constant">Int_ft</span> height<span class="Statement">))</span>, lay <span class="Statement">))</span>
+
+<span class="Statement">let</span> swirl <span class="Statement">~</span><span class="Identifier">degrees</span> lay <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Edge</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Filter_1f</span><span class="Statement">(</span>_swirl, <span class="Constant">Float</span> degrees<span class="Statement">))</span>, lay <span class="Statement">))</span>
+
+<span class="Statement">let</span> swirl_t <span class="Statement">~</span><span class="Identifier">degrees</span> lay <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Edge</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Filter_1f</span><span class="Statement">(</span>_swirl, <span class="Constant">Float_t</span> degrees<span class="Statement">))</span>, lay <span class="Statement">))</span>
+
+<span class="Statement">let</span> swirl_ft <span class="Statement">~</span><span class="Identifier">degrees</span> lay <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Edge</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Filter_1f</span><span class="Statement">(</span>_swirl, <span class="Constant">Float_ft</span> degrees<span class="Statement">))</span>, lay <span class="Statement">))</span>
+
+<span class="Statement">let</span> rotate <span class="Statement">~</span><span class="Identifier">degrees</span> lay <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Edge</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Filter_1f</span><span class="Statement">(</span>_rotate, <span class="Constant">Float</span> degrees<span class="Statement">))</span>, lay <span class="Statement">))</span>
+
+<span class="Statement">let</span> rotate_t <span class="Statement">~</span><span class="Identifier">degrees</span> lay <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Edge</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Filter_1f</span><span class="Statement">(</span>_rotate, <span class="Constant">Float_t</span> degrees<span class="Statement">))</span>, lay <span class="Statement">))</span>
+
+<span class="Statement">let</span> rotate_ft <span class="Statement">~</span><span class="Identifier">degrees</span> lay <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Edge</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Filter_1f</span><span class="Statement">(</span>_rotate, <span class="Constant">Float_ft</span> degrees<span class="Statement">))</span>, lay <span class="Statement">))</span>
+
+<span class="Statement">let</span> rotate_middle_crop <span class="Statement">~</span><span class="Identifier">degrees</span> lay <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Edge</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Filter_1f</span><span class="Statement">(</span>_rotate_middle_crop, <span class="Constant">Float</span> degrees<span class="Statement">))</span>, lay <span class="Statement">))</span>
+
+<span class="Statement">let</span> rotate_middle_crop_ft <span class="Statement">~</span><span class="Identifier">degrees</span> lay <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Edge</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Filter_1f</span><span class="Statement">(</span>_rotate_middle_crop, <span class="Constant">Float_ft</span> degrees<span class="Statement">))</span>, lay <span class="Statement">))</span>
+
+<span class="Statement">let</span> view lay <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Edge</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Filter_0</span><span class="Statement">(</span>_view<span class="Statement">))</span>, lay <span class="Statement">))</span>
+
+<span class="Statement">let</span> check lay <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Edge</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Filter_0</span><span class="Statement">(</span>_check<span class="Statement">))</span>, lay <span class="Statement">))</span>
+
+<span class="Statement">let</span> write <span class="Statement">~</span><span class="Identifier">filename</span> lay <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Edge</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Filter_1s</span><span class="Statement">(</span>_write, <span class="Constant">String</span> filename<span class="Statement">))</span>, lay <span class="Statement">))</span>
+
+<span class="Statement">let</span> set_type <span class="Statement">~</span><span class="Identifier">image_type</span> lay <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Edge</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Filter_1T</span><span class="Statement">(</span>_set_type, image_type<span class="Statement">))</span>, lay <span class="Statement">))</span>
+
+<span class="Statement">let</span> threshold_negate <span class="Statement">~</span><span class="Identifier">percent</span> lay <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Edge</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Filter_1f</span><span class="Statement">(</span>_threshold_negate, <span class="Constant">Float</span> percent<span class="Statement">))</span>, lay <span class="Statement">))</span>
+
+<span class="Statement">let</span> threshold_negate_t <span class="Statement">~</span><span class="Identifier">percent</span> lay <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Edge</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Filter_1f</span><span class="Statement">(</span>_threshold_negate, <span class="Constant">Float_t</span> percent<span class="Statement">))</span>, lay <span class="Statement">))</span>
+
+<span class="Statement">let</span> threshold_negate_ft <span class="Statement">~</span><span class="Identifier">percent</span> lay <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Edge</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Filter_1f</span><span class="Statement">(</span>_threshold_negate, <span class="Constant">Float_ft</span> percent<span class="Statement">))</span>, lay <span class="Statement">))</span>
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* {{{ Nodes *)</span>
+
+<span class="Statement">let</span> composite <span class="Statement">~</span><span class="Identifier">compose</span> <span class="Statement">~</span><span class="Identifier">img_above</span> <span class="Statement">~</span><span class="Identifier">img_below</span> <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Node2</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Compose_1C</span><span class="Statement">(</span>_compose, compose<span class="Statement">))</span>, img_above, img_below <span class="Statement">))</span>
+
+<span class="Statement">let</span> compose <span class="Statement">~</span><span class="Identifier">op</span> <span class="Statement">(</span>img_above, img_below<span class="Statement">)</span> <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Node2</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Compose_1C</span><span class="Statement">(</span>_compose, op<span class="Statement">))</span>, img_above, img_below <span class="Statement">))</span>
+
+<span class="Statement">let</span> transition <span class="Statement">~</span><span class="Identifier">percent</span> img_above img_below <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Node2</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Compose_1f</span><span class="Statement">(</span>_transition, <span class="Constant">Float</span> percent<span class="Statement">))</span>, img_above, img_below <span class="Statement">))</span>
+
+<span class="Statement">let</span> transition_t <span class="Statement">~</span><span class="Identifier">percent</span> img_above img_below <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Node2</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Compose_1f</span><span class="Statement">(</span>_transition, <span class="Constant">Float_t</span> percent<span class="Statement">))</span>, img_above, img_below <span class="Statement">))</span>
+
+<span class="Statement">let</span> transition_ft <span class="Statement">~</span><span class="Identifier">percent</span> img_above img_below <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Node2</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Compose_1f</span><span class="Statement">(</span>_transition, <span class="Constant">Float_ft</span> percent<span class="Statement">))</span>, img_above, img_below <span class="Statement">))</span>
+
+<span class="Statement">let</span> mask_transition <span class="Statement">~</span><span class="Identifier">img_mask</span> <span class="Statement">~</span><span class="Identifier">img_above</span> <span class="Statement">~</span><span class="Identifier">img_below</span> <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="Constant">Node3</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Clipper_0</span><span class="Statement">(</span>_mask_transition<span class="Statement">))</span>, img_mask, img_above, img_below <span class="Statement">))</span>
+
+<span class="Comment">(* }}} *)</span>
+
+<span class="Comment">(* }}} *)</span>
+
+<span class="Comment">(* vim: sw=2 sts=2 ts=2 et fdm=marker</span>
+<span class="Comment"> *)</span>
+</pre>
+</body>
+</html>
