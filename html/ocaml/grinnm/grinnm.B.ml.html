@@ -1,0 +1,256 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+ "http://www.w3.org/TR/html4/strict.dtd">
+<?xml version="1.0"?>
+<html>
+<head>
+<title>Grinnm/grinnm.ml</title>
+<meta name="Generator" content="Vim/6.3"/>
+<meta http-equiv="content-type" content="text/html; charset=utf8"/>
+<style type="text/css">
+<!--
+.PreProc { color: #8080ff; font-weight: bold; }
+.Constant { color: #ff40ff; font-weight: bold; }
+.Type { color: #00ff00; font-weight: bold; }
+.Identifier { color: #00ffff; font-weight: bold; }
+pre { color: #ffffff; background-color: #000000; border: 1px solid #7F7F7F; padding: 2px; }
+body { color: #ffffff; background-color: #000000; }
+.Comment { color: #00ffff; font-weight: bold; }
+.Statement { color: #ffff00; font-weight: bold; }
+-->
+</style>
+</head>
+<body>
+<pre>
+<span class="Comment">(* {{{ COPYING *)</span>
+<span class="Comment">(*</span>
+<span class="Comment"> * +-----------------------------------------------------------------+</span>
+<span class="Comment"> * | Copyright (C) 2006 Florent Monnier                              |</span>
+<span class="Comment"> * +-----------------------------------------------------------------+</span>
+<span class="Comment"> * | This is a sandbox to provide higher level UI to OCaml-libMagick |</span>
+<span class="Comment"> * +-----------------------------------------------------------------+</span>
+<span class="Comment"> * |                                                                 |</span>
+<span class="Comment"> * | This program is free software; you can redistribute it and/or   |</span>
+<span class="Comment"> * | modify it under the terms of the GNU General Public License     |</span>
+<span class="Comment"> * | as published by the Free Software Foundation; either version 2  |</span>
+<span class="Comment"> * | of the License, or (at your option) any later version.          |</span>
+<span class="Comment"> * |                                                                 |</span>
+<span class="Comment"> * | This program is distributed in the hope that it will be useful, |</span>
+<span class="Comment"> * | but WITHOUT ANY WARRANTY; without even the implied warranty of  |</span>
+<span class="Comment"> * | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the   |</span>
+<span class="Comment"> * | GNU General Public License for more details.                    |</span>
+<span class="Comment"> * |                                                                 |</span>
+<span class="Comment"> * | <A HREF="http://www.fsf.org/licensing/licenses/gpl.html">http://www.fsf.org/licensing/licenses/gpl.html</A>                  |</span>
+<span class="Comment"> * |                                                                 |</span>
+<span class="Comment"> * | You should have received a copy of the GNU General Public       |</span>
+<span class="Comment"> * | License along with this program; if not,                        |</span>
+<span class="Comment"> * | write to the Free Software Foundation, Inc.,                    |</span>
+<span class="Comment"> * | 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA    |</span>
+<span class="Comment"> * |                                                                 |</span>
+<span class="Comment"> * +-----------------------------------------------------------------+</span>
+<span class="Comment"> * | Author: Florent Monnier &lt;monnier.florent(_)gmail.com&gt;           |</span>
+<span class="Comment"> * +-----------------------------------------------------------------+</span>
+<span class="Comment"> *</span>
+<span class="Comment"> * }}} *)</span>
+
+<span class="Comment">(* {{{ types *)</span>
+
+<span class="Statement">type</span> layer <span class="Statement">=</span> <span class="PreProc">Magick</span>.image_handle
+
+<span class="Statement">type</span> source <span class="Statement">=</span>
+  <span class="Statement">|</span> <span class="Constant">Source_A</span> <span class="Statement">of</span> <span class="Statement">(</span><span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">string</span> <span class="Statement">-&gt;</span> <span class="Type">unit</span> <span class="Statement">-&gt;</span> layer<span class="Statement">)</span> <span class="Statement">*</span> <span class="Type">int</span> <span class="Statement">*</span> <span class="Type">int</span> <span class="Statement">*</span> <span class="Type">string</span>
+  <span class="Statement">|</span> <span class="Constant">Source_B</span> <span class="Statement">of</span> <span class="Statement">(</span><span class="Type">string</span> <span class="Statement">-&gt;</span> <span class="Type">unit</span> <span class="Statement">-&gt;</span> layer<span class="Statement">)</span> <span class="Statement">*</span> <span class="Type">string</span>
+  <span class="Statement">|</span> <span class="Constant">Source_e</span> <span class="Statement">of</span> layer
+
+<span class="Statement">type</span> filter <span class="Statement">=</span>
+  <span class="Statement">|</span> <span class="Constant">Filter_0</span>  <span class="Statement">of</span> <span class="Statement">(</span>img:layer <span class="Statement">-&gt;</span> layer<span class="Statement">)</span>
+  <span class="Statement">|</span> <span class="Constant">Filter_1s</span> <span class="Statement">of</span> <span class="Statement">(</span><span class="Type">string</span> <span class="Statement">-&gt;</span> img:layer <span class="Statement">-&gt;</span> layer<span class="Statement">)</span> <span class="Statement">*</span> <span class="Type">string</span>
+  <span class="Statement">|</span> <span class="Constant">Filter_1f</span> <span class="Statement">of</span> <span class="Statement">(</span><span class="Type">float</span> <span class="Statement">-&gt;</span> img:layer <span class="Statement">-&gt;</span> layer<span class="Statement">)</span> <span class="Statement">*</span> <span class="Type">float</span>
+  <span class="Statement">|</span> <span class="Constant">Filter_2f</span> <span class="Statement">of</span> <span class="Statement">(</span><span class="Type">float</span> <span class="Statement">-&gt;</span> <span class="Type">float</span> <span class="Statement">-&gt;</span> img:layer <span class="Statement">-&gt;</span> layer<span class="Statement">)</span> <span class="Statement">*</span> <span class="Type">float</span> <span class="Statement">*</span> <span class="Type">float</span>
+  <span class="Statement">|</span> <span class="Constant">Filter_3f</span> <span class="Statement">of</span> <span class="Statement">(</span><span class="Type">float</span> <span class="Statement">-&gt;</span> <span class="Type">float</span> <span class="Statement">-&gt;</span> <span class="Type">float</span> <span class="Statement">-&gt;</span> img:layer <span class="Statement">-&gt;</span> layer<span class="Statement">)</span> <span class="Statement">*</span> <span class="Type">float</span> <span class="Statement">*</span> <span class="Type">float</span> <span class="Statement">*</span> <span class="Type">float</span>
+  <span class="Statement">|</span> <span class="Constant">Filter_2i</span> <span class="Statement">of</span> <span class="Statement">(</span><span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">int</span> <span class="Statement">-&gt;</span> img:layer <span class="Statement">-&gt;</span> layer<span class="Statement">)</span> <span class="Statement">*</span> <span class="Type">int</span> <span class="Statement">*</span> <span class="Type">int</span>
+  <span class="Statement">|</span> <span class="Constant">Filter_3i</span> <span class="Statement">of</span> <span class="Statement">(</span><span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">int</span> <span class="Statement">-&gt;</span> img:layer <span class="Statement">-&gt;</span> layer<span class="Statement">)</span> <span class="Statement">*</span> <span class="Type">int</span> <span class="Statement">*</span> <span class="Type">int</span> <span class="Statement">*</span> <span class="Type">int</span>
+  <span class="Statement">|</span> <span class="Constant">Filter_4i</span> <span class="Statement">of</span> <span class="Statement">(</span><span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">int</span> <span class="Statement">-&gt;</span> img:layer <span class="Statement">-&gt;</span> layer<span class="Statement">)</span> <span class="Statement">*</span> <span class="Type">int</span> <span class="Statement">*</span> <span class="Type">int</span> <span class="Statement">*</span> <span class="Type">int</span> <span class="Statement">*</span> <span class="Type">int</span>
+
+<span class="Statement">type</span> compositor <span class="Statement">=</span>
+  <span class="Statement">|</span> <span class="Constant">Compose_0</span> <span class="Statement">of</span> <span class="Statement">(</span>img_a:layer <span class="Statement">-&gt;</span> img_b:layer <span class="Statement">-&gt;</span> layer<span class="Statement">)</span>
+  <span class="Statement">|</span> <span class="Constant">Compose_1</span> <span class="Statement">of</span> <span class="Statement">(</span><span class="PreProc">Magick</span>.composite_operator <span class="Statement">-&gt;</span> img_a:layer <span class="Statement">-&gt;</span> img_b:layer <span class="Statement">-&gt;</span> layer<span class="Statement">)</span> <span class="Statement">*</span> <span class="PreProc">Magick</span>.composite_operator
+
+<span class="Statement">type</span> layers_tree <span class="Statement">=</span>
+  <span class="Statement">|</span> <span class="Constant">Leaf</span> <span class="Statement">of</span> <span class="Statement">(</span>source<span class="Statement">)</span>
+  <span class="Statement">|</span> <span class="Constant">Node</span> <span class="Statement">of</span> <span class="Statement">(</span>filter <span class="Statement">*</span> layers_tree<span class="Statement">)</span>
+  <span class="Statement">|</span> <span class="Constant">Comp</span> <span class="Statement">of</span> <span class="Statement">(</span>compositor <span class="Statement">*</span> layers_tree <span class="Statement">*</span> layers_tree<span class="Statement">)</span>
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* {{{ processings *)</span>
+
+<span class="Statement">let</span> process_source src <span class="Statement">=</span>
+  <span class="Statement">match</span> src <span class="Statement">with</span>
+  <span class="Statement">|</span> <span class="Constant">Source_e</span> layer <span class="Statement">-&gt;</span> layer
+  <span class="Statement">|</span> <span class="Constant">Source_A</span> <span class="Statement">(</span>func, a, b, c<span class="Statement">)</span> <span class="Statement">-&gt;</span> func a b c <span class="Constant">()</span>
+  <span class="Statement">|</span> <span class="Constant">Source_B</span> <span class="Statement">(</span>func, a<span class="Statement">)</span> <span class="Statement">-&gt;</span> func a <span class="Constant">()</span>
+<span class="Statement">;;</span>
+
+<span class="Statement">let</span> process_filter flt <span class="Statement">=</span>
+  <span class="Statement">match</span> flt <span class="Statement">with</span>
+  <span class="Statement">|</span> <span class="Constant">Filter_0</span>  func <span class="Statement">-&gt;</span> func
+  <span class="Statement">|</span> <span class="Constant">Filter_1s</span> <span class="Statement">(</span>func, a<span class="Statement">)</span> <span class="Statement">-&gt;</span> func a
+  <span class="Statement">|</span> <span class="Constant">Filter_1f</span> <span class="Statement">(</span>func, a<span class="Statement">)</span> <span class="Statement">-&gt;</span> func a
+  <span class="Statement">|</span> <span class="Constant">Filter_2f</span> <span class="Statement">(</span>func, a, b<span class="Statement">)</span> <span class="Statement">-&gt;</span> func a b
+  <span class="Statement">|</span> <span class="Constant">Filter_2i</span> <span class="Statement">(</span>func, a, b<span class="Statement">)</span> <span class="Statement">-&gt;</span> func a b
+  <span class="Statement">|</span> <span class="Constant">Filter_3f</span> <span class="Statement">(</span>func, a, b, c<span class="Statement">)</span> <span class="Statement">-&gt;</span> func a b c
+  <span class="Statement">|</span> <span class="Constant">Filter_3i</span> <span class="Statement">(</span>func, a, b, c<span class="Statement">)</span> <span class="Statement">-&gt;</span> func a b c
+  <span class="Statement">|</span> <span class="Constant">Filter_4i</span> <span class="Statement">(</span>func, a, b, c, d<span class="Statement">)</span> <span class="Statement">-&gt;</span> func a b c d
+<span class="Statement">;;</span>
+
+<span class="Statement">let</span> process_compositor cmp <span class="Statement">=</span>
+  <span class="Statement">match</span> cmp <span class="Statement">with</span>
+  <span class="Statement">|</span> <span class="Constant">Compose_0</span> func <span class="Statement">-&gt;</span> func
+  <span class="Statement">|</span> <span class="Constant">Compose_1</span> <span class="Statement">(</span>func, a<span class="Statement">)</span> <span class="Statement">-&gt;</span> func a
+<span class="Statement">;;</span>
+
+<span class="Statement">let</span> <span class="Statement">rec</span> process_layers layers <span class="Statement">=</span>
+  <span class="Statement">match</span> layers <span class="Statement">with</span>
+  <span class="Statement">|</span> <span class="Constant">Leaf</span> <span class="Statement">(</span>src<span class="Statement">)</span> <span class="Statement">-&gt;</span> <span class="Statement">(</span>process_source src<span class="Statement">)</span>
+  <span class="Statement">|</span> <span class="Constant">Node</span> <span class="Statement">(</span>flt, t<span class="Statement">)</span> <span class="Statement">-&gt;</span> <span class="Statement">(</span>process_filter flt<span class="Statement">)</span> <span class="Statement">~</span><span class="Identifier">img</span>:<span class="Statement">(</span>process_layers t<span class="Statement">)</span>
+  <span class="Statement">|</span> <span class="Constant">Comp</span> <span class="Statement">(</span>cmp, t1, t2<span class="Statement">)</span> <span class="Statement">-&gt;</span> <span class="Statement">(</span>process_compositor cmp<span class="Statement">)</span> <span class="Statement">~</span><span class="Identifier">img_a</span>:<span class="Statement">(</span>process_layers t1<span class="Statement">)</span> <span class="Statement">~</span><span class="Identifier">img_b</span>:<span class="Statement">(</span>process_layers t2<span class="Statement">)</span>
+<span class="Statement">;;</span>
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* {{{ wraps *)</span>
+
+<span class="Comment">(* Source_A *)</span>
+<span class="Statement">let</span> _create a b c <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.create_image <span class="Statement">~</span><span class="Identifier">width</span>:a <span class="Statement">~</span><span class="Identifier">height</span>:b <span class="Statement">~</span><span class="Identifier">pseudo_format</span>:c
+<span class="Comment">(* Source_B *)</span>
+<span class="Statement">let</span> _read c <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.read_image <span class="Statement">~</span><span class="Identifier">filename</span>:c
+
+<span class="Comment">(* Filter_0 *)</span>
+<span class="Statement">let</span> _view <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.view <span class="Constant">()</span>
+<span class="Statement">let</span> _negate <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.negate <span class="Constant">()</span>
+<span class="Statement">let</span> _enhance <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.enhance <span class="Constant">()</span>
+<span class="Statement">let</span> _equalize <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.equalize <span class="Constant">()</span>
+<span class="Statement">let</span> _normalize <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.normalize <span class="Constant">()</span>
+
+<span class="Comment">(* Filter_1f *)</span>
+<span class="Statement">let</span> _medianfilter a <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.medianfilter <span class="Statement">~</span><span class="Identifier">radius</span>:a <span class="Constant">()</span>
+<span class="Statement">let</span> _radial_blur a <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.radial_blur <span class="Statement">~</span><span class="Identifier">angle</span>:a <span class="Constant">()</span>
+<span class="Statement">let</span> _oilpaint a <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.oilpaint <span class="Statement">~</span><span class="Identifier">radius</span>:a <span class="Constant">()</span>
+<span class="Statement">let</span> _implode a <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.implode <span class="Statement">~</span><span class="Identifier">amount</span>:a <span class="Constant">()</span>
+<span class="Statement">let</span> _rotate a <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.rotate <span class="Statement">~</span><span class="Identifier">degrees</span>:a <span class="Constant">()</span>
+<span class="Statement">let</span> _spread a <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.spread <span class="Statement">~</span><span class="Identifier">radius</span>:a <span class="Constant">()</span>
+<span class="Statement">let</span> _swirl a <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.swirl <span class="Statement">~</span><span class="Identifier">degrees</span>:a <span class="Constant">()</span>
+<span class="Statement">let</span> _edge a <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.edge <span class="Statement">~</span><span class="Identifier">radius</span>:a <span class="Constant">()</span>
+
+<span class="Comment">(* Filter_1s *)</span>
+<span class="Statement">let</span> _black_threshold a <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.black_threshold <span class="Statement">~</span><span class="Identifier">threshold</span>:a <span class="Constant">()</span>
+<span class="Statement">let</span> _white_threshold a <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.white_threshold <span class="Statement">~</span><span class="Identifier">threshold</span>:a <span class="Constant">()</span>
+<span class="Statement">let</span> _write a <span class="Statement">~</span><span class="Identifier">img</span> <span class="Statement">=</span> <span class="PreProc">Magick</span>.write_image img <span class="Statement">~</span><span class="Identifier">filename</span>:a<span class="Statement">;</span> img
+<span class="Statement">let</span> _level a <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.level <span class="Statement">~</span><span class="Identifier">levels</span>:a <span class="Constant">()</span>
+
+<span class="Comment">(* Filter_2f *)</span>
+<span class="Statement">let</span> _charcoal a b <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.charcoal <span class="Statement">~</span><span class="Identifier">radius</span>:a <span class="Statement">~</span><span class="Identifier">sigma</span>:b <span class="Constant">()</span>
+<span class="Statement">let</span> _sharpen a b <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.sharpen <span class="Statement">~</span><span class="Identifier">radius</span>:a <span class="Statement">~</span><span class="Identifier">sigma</span>:b <span class="Constant">()</span>
+<span class="Statement">let</span> _emboss a b <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.emboss <span class="Statement">~</span><span class="Identifier">radius</span>:a <span class="Statement">~</span><span class="Identifier">sigma</span>:b <span class="Constant">()</span>
+<span class="Statement">let</span> _shade a b <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.shade <span class="Statement">~</span><span class="Identifier">azimuth</span>:a <span class="Statement">~</span><span class="Identifier">elevation</span>:b <span class="Constant">()</span>
+<span class="Statement">let</span> _blur a b <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.blur <span class="Statement">~</span><span class="Identifier">radius</span>:a <span class="Statement">~</span><span class="Identifier">sigma</span>:b <span class="Constant">()</span>
+<span class="Statement">let</span> _gaussian_blur a b <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.gaussian_blur <span class="Statement">~</span><span class="Identifier">radius</span>:a <span class="Statement">~</span><span class="Identifier">sigma</span>:b <span class="Constant">()</span>
+
+<span class="Comment">(* Filter_3f *)</span>
+<span class="Statement">let</span> _motion_blur a b c <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.motion_blur <span class="Statement">~</span><span class="Identifier">radius</span>:a <span class="Statement">~</span><span class="Identifier">sigma</span>:b <span class="Statement">~</span><span class="Identifier">angle</span>:c <span class="Constant">()</span>
+
+<span class="Comment">(* Filter_2i *)</span>
+<span class="Statement">let</span> _sample a b <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.sample <span class="Statement">~</span><span class="Identifier">width</span>:a <span class="Statement">~</span><span class="Identifier">height</span>:b <span class="Constant">()</span>
+<span class="Statement">let</span> _scale a b <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.scale <span class="Statement">~</span><span class="Identifier">width</span>:a <span class="Statement">~</span><span class="Identifier">height</span>:b <span class="Constant">()</span>
+<span class="Statement">let</span> _roll a b <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.roll <span class="Statement">~</span><span class="Identifier">x</span>:a <span class="Statement">~</span><span class="Identifier">y</span>:b <span class="Constant">()</span>
+
+<span class="Comment">(* Filter_3i *)</span>
+<span class="Statement">let</span> _modulate a b c <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.modulate <span class="Statement">~</span><span class="Identifier">brightness</span>:a <span class="Statement">~</span><span class="Identifier">saturation</span>:b <span class="Statement">~</span><span class="Identifier">hue</span>:c <span class="Constant">()</span>
+
+<span class="Comment">(* Filter_4i *)</span>
+<span class="Statement">let</span> _crop a b c d <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.crop <span class="Statement">~</span><span class="Identifier">x</span>:a <span class="Statement">~</span><span class="Identifier">y</span>:b <span class="Statement">~</span><span class="Identifier">width</span>:c <span class="Statement">~</span><span class="Identifier">height</span>:d <span class="Constant">()</span>
+
+<span class="Comment">(* Compose_1 *)</span>
+<span class="Statement">let</span> _compose a <span class="Statement">~</span><span class="Identifier">img_a</span> <span class="Statement">~</span><span class="Identifier">img_b</span> <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.composite_image <span class="Statement">~</span><span class="Identifier">compose</span>:a <span class="Constant">()</span> <span class="Statement">~</span><span class="Identifier">img_above</span>:img_a <span class="Statement">~</span><span class="Identifier">img_below</span>:img_b
+<span class="Comment">(* Compose_0 *)</span>
+<span class="Statement">let</span> _texture <span class="Statement">~</span><span class="Identifier">img_a</span> <span class="Statement">~</span><span class="Identifier">img_b</span> <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Fun</span>.texture_image <span class="Statement">~</span><span class="Identifier">img</span>:img_b <span class="Statement">~</span><span class="Identifier">tex_img</span>:img_a
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* {{{ datas *)</span>
+
+<span class="Statement">let</span> width <span class="Statement">=</span> <span class="Constant">628</span>
+<span class="Statement">let</span> height <span class="Statement">=</span> <span class="Constant">478</span>
+<span class="Statement">let</span> border <span class="Statement">=</span> <span class="Constant">14</span>
+<span class="Statement">let</span> frames <span class="Statement">=</span> <span class="Constant">32</span>
+
+<span class="Statement">let</span> i <span class="Statement">=</span> ref <span class="Constant">0</span>
+
+<span class="Statement">let</span> through_time  t bg <span class="Statement">=</span>
+  <span class="PreProc">Printf</span>.printf <span class="Constant">&quot; %d%!&quot;</span> t<span class="Statement">;</span>
+  <span class="Statement">let</span> percent <span class="Statement">=</span> <span class="Statement">(</span><span class="Type">float</span> t<span class="Statement">)</span> /. <span class="Statement">(</span><span class="Type">float</span> frames<span class="Statement">)</span> <span class="Statement">in</span>
+  <span class="Statement">let</span> percent_inv <span class="Statement">=</span> <span class="Constant">1.0</span> -. percent <span class="Statement">in</span>
+  <span class="Statement">let</span> my_tree <span class="Statement">=</span>
+    <span class="Statement">(</span><span class="Constant">Node</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Filter_4i</span><span class="Statement">(</span>_crop, border, border, width - <span class="Constant">2</span><span class="Statement">*</span>border, height - <span class="Constant">2</span><span class="Statement">*</span>border<span class="Statement">))</span>,
+      <span class="Statement">(</span><span class="Constant">Comp</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Compose_1</span><span class="Statement">(</span>_compose, <span class="PreProc">Magick</span>.<span class="Constant">HardLight</span><span class="Statement">))</span>,
+        <span class="Statement">(</span><span class="Constant">Node</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Filter_2f</span><span class="Statement">(</span>_shade, <span class="Constant">30</span>., <span class="Constant">30</span>.<span class="Statement">))</span>,
+          <span class="Statement">(</span><span class="Constant">Node</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Filter_2f</span><span class="Statement">(</span>_blur, <span class="Constant">3</span>., <span class="Constant">5</span>.<span class="Statement">))</span>,
+            <span class="Statement">(</span><span class="Constant">Node</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Filter_1f</span><span class="Statement">(</span>_swirl, percent <span class="Statement">*</span>. <span class="Constant">120.0</span><span class="Statement">))</span>,
+              <span class="Statement">(</span><span class="Constant">Leaf</span><span class="Statement">(</span><span class="Constant">Source_A</span><span class="Statement">(</span>_create, width, height, <span class="Constant">&quot;pattern:hexagons&quot;</span><span class="Statement">)))</span>
+            <span class="Statement">))</span>
+          <span class="Statement">))</span>
+        <span class="Statement">))</span>,
+        <span class="Statement">(</span><span class="Constant">Node</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Filter_1f</span><span class="Statement">(</span>_swirl, percent_inv <span class="Statement">*</span>. -<span class="Constant">180.0</span><span class="Statement">))</span>,
+          <span class="Statement">(</span><span class="Constant">Node</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Filter_2f</span><span class="Statement">(</span>_emboss, <span class="Constant">4</span>., <span class="Constant">2</span>.<span class="Statement">))</span>,
+            <span class="Statement">(</span><span class="Constant">Node</span><span class="Statement">(</span> <span class="Statement">(</span><span class="Constant">Filter_2f</span><span class="Statement">(</span>_blur, <span class="Constant">8</span>., <span class="Constant">12</span>.<span class="Statement">))</span>,
+              <span class="Statement">(</span><span class="Constant">Leaf</span><span class="Statement">(</span><span class="Constant">Source_e</span><span class="Statement">(</span>bg<span class="Statement">)))</span>
+            <span class="Statement">))</span>
+          <span class="Statement">))</span>
+        <span class="Statement">))</span>
+      <span class="Statement">))</span>
+    <span class="Statement">))</span>
+  <span class="Statement">in</span>
+  <span class="Comment">(* {{{ save frames *(</span>
+
+<span class="Comment">  let frame_filename = Printf.sprintf &quot;/mnt/ramdisk/frame-%04d.jpg&quot; !i in</span>
+<span class="Comment">  let my_tree = (Node( (Filter_1s(_write, frame_filename)), my_tree )) in</span>
+<span class="Comment">  incr i;</span>
+<span class="Comment">  )* }}} *)</span>
+  process_layers my_tree
+<span class="Statement">;;</span>
+
+<span class="Comment">(* }}} *)</span>
+<span class="Comment">(* {{{ main *)</span>
+
+<span class="Statement">let</span> <span class="Statement">_</span> <span class="Statement">=</span>
+  <span class="Statement">let</span> anim <span class="Statement">=</span> <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.new_image_list <span class="Constant">()</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> bg <span class="Statement">=</span>
+    process_layers <span class="Statement">(</span><span class="Constant">Leaf</span><span class="Statement">(</span><span class="Constant">Source_A</span><span class="Statement">(</span>_create, width, height, <span class="Constant">&quot;plasma:fractal&quot;</span><span class="Statement">)))</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> preserve_frames <span class="Statement">=</span> ref <span class="Constant">[]</span> <span class="Statement">in</span>
+
+  <span class="Statement">for</span> t <span class="Statement">=</span> <span class="Constant">0</span> <span class="Statement">to</span> frames <span class="Statement">do</span>
+    <span class="Statement">let</span> frame <span class="Statement">=</span> through_time  t bg <span class="Statement">in</span>
+    <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.append_image_to_list  anim  frame <span class="Statement">~</span><span class="Identifier">delay</span>:<span class="Constant">4</span> <span class="Constant">()</span><span class="Statement">;</span>
+    preserve_frames <span class="Statement">:=</span> frame <span class="Statement">::</span> <span class="Statement">!</span>preserve_frames<span class="Statement">;</span>
+  <span class="Statement">done</span><span class="Statement">;</span>
+
+  <span class="Statement">for</span> t <span class="Statement">=</span> frames <span class="Statement">downto</span> <span class="Constant">0</span> <span class="Statement">do</span>
+    <span class="Statement">let</span> frame <span class="Statement">=</span> through_time  t bg <span class="Statement">in</span>
+    <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.append_image_to_list  anim  frame <span class="Statement">~</span><span class="Identifier">delay</span>:<span class="Constant">4</span> <span class="Constant">()</span><span class="Statement">;</span>
+    preserve_frames <span class="Statement">:=</span> frame <span class="Statement">::</span> <span class="Statement">!</span>preserve_frames<span class="Statement">;</span>
+  <span class="Statement">done</span><span class="Statement">;</span>
+
+  print_newline<span class="Constant">()</span><span class="Statement">;</span>
+
+  <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.animate_images anim<span class="Statement">;</span>
+  <span class="Comment">(* Magick.Imper.write_images anim &quot;grinnm.gif&quot;; *)</span>
+
+  <span class="PreProc">List</span>.iter <span class="Statement">(fun</span> frame <span class="Statement">-&gt;</span> <span class="PreProc">Magick</span>.<span class="PreProc">Imper</span>.no_op frame<span class="Statement">)</span> <span class="Statement">!</span>preserve_frames<span class="Statement">;</span>
+<span class="Statement">;;</span>
+
+<span class="Comment">(* }}} *)</span>
+
+<span class="Comment">(* v<!-- -->im: sw=2 sts=2 ts=2 et fdm=marker</span>
+<span class="Comment"> *)</span>
+</pre>
+</body>
+</html>
