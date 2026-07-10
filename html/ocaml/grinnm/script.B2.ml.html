@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+ "http://www.w3.org/TR/html4/strict.dtd">
+<?xml version="1.0"?>
+<html>
+<head>
+<title>Grinnm/script.ml</title>
+<meta name="Generator" content="Vim/6.3"/>
+<meta http-equiv="content-type" content="text/html; charset=utf8"/>
+<style type="text/css">
+<!--
+.Constant { color: #ff40ff; font-weight: bold; }
+.Identifier { color: #00ffff; font-weight: bold; }
+.PreProc { color: #8080ff; font-weight: bold; }
+pre { color: #ffffff; background-color: #000000; border: 1px solid #7F7F7F; padding: 2px; }
+body { color: #ffffff; background-color: #000000; }
+.Comment { color: #00ffff; font-weight: bold; }
+.Statement { color: #ffff00; font-weight: bold; }
+-->
+</style>
+</head>
+<body>
+<pre>
+<span class="Comment">(* {{{ COPYING *)</span>
+<span class="Comment">(*</span>
+<span class="Comment"> * +-----------------------------------------------------------------+</span>
+<span class="Comment"> * | Copyright (C) 2006 Florent Monnier                              |</span>
+<span class="Comment"> * +-----------------------------------------------------------------+</span>
+<span class="Comment"> * | This script is a small ImageMagick demo made through Grinnm.    |</span>
+<span class="Comment"> * +-----------------------------------------------------------------+</span>
+<span class="Comment"> * |                                                                 |</span>
+<span class="Comment"> * | This program is free software; you can redistribute it and/or   |</span>
+<span class="Comment"> * | modify it under the terms of the GNU General Public License     |</span>
+<span class="Comment"> * | as published by the Free Software Foundation; either version 2  |</span>
+<span class="Comment"> * | of the License, or (at your option) any later version.          |</span>
+<span class="Comment"> * |                                                                 |</span>
+<span class="Comment"> * | This program is distributed in the hope that it will be useful, |</span>
+<span class="Comment"> * | but WITHOUT ANY WARRANTY; without even the implied warranty of  |</span>
+<span class="Comment"> * | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the   |</span>
+<span class="Comment"> * | GNU General Public License for more details.                    |</span>
+<span class="Comment"> * |                                                                 |</span>
+<span class="Comment"> * | <A HREF="http://www.fsf.org/licensing/licenses/gpl.html">http://www.fsf.org/licensing/licenses/gpl.html</A>                  |</span>
+<span class="Comment"> * |                                                                 |</span>
+<span class="Comment"> * | You should have received a copy of the GNU General Public       |</span>
+<span class="Comment"> * | License along with this program; if not,                        |</span>
+<span class="Comment"> * | write to the Free Software Foundation, Inc.,                    |</span>
+<span class="Comment"> * | 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA    |</span>
+<span class="Comment"> * |                                                                 |</span>
+<span class="Comment"> * +-----------------------------------------------------------------+</span>
+<span class="Comment"> * | Author: Florent Monnier &lt;monnier.florent(_)gmail.com&gt;           |</span>
+<span class="Comment"> * +-----------------------------------------------------------------+</span>
+<span class="Comment"> *</span>
+<span class="Comment"> * }}} *)</span>
+
+<span class="Comment">(* {{{ main *)</span>
+
+<span class="Statement">open</span> <span class="PreProc">Grinnm</span> <span class="Statement">;;</span>
+
+<span class="Statement">let</span> <span class="Statement">_</span> <span class="Statement">=</span>
+  <span class="Statement">let</span> width  <span class="Statement">=</span> <span class="Constant">760</span>
+  <span class="Statement">and</span> height <span class="Statement">=</span> <span class="Constant">570</span>
+  <span class="Statement">and</span> border <span class="Statement">=</span> <span class="Constant">14</span>
+  <span class="Statement">and</span> frames <span class="Statement">=</span> <span class="Constant">66</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> width, height <span class="Statement">=</span> width + <span class="Constant">2</span><span class="Statement">*</span>border, height + <span class="Constant">2</span><span class="Statement">*</span>border
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> plasma_background <span class="Statement">=</span>
+    <span class="PreProc">Magick</span>.create_image <span class="Statement">~</span><span class="Identifier">width</span> <span class="Statement">~</span><span class="Identifier">height</span> <span class="Statement">~</span><span class="Identifier">pseudo_format</span>:<span class="Constant">&quot;plasma:fractal&quot;</span>
+  <span class="Statement">and</span> hexagons_pattern_foreground <span class="Statement">=</span>
+    <span class="PreProc">Magick</span>.create_image <span class="Statement">~</span><span class="Identifier">width</span> <span class="Statement">~</span><span class="Identifier">height</span> <span class="Statement">~</span><span class="Identifier">pseudo_format</span>:<span class="Constant">&quot;pattern:hexagons&quot;</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> layers <span class="Statement">=</span>
+    <span class="Statement">(</span>crop <span class="Statement">~</span><span class="Identifier">x</span>:border <span class="Statement">~</span><span class="Identifier">y</span>:border <span class="Statement">~</span><span class="Identifier">width</span>:<span class="Statement">(</span>width - <span class="Constant">2</span><span class="Statement">*</span>border<span class="Statement">)</span> <span class="Statement">~</span><span class="Identifier">height</span>:<span class="Statement">(</span>height - <span class="Constant">2</span><span class="Statement">*</span>border<span class="Statement">)</span>
+      <span class="Statement">(</span>composite <span class="Statement">~</span><span class="Identifier">compose</span>:<span class="PreProc">Magick</span>.<span class="Constant">HardLight</span>
+       <span class="Statement">~</span><span class="Identifier">img_above</span>:
+        <span class="Statement">(</span>shade <span class="Statement">~</span><span class="Identifier">azimuth</span>:<span class="Constant">30</span>. <span class="Statement">~</span><span class="Identifier">elevation</span>:<span class="Constant">30</span>.
+          <span class="Statement">(</span>blur <span class="Statement">~</span><span class="Identifier">radius</span>:<span class="Constant">3</span>. <span class="Statement">~</span><span class="Identifier">sigma</span>:<span class="Constant">5</span>.
+            <span class="Statement">(</span>swirl_ft <span class="Statement">~</span><span class="Identifier">degrees</span>:<span class="Statement">(</span>f_param_evolve <span class="Statement">~</span><span class="Identifier">param</span>:<span class="Statement">(</span><span class="Constant">`max</span> <span class="Constant">120</span>.<span class="Statement">)</span> <span class="Statement">~</span><span class="Identifier">cycle_type</span>:<span class="Constant">`COS_010</span> <span class="Constant">()</span><span class="Statement">)</span>
+              <span class="Statement">(</span>extern hexagons_pattern_foreground<span class="Statement">)</span>
+            <span class="Statement">)</span>
+          <span class="Statement">)</span>
+        <span class="Statement">)</span>
+       <span class="Statement">~</span><span class="Identifier">img_below</span>:
+        <span class="Statement">(</span>swirl_ft <span class="Statement">~</span><span class="Identifier">degrees</span>:<span class="Statement">(</span>f_param_evolve <span class="Statement">~</span><span class="Identifier">param</span>:<span class="Statement">(</span><span class="Constant">`max</span><span class="Statement">(</span>-<span class="Constant">180</span>.<span class="Statement">))</span> <span class="Statement">~</span><span class="Identifier">cycle_type</span>:<span class="Constant">`COS_101</span> <span class="Constant">()</span><span class="Statement">)</span>
+          <span class="Statement">(</span>emboss <span class="Statement">~</span><span class="Identifier">radius</span>:<span class="Constant">4</span>. <span class="Statement">~</span><span class="Identifier">sigma</span>:<span class="Constant">2</span>.
+            <span class="Statement">(</span>blur <span class="Statement">~</span><span class="Identifier">radius</span>:<span class="Constant">8</span>. <span class="Statement">~</span><span class="Identifier">sigma</span>:<span class="Constant">12</span>.
+              <span class="Statement">(</span>extern plasma_background<span class="Statement">)</span>
+            <span class="Statement">)</span>
+          <span class="Statement">)</span>
+        <span class="Statement">)</span>
+      <span class="Statement">)</span>
+    <span class="Statement">)</span>
+  <span class="Statement">in</span>
+  ignore<span class="Statement">(</span>render_layers <span class="Statement">~</span><span class="Identifier">frames</span> <span class="Statement">~</span><span class="Identifier">animate</span>:<span class="Constant">true</span> <span class="Statement">~</span><span class="Identifier">delay</span>:<span class="Constant">8</span> <span class="Statement">~</span><span class="Identifier">layers</span> <span class="Statement">~</span><span class="Identifier">save</span>:<span class="Statement">(</span><span class="Constant">Some</span><span class="Statement">(</span><span class="Constant">`where</span> <span class="Constant">&quot;/tmp&quot;</span><span class="Statement">))</span> <span class="Constant">()</span><span class="Statement">)</span><span class="Statement">;</span>
+<span class="Statement">;;</span>
+
+<span class="Comment">(* }}} *)</span>
+
+<span class="Comment">(* vim: sw=2 sts=2 ts=2 et fdm=marker</span>
+<span class="Comment"> *)</span>
+</pre>
+</body>
+</html>
