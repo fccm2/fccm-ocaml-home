@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>rectangle-interactions</title>
+<meta name="keywords" content="tutorial, rectangles, collide, touch," />
+<meta name="description" content="Detect if two rectangles are colliding and/or just touch." />
+<meta name="auhtor" content="Florent C. C. Monnier, 2025," />
+<meta name="license" content="GNU/fdl, CC-by-sa_2.5 AND/OR Later, Spdx:Any, " />
+<style>
+pre { border:1px solid #000; padding-left:3px; width:540px; }
+</style>
+</head>
+<body>
+
+<p>Source of the module: <a href="./r_collide.ml">r_collide.ml</a>.</p>
+
+<p>The couple (x, y) stands for the position of the rectangle and
+(w, h) stands for the <code>width</code> and the <code>height</code>.</p>
+
+<pre>
+let r_collide a b =
+  if ((a.x + a.w) &lt;= b.x) then (false) else
+  if (a.x &gt;= (b.x + b.w)) then (false) else
+  if ((a.y + a.h) &lt;= b.y) then (false) else
+  if (a.y &gt;= (b.y + b.h)) then (false) else
+  (true)
+
+let r_collide_2 a b =
+  if ((a.x + a.w) &lt; b.x) then (false) else
+  if (a.x &gt; (b.x + b.w)) then (false) else
+  if ((a.y + a.h) &lt; b.y) then (false) else
+  if (a.y &gt; (b.y + b.h)) then (false) else
+  (true)
+</pre>
+
+<pre>$ \ocaml r_collide.ml
+ false
+ true</pre>
+
+<p>The first function detects if the rectangles <code>collide-only</code>
+or if they <code>collide-or-touch</code>.</p>
+
+<pre># collide_only     := false
+# collide_or_touch := true</pre>
+
+</body>
+</html>
