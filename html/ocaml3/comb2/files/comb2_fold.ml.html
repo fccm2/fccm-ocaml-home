@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>comb2_fold.ml</title>
+<meta name="Generator" content="Vim/9.1" />
+<meta name="plugin-version" content="vim9.0_v2" />
+<meta name="syntax" content="ocaml" />
+<meta name="settings" content="use_css,no_foldcolumn,expand_tabs,pre_wrap,prevent_copy=,use_input_for_pc=none" />
+<meta name="colorscheme" content="none" />
+<style>
+<!--
+pre { white-space:pre-wrap; font-family:monospace; color:#000000; background-color:#ffffff; }
+body { font-family:monospace; color:#000000; background-color:#ffffff; }
+* { font-size:1em; }
+a { color:inherit; }
+.Statement { color:#af5f00; }
+.Comment { color:#0000c0; }
+.Constant { color:#c00000; }
+.PreProc { color:#c000c0; }
+-->
+</style>
+</head>
+<body>
+<pre id='vimCodeElement'>
+<span class="Comment">(* Here is the equivalent with a fold method: *)</span>
+
+<span class="Statement">let</span> ls <span class="Statement">=</span> <span class="Statement">[</span><span class="Constant">1</span><span class="Statement">;</span> <span class="Constant">2</span><span class="Statement">;</span> <span class="Constant">3</span><span class="Statement">;</span> <span class="Constant">4</span><span class="Statement">;</span> <span class="Constant">5</span><span class="Statement">;</span> <span class="Constant">6</span><span class="Statement">]</span>
+
+<span class="Statement">let</span> comb2_fold f ls init <span class="Statement">=</span>
+  <span class="Statement">let</span> <span class="Statement">rec</span> aux ls acc <span class="Statement">=</span>
+    <span class="Statement">match</span> ls <span class="Statement">with</span>
+    <span class="Statement">|</span> <span class="Constant">[]</span> <span class="Statement">-&gt;</span> <span class="Statement">(</span><span class="PreProc">List</span>.rev acc<span class="Statement">)</span>
+    <span class="Statement">|</span> x::xs <span class="Statement">-&gt;</span>
+        <span class="Statement">let</span> acc <span class="Statement">=</span>
+          <span class="PreProc">List</span>.fold_left <span class="Statement">(</span><span class="Statement">fun</span> acc y <span class="Statement">-&gt;</span>
+            <span class="Statement">(</span>f acc x y<span class="Statement">)</span>
+          <span class="Statement">)</span> acc xs
+        <span class="Statement">in</span>
+        aux xs acc
+  <span class="Statement">in</span>
+  aux ls init
+
+<span class="Statement">let</span> <span class="Constant">()</span> <span class="Statement">=</span>
+  <span class="Statement">let</span> found <span class="Statement">=</span>
+    comb2_fold <span class="Statement">(</span><span class="Statement">fun</span> acc v1 v2 <span class="Statement">-&gt;</span>
+      <span class="Statement">if</span> abs <span class="Statement">(</span>v1 - v2<span class="Statement">)</span> &gt;= <span class="Constant">4</span> <span class="Statement">then</span> <span class="Statement">(</span>v1, v2<span class="Statement">)</span>::acc <span class="Statement">else</span> acc
+    <span class="Statement">)</span> ls <span class="Constant">[]</span>
+  <span class="Statement">in</span>
+  <span class="PreProc">List</span>.iter <span class="Statement">(</span><span class="Statement">fun</span> <span class="Statement">(</span>v1, v2<span class="Statement">)</span> <span class="Statement">-&gt;</span>
+    <span class="PreProc">Printf</span>.printf <span class="Constant">&quot; (%d, %d)\n&quot;</span> v1 v2
+  <span class="Statement">)</span> found
+
+<span class="Comment">(*</span>
+<span class="Comment">Result:</span>
+<span class="Comment">*)</span>
+
+<span class="Comment">(*</span>
+<span class="Comment"> (1, 5)</span>
+<span class="Comment"> (1, 6)</span>
+<span class="Comment"> (2, 6)</span>
+<span class="Comment">*)</span>
+</pre>
+</body>
+</html>
