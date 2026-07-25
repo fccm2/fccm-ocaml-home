@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>/ocaml2/detris/range/detri.ml.html</title>
+<meta name="Generator" content="Vim/9.1" />
+<meta name="plugin-version" content="vim9.0_v2" />
+<meta name="syntax" content="ocaml" />
+<meta name="settings" content="use_css,no_foldcolumn,expand_tabs,pre_wrap,prevent_copy=,use_input_for_pc=none" />
+<meta name="colorscheme" content="none" />
+<style>
+<!--
+pre { border:1px solid #000; padding:1px 1px; }
+/*
+pre { white-space: pre-wrap; font-family: monospace; color: #000000; background-color: #ffffff; }
+body { font-family: monospace; color: #000000; background-color: #ffffff; }
+* { font-size: 1em; }
+a { color: inherit; }
+.Comment { color: #0000c0; }
+.Constant { color: #c00000; }
+.Identifier { color: #008080; }
+.Statement { color: #af5f00; }
+.PreProc { color: #c000c0; }
+.Type { color: #008000; }
+*/
+-->
+</style>
+</head>
+<body>
+<pre id='vimCodeElement'>
+<span class="PreProc">#directory</span> <span class="Constant">&quot;+unix&quot;</span>
+<span class="PreProc">#load</span> <span class="Constant">&quot;unix.cma&quot;</span>
+<span class="Statement">let</span> lang <span class="Statement">=</span> <span class="Constant">&quot;fr&quot;</span>  <span class="Comment">(* language: French *)</span>
+<span class="Statement">let</span> lang <span class="Statement">=</span> <span class="Constant">&quot;en&quot;</span>  <span class="Comment">(* language: English *)</span>
+
+<span class="Statement">let</span> default_detri_dir <span class="Statement">=</span> <span class="Constant">&quot;.detri&quot;</span>
+<span class="Statement">let</span> default_range_file <span class="Statement">=</span> <span class="Constant">&quot;&quot;</span>
+
+<span class="Statement">let</span> default_event_color <span class="Statement">=</span> <span class="Constant">&quot;black_on_bold_green&quot;</span>
+<span class="Statement">let</span> default_day_label_color <span class="Statement">=</span> <span class="Constant">&quot;bold_green&quot;</span>
+<span class="Statement">let</span> default_month_label_color <span class="Statement">=</span> <span class="Constant">&quot;black_on_green&quot;</span>
+<span class="Statement">let</span> default_range_color <span class="Statement">=</span> <span class="Constant">&quot;bg_green&quot;</span>
+
+<span class="Statement">let</span> event_color <span class="Statement">(</span>event_color, <span class="Statement">_</span>, <span class="Statement">_</span><span class="Statement">)</span> <span class="Statement">=</span> <span class="Statement">(</span>event_color<span class="Statement">)</span>
+<span class="Statement">let</span> day_label_color <span class="Statement">(</span><span class="Statement">_</span>, day_label_color, <span class="Statement">_</span><span class="Statement">)</span> <span class="Statement">=</span>  <span class="Statement">(</span>day_label_color<span class="Statement">)</span>
+<span class="Statement">let</span> month_label_color <span class="Statement">(</span><span class="Statement">_</span>, <span class="Statement">_</span>, month_label_color<span class="Statement">)</span> <span class="Statement">=</span> <span class="Statement">(</span>month_label_color<span class="Statement">)</span>
+
+
+<span class="Statement">let</span> usage ec <span class="Statement">=</span>
+  <span class="PreProc">Printf</span>.printf <span class="Constant">&quot;Usage:\n %s</span>
+<span class="Constant">    --year &lt;year&gt;</span>
+<span class="Constant">    --detri-dir &lt;detri_dir&gt;</span>
+<span class="Constant">    --event-color &lt;event_color&gt;</span>
+<span class="Constant">    --day-label-color &lt;day_label_color&gt;</span>
+<span class="Constant">    --month-label-color &lt;month_label_color&gt;</span>
+<span class="Constant">    --range-color &lt;range_color&gt;</span>
+<span class="Constant">    --range-file &lt;range_file&gt;</span>
+<span class="Constant">    --print-avail-colors</span>
+<span class="Constant">    --help | -help | -h</span>
+<span class="Constant">  &quot;</span> <span class="PreProc">Sys</span>.argv.<span class="Statement">(</span><span class="Constant">0</span><span class="Statement">)</span><span class="Statement">;</span>
+  exit ec
+
+
+<span class="Statement">let</span> month_langs <span class="Statement">=</span> <span class="Statement">[</span>
+  <span class="Constant">&quot;en&quot;</span>, <span class="Statement">[|</span>
+    <span class="Constant">&quot;January&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;February&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;March&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;April&quot;</span><span class="Statement">;</span>
+    <span class="Constant">&quot;May&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;June&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;July&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;August&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;September&quot;</span><span class="Statement">;</span>
+    <span class="Constant">&quot;October&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;November&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;December&quot;</span><span class="Statement">;</span>
+  <span class="Statement">|]</span><span class="Statement">;</span>
+  <span class="Constant">&quot;fr&quot;</span>, <span class="Statement">[|</span>
+    <span class="Constant">&quot;Janvier&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Février&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Mars&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Avril&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Mai&quot;</span><span class="Statement">;</span>
+    <span class="Constant">&quot;Juin&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Juillet&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Aout&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Septembre&quot;</span><span class="Statement">;</span>
+    <span class="Constant">&quot;Octobre&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Novembre&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Décembre&quot;</span><span class="Statement">;</span>
+  <span class="Statement">|]</span><span class="Statement">;</span>
+  <span class="Constant">&quot;de&quot;</span>, <span class="Statement">[|</span>
+    <span class="Constant">&quot;Januar&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Februar&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;März&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;April&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Mai&quot;</span><span class="Statement">;</span>
+    <span class="Constant">&quot;Juni&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Juli&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;August&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;September&quot;</span><span class="Statement">;</span>
+    <span class="Constant">&quot;Oktober&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;November&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Dezember&quot;</span><span class="Statement">;</span>
+  <span class="Statement">|]</span><span class="Statement">;</span>
+  <span class="Constant">&quot;es&quot;</span>, <span class="Statement">[|</span>
+    <span class="Constant">&quot;enero&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;febrero&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;marzo&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;abril&quot;</span><span class="Statement">;</span>
+    <span class="Constant">&quot;mayo&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;junio&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;julio&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;agosto&quot;</span><span class="Statement">;</span>
+    <span class="Constant">&quot;septiembre&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;octubre&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;noviembre&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;diciembre&quot;</span><span class="Statement">;</span>
+  <span class="Statement">|]</span><span class="Statement">;</span>
+  <span class="Constant">&quot;it&quot;</span>, <span class="Statement">[|</span>
+    <span class="Constant">&quot;gennaio&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;febbraio&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;marzo&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;aprile&quot;</span><span class="Statement">;</span>
+    <span class="Constant">&quot;maggio&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;giugno&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;luglio&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;agosto&quot;</span><span class="Statement">;</span>
+    <span class="Constant">&quot;settembre&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;ottobre&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;novembre&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;dicembre&quot;</span><span class="Statement">;</span>
+  <span class="Statement">|]</span><span class="Statement">;</span>
+  <span class="Constant">&quot;nl&quot;</span>, <span class="Statement">[|</span>
+    <span class="Constant">&quot;januari&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;februari&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;maart&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;april&quot;</span><span class="Statement">;</span>
+    <span class="Constant">&quot;mei&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;juni&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;juli&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;augustus&quot;</span><span class="Statement">;</span>
+    <span class="Constant">&quot;september&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;oktober&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;november&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;december&quot;</span><span class="Statement">;</span>
+  <span class="Statement">|]</span><span class="Statement">;</span>
+  <span class="Constant">&quot;da&quot;</span>, <span class="Statement">[|</span>
+    <span class="Constant">&quot;januar&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;februar&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;marts&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;april&quot;</span><span class="Statement">;</span>
+    <span class="Constant">&quot;maj&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;juni&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;juli&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;august&quot;</span><span class="Statement">;</span>
+    <span class="Constant">&quot;september&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;oktober&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;november&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;december&quot;</span><span class="Statement">;</span>
+  <span class="Statement">|]</span><span class="Statement">;</span>
+  <span class="Constant">&quot;id&quot;</span>, <span class="Statement">[|</span>
+    <span class="Constant">&quot;Januari&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Februari&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Maret&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;April&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Mei&quot;</span><span class="Statement">;</span>
+    <span class="Constant">&quot;Juni&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Juli&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Agustus&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;September&quot;</span><span class="Statement">;</span>
+    <span class="Constant">&quot;Oktober&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;November&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Desember&quot;</span><span class="Statement">;</span>
+  <span class="Statement">|]</span><span class="Statement">;</span>
+  <span class="Constant">&quot;pt&quot;</span>, <span class="Statement">[|</span>
+    <span class="Constant">&quot;janeiro&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;fevereiro&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;março&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;abril&quot;</span><span class="Statement">;</span>
+    <span class="Constant">&quot;maio&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;junho&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;julho&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;agosto&quot;</span><span class="Statement">;</span>
+    <span class="Constant">&quot;setembro&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;outubro&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;novembro&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;dezembro&quot;</span><span class="Statement">;</span>
+  <span class="Statement">|]</span><span class="Statement">;</span>
+<span class="Statement">]</span>
+
+<span class="Statement">let</span> days_lang <span class="Statement">=</span> <span class="Statement">[</span>
+  <span class="Constant">&quot;en&quot;</span>, <span class="Statement">[|</span> <span class="Constant">&quot;Monday&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Tuesday&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Wednesday&quot;</span><span class="Statement">;</span>
+    <span class="Constant">&quot;Thursday&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Friday&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Saturday&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Sunday&quot;</span> <span class="Statement">|]</span><span class="Statement">;</span>
+  <span class="Constant">&quot;fr&quot;</span>, <span class="Statement">[|</span> <span class="Constant">&quot;lundi&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;mardi&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;mercredi&quot;</span><span class="Statement">;</span>
+    <span class="Constant">&quot;jeudi&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;vendredi&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;samedi&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;dimanche&quot;</span> <span class="Statement">|]</span><span class="Statement">;</span>
+  <span class="Constant">&quot;de&quot;</span>, <span class="Statement">[|</span> <span class="Constant">&quot;Montag&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Dienstag&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Mittwoch&quot;</span><span class="Statement">;</span>
+    <span class="Constant">&quot;Donnerstag&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Freitag&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Samstag&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Sonntag&quot;</span> <span class="Statement">|]</span><span class="Statement">;</span>
+  <span class="Constant">&quot;es&quot;</span>, <span class="Statement">[|</span> <span class="Constant">&quot;lunes&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;martes&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;miércoles&quot;</span><span class="Statement">;</span>
+    <span class="Constant">&quot;jueves&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;viernes&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;sábado&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;domingo&quot;</span> <span class="Statement">|]</span><span class="Statement">;</span>
+  <span class="Constant">&quot;it&quot;</span>, <span class="Statement">[|</span> <span class="Constant">&quot;lunedì&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;martedì&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;mercoledì&quot;</span><span class="Statement">;</span>
+    <span class="Constant">&quot;giovedì&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;venerdì&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;sabato&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;domenica&quot;</span> <span class="Statement">|]</span><span class="Statement">;</span>
+  <span class="Constant">&quot;nl&quot;</span>, <span class="Statement">[|</span> <span class="Constant">&quot;maandag&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;dinsdag&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;woensdag&quot;</span><span class="Statement">;</span>
+    <span class="Constant">&quot;donderdag&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;vrijdag&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;zaterdag&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;zondag&quot;</span> <span class="Statement">|]</span><span class="Statement">;</span>
+  <span class="Constant">&quot;da&quot;</span>, <span class="Statement">[|</span> <span class="Constant">&quot;mandag&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;tirsdag&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;onsdag&quot;</span><span class="Statement">;</span>
+    <span class="Constant">&quot;torsdag&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;fredag&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;lørdag&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;søndag&quot;</span> <span class="Statement">|]</span><span class="Statement">;</span>
+  <span class="Constant">&quot;id&quot;</span>, <span class="Statement">[|</span> <span class="Constant">&quot;Senin&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Selasa&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Rabu&quot;</span><span class="Statement">;</span>
+    <span class="Constant">&quot;Kamis&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Jumat&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Sabtu&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Minggu&quot;</span> <span class="Statement">|]</span><span class="Statement">;</span>
+  <span class="Constant">&quot;pt&quot;</span>, <span class="Statement">[|</span> <span class="Constant">&quot;segunda-feira&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;terça-feira&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;quarta-feira&quot;</span><span class="Statement">;</span>
+    <span class="Constant">&quot;quinta-feira&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;sexta-feira&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;sábado&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;domingo&quot;</span> <span class="Statement">|]</span><span class="Statement">;</span>
+<span class="Statement">]</span>
+
+<span class="Statement">let</span> days <span class="Statement">=</span> <span class="PreProc">List</span>.assoc lang days_lang
+<span class="Statement">let</span> month <span class="Statement">=</span> <span class="PreProc">List</span>.assoc lang month_langs
+
+<span class="Statement">let</span> monday_first <span class="Statement">=</span> <span class="Constant">6</span>, <span class="Statement">[|</span> <span class="Constant">0</span><span class="Statement">;</span> <span class="Constant">1</span><span class="Statement">;</span> <span class="Constant">2</span><span class="Statement">;</span> <span class="Constant">3</span><span class="Statement">;</span> <span class="Constant">4</span><span class="Statement">;</span> <span class="Constant">5</span><span class="Statement">;</span> <span class="Constant">6</span> <span class="Statement">|]</span>
+<span class="Statement">let</span> sunday_first <span class="Statement">=</span> <span class="Constant">0</span>, <span class="Statement">[|</span> <span class="Constant">6</span><span class="Statement">;</span> <span class="Constant">0</span><span class="Statement">;</span> <span class="Constant">1</span><span class="Statement">;</span> <span class="Constant">2</span><span class="Statement">;</span> <span class="Constant">3</span><span class="Statement">;</span> <span class="Constant">4</span><span class="Statement">;</span> <span class="Constant">5</span> <span class="Statement">|]</span>
+
+<span class="Statement">let</span> off, days_order <span class="Statement">=</span> sunday_first
+<span class="Statement">let</span> off, days_order <span class="Statement">=</span> monday_first
+
+<span class="Statement">let</span> num_c3 s <span class="Statement">=</span>
+  <span class="Statement">let</span> n <span class="Statement">=</span> <span class="PreProc">String</span>.length s <span class="Statement">in</span>
+  <span class="Statement">let</span> num <span class="Statement">=</span> ref <span class="Constant">0</span> <span class="Statement">in</span>
+  <span class="Statement">for</span> i <span class="Statement">=</span> <span class="Constant">0</span> <span class="Statement">to</span> pred n <span class="Statement">do</span>
+    <span class="Statement">let</span> c <span class="Statement">=</span> <span class="PreProc">String</span>.unsafe_get s i <span class="Statement">in</span>
+    <span class="Statement">if</span> c <span class="Statement">=</span> <span class="Constant">'\xC3'</span> <span class="Statement">then</span> incr num
+  <span class="Statement">done</span><span class="Statement">;</span>
+  <span class="Statement">(</span>!num<span class="Statement">)</span>
+
+<span class="Statement">let</span> str_len s <span class="Statement">=</span>
+  <span class="Statement">(</span><span class="PreProc">String</span>.length s - num_c3 s<span class="Statement">)</span>
+
+<span class="Statement">let</span> shorten n s <span class="Statement">=</span>
+  <span class="Statement">let</span> len <span class="Statement">=</span> <span class="PreProc">String</span>.length s <span class="Statement">in</span>
+  <span class="Statement">if</span> n &gt;= len <span class="Statement">then</span> s <span class="Statement">else</span>
+    <span class="Statement">let</span> n <span class="Statement">=</span> <span class="Statement">if</span> s.<span class="Statement">[</span>n<span class="Constant">-1</span><span class="Statement">]</span> <span class="Statement">=</span> <span class="Constant">'\xC3'</span> <span class="Statement">then</span> n+<span class="Constant">1</span> <span class="Statement">else</span> n <span class="Statement">in</span>
+    <span class="Statement">if</span> n &gt;= len <span class="Statement">then</span> s <span class="Statement">else</span>
+      <span class="Statement">(</span><span class="PreProc">String</span>.sub s <span class="Constant">0</span> n<span class="Statement">)</span>
+
+<span class="Statement">let</span> rand_take arr <span class="Statement">=</span>
+  <span class="Statement">let</span> n <span class="Statement">=</span> <span class="PreProc">Array</span>.length arr <span class="Statement">in</span>
+  <span class="Statement">let</span> i <span class="Statement">=</span> <span class="PreProc">Random</span>.int n <span class="Statement">in</span>
+  <span class="Statement">(</span><span class="PreProc">Array</span>.unsafe_get arr i<span class="Statement">)</span>
+
+<span class="Statement">let</span> pad size c s <span class="Statement">=</span>
+  <span class="Statement">let</span> len <span class="Statement">=</span> str_len s <span class="Statement">in</span>
+  <span class="Statement">let</span> n1 <span class="Statement">=</span> <span class="Statement">(</span>size - len<span class="Statement">)</span> / <span class="Constant">2</span> <span class="Statement">in</span>
+  <span class="Statement">let</span> n2 <span class="Statement">=</span> size - len - n1 <span class="Statement">in</span>
+  <span class="PreProc">String</span>.make n1 c ^ s ^
+  <span class="PreProc">String</span>.make n2 c
+
+<span class="Statement">let</span> padl size c s <span class="Statement">=</span>
+  <span class="Statement">let</span> len <span class="Statement">=</span> str_len s <span class="Statement">in</span>
+  <span class="Statement">let</span> n <span class="Statement">=</span> size - len <span class="Statement">in</span>
+  <span class="PreProc">String</span>.make n c ^ s
+
+<span class="Statement">let</span> list_assoc_replace k v lst <span class="Statement">=</span>
+  <span class="Statement">let</span> <span class="Statement">rec</span> aux acc <span class="Statement">=</span> <span class="Statement">function</span>
+  <span class="Statement">|</span> <span class="Constant">[]</span> <span class="Statement">-&gt;</span> failwith <span class="Constant">&quot;list_assoc_replace&quot;</span>
+  <span class="Statement">|</span> <span class="Statement">((</span>x,<span class="Statement">_</span><span class="Statement">)</span> <span class="Statement">as</span> p<span class="Statement">)</span>::tl <span class="Statement">-&gt;</span>
+      <span class="Statement">if</span> x <span class="Statement">=</span> k <span class="Statement">then</span> <span class="PreProc">List</span>.rev_append acc <span class="Statement">((</span>x,v<span class="Statement">)</span> :: tl<span class="Statement">)</span>
+      <span class="Statement">else</span> aux <span class="Statement">(</span>p::acc<span class="Statement">)</span> tl
+  <span class="Statement">in</span>
+  aux <span class="Constant">[]</span> lst
+
+<span class="Statement">let</span> color color_name s <span class="Statement">=</span>
+  <span class="Statement">let</span> r <span class="Statement">=</span> <span class="Constant">&quot;\027[00m&quot;</span> <span class="Statement">in</span>  <span class="Comment">(* reset *)</span>
+  <span class="Statement">match</span> color_name <span class="Statement">with</span>
+  <span class="Statement">|</span> <span class="Constant">`normal</span>         <span class="Statement">-&gt;</span> s
+  <span class="Statement">|</span> <span class="Constant">`reset</span>          <span class="Statement">-&gt;</span> <span class="Constant">&quot;\027[m&quot;</span> ^ s ^ r
+  <span class="Statement">|</span> <span class="Constant">`bold</span>           <span class="Statement">-&gt;</span> <span class="Constant">&quot;\027[1m&quot;</span> ^ s ^ r
+  <span class="Statement">|</span> <span class="Constant">`red</span>            <span class="Statement">-&gt;</span> <span class="Constant">&quot;\027[31m&quot;</span> ^ s ^ r
+  <span class="Statement">|</span> <span class="Constant">`green</span>          <span class="Statement">-&gt;</span> <span class="Constant">&quot;\027[32m&quot;</span> ^ s ^ r
+  <span class="Statement">|</span> <span class="Constant">`yellow</span>         <span class="Statement">-&gt;</span> <span class="Constant">&quot;\027[33m&quot;</span> ^ s ^ r
+  <span class="Statement">|</span> <span class="Constant">`blue</span>           <span class="Statement">-&gt;</span> <span class="Constant">&quot;\027[34m&quot;</span> ^ s ^ r
+  <span class="Statement">|</span> <span class="Constant">`magenta</span>        <span class="Statement">-&gt;</span> <span class="Constant">&quot;\027[35m&quot;</span> ^ s ^ r
+  <span class="Statement">|</span> <span class="Constant">`cyan</span>           <span class="Statement">-&gt;</span> <span class="Constant">&quot;\027[36m&quot;</span> ^ s ^ r
+  <span class="Statement">|</span> <span class="Constant">`bold_red</span>       <span class="Statement">-&gt;</span> <span class="Constant">&quot;\027[1;31m&quot;</span> ^ s ^ r
+  <span class="Statement">|</span> <span class="Constant">`bold_green</span>     <span class="Statement">-&gt;</span> <span class="Constant">&quot;\027[1;32m&quot;</span> ^ s ^ r
+  <span class="Statement">|</span> <span class="Constant">`bold_yellow</span>    <span class="Statement">-&gt;</span> <span class="Constant">&quot;\027[1;33m&quot;</span> ^ s ^ r
+  <span class="Statement">|</span> <span class="Constant">`bold_blue</span>      <span class="Statement">-&gt;</span> <span class="Constant">&quot;\027[1;34m&quot;</span> ^ s ^ r
+  <span class="Statement">|</span> <span class="Constant">`bold_magenta</span>   <span class="Statement">-&gt;</span> <span class="Constant">&quot;\027[1;35m&quot;</span> ^ s ^ r
+  <span class="Statement">|</span> <span class="Constant">`bold_cyan</span>      <span class="Statement">-&gt;</span> <span class="Constant">&quot;\027[1;36m&quot;</span> ^ s ^ r
+  <span class="Statement">|</span> <span class="Constant">`bg_red</span>         <span class="Statement">-&gt;</span> <span class="Constant">&quot;\027[41m&quot;</span> ^ s ^ r
+  <span class="Statement">|</span> <span class="Constant">`bg_green</span>       <span class="Statement">-&gt;</span> <span class="Constant">&quot;\027[42m&quot;</span> ^ s ^ r
+  <span class="Statement">|</span> <span class="Constant">`bg_yellow</span>      <span class="Statement">-&gt;</span> <span class="Constant">&quot;\027[43m&quot;</span> ^ s ^ r
+  <span class="Statement">|</span> <span class="Constant">`bg_blue</span>        <span class="Statement">-&gt;</span> <span class="Constant">&quot;\027[44m&quot;</span> ^ s ^ r
+  <span class="Statement">|</span> <span class="Constant">`bg_magenta</span>     <span class="Statement">-&gt;</span> <span class="Constant">&quot;\027[45m&quot;</span> ^ s ^ r
+  <span class="Statement">|</span> <span class="Constant">`bg_cyan</span>        <span class="Statement">-&gt;</span> <span class="Constant">&quot;\027[46m&quot;</span> ^ s ^ r
+
+  <span class="Statement">|</span> <span class="Constant">`black_on_white</span>     <span class="Statement">-&gt;</span> <span class="Constant">&quot;\027[30;47m&quot;</span> ^ s ^ r
+  <span class="Statement">|</span> <span class="Constant">`black_on_red</span>       <span class="Statement">-&gt;</span> <span class="Constant">&quot;\027[30;41m&quot;</span> ^ s ^ r
+  <span class="Statement">|</span> <span class="Constant">`black_on_green</span>     <span class="Statement">-&gt;</span> <span class="Constant">&quot;\027[30;42m&quot;</span> ^ s ^ r
+  <span class="Statement">|</span> <span class="Constant">`black_on_yellow</span>    <span class="Statement">-&gt;</span> <span class="Constant">&quot;\027[30;43m&quot;</span> ^ s ^ r
+  <span class="Statement">|</span> <span class="Constant">`black_on_blue</span>      <span class="Statement">-&gt;</span> <span class="Constant">&quot;\027[30;44m&quot;</span> ^ s ^ r
+  <span class="Statement">|</span> <span class="Constant">`black_on_magenta</span>   <span class="Statement">-&gt;</span> <span class="Constant">&quot;\027[30;45m&quot;</span> ^ s ^ r
+  <span class="Statement">|</span> <span class="Constant">`black_on_cyan</span>      <span class="Statement">-&gt;</span> <span class="Constant">&quot;\027[30;46m&quot;</span> ^ s ^ r
+
+  <span class="Statement">|</span> <span class="Constant">`black_on_bold_red</span>       <span class="Statement">-&gt;</span> <span class="Constant">&quot;\027[30;101m&quot;</span> ^ s ^ r
+  <span class="Statement">|</span> <span class="Constant">`black_on_bold_green</span>     <span class="Statement">-&gt;</span> <span class="Constant">&quot;\027[30;102m&quot;</span> ^ s ^ r
+  <span class="Statement">|</span> <span class="Constant">`black_on_bold_yellow</span>    <span class="Statement">-&gt;</span> <span class="Constant">&quot;\027[30;103m&quot;</span> ^ s ^ r
+  <span class="Statement">|</span> <span class="Constant">`black_on_bold_blue</span>      <span class="Statement">-&gt;</span> <span class="Constant">&quot;\027[30;104m&quot;</span> ^ s ^ r
+  <span class="Statement">|</span> <span class="Constant">`black_on_bold_magenta</span>   <span class="Statement">-&gt;</span> <span class="Constant">&quot;\027[30;105m&quot;</span> ^ s ^ r
+  <span class="Statement">|</span> <span class="Constant">`black_on_bold_cyan</span>      <span class="Statement">-&gt;</span> <span class="Constant">&quot;\027[30;106m&quot;</span> ^ s ^ r
+
+
+<span class="Statement">let</span> color_rand <span class="Constant">()</span> <span class="Statement">=</span>
+  rand_take <span class="Statement">[|</span>
+    <span class="Constant">`red</span><span class="Statement">;</span>
+    <span class="Constant">`green</span><span class="Statement">;</span>
+    <span class="Constant">`yellow</span><span class="Statement">;</span>
+    <span class="Constant">`blue</span><span class="Statement">;</span>
+    <span class="Constant">`magenta</span><span class="Statement">;</span>
+    <span class="Constant">`cyan</span><span class="Statement">;</span>
+  <span class="Statement">|]</span>
+
+<span class="Statement">let</span> bold_rand <span class="Constant">()</span> <span class="Statement">=</span>
+  rand_take <span class="Statement">[|</span>
+    <span class="Constant">`bold_red</span><span class="Statement">;</span>
+    <span class="Constant">`bold_green</span><span class="Statement">;</span>
+    <span class="Constant">`bold_yellow</span><span class="Statement">;</span>
+    <span class="Constant">`bold_blue</span><span class="Statement">;</span>
+    <span class="Constant">`bold_magenta</span><span class="Statement">;</span>
+    <span class="Constant">`bold_cyan</span><span class="Statement">;</span>
+  <span class="Statement">|]</span>
+
+<span class="Statement">let</span> bg_rand <span class="Constant">()</span> <span class="Statement">=</span>
+  rand_take <span class="Statement">[|</span>
+    <span class="Constant">`bg_red</span><span class="Statement">;</span>
+    <span class="Constant">`bg_green</span><span class="Statement">;</span>
+    <span class="Constant">`bg_yellow</span><span class="Statement">;</span>
+    <span class="Constant">`bg_blue</span><span class="Statement">;</span>
+    <span class="Constant">`bg_magenta</span><span class="Statement">;</span>
+    <span class="Constant">`bg_cyan</span><span class="Statement">;</span>
+  <span class="Statement">|]</span>
+
+<span class="Statement">let</span> black_on_rand <span class="Constant">()</span> <span class="Statement">=</span>
+  rand_take <span class="Statement">[|</span>
+    <span class="Constant">`black_on_white</span><span class="Statement">;</span>
+    <span class="Constant">`black_on_red</span><span class="Statement">;</span>
+    <span class="Constant">`black_on_green</span><span class="Statement">;</span>
+    <span class="Constant">`black_on_yellow</span><span class="Statement">;</span>
+    <span class="Constant">`black_on_blue</span><span class="Statement">;</span>
+    <span class="Constant">`black_on_magenta</span><span class="Statement">;</span>
+    <span class="Constant">`black_on_cyan</span><span class="Statement">;</span>
+  <span class="Statement">|]</span>
+
+<span class="Statement">let</span> black_on_bold_rand <span class="Constant">()</span> <span class="Statement">=</span>
+  rand_take <span class="Statement">[|</span>
+    <span class="Constant">`black_on_bold_red</span><span class="Statement">;</span>
+    <span class="Constant">`black_on_bold_green</span><span class="Statement">;</span>
+    <span class="Constant">`black_on_bold_yellow</span><span class="Statement">;</span>
+    <span class="Constant">`black_on_bold_blue</span><span class="Statement">;</span>
+    <span class="Constant">`black_on_bold_magenta</span><span class="Statement">;</span>
+    <span class="Constant">`black_on_bold_cyan</span><span class="Statement">;</span>
+  <span class="Statement">|]</span>
+
+
+<span class="Statement">let</span> color_of_string <span class="Statement">=</span> <span class="Statement">function</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;normal&quot;</span>        <span class="Statement">-&gt;</span> <span class="Constant">`normal</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;reset&quot;</span>         <span class="Statement">-&gt;</span> <span class="Constant">`reset</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;bold&quot;</span>          <span class="Statement">-&gt;</span> <span class="Constant">`bold</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;red&quot;</span>           <span class="Statement">-&gt;</span> <span class="Constant">`red</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;green&quot;</span>         <span class="Statement">-&gt;</span> <span class="Constant">`green</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;yellow&quot;</span>        <span class="Statement">-&gt;</span> <span class="Constant">`yellow</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;blue&quot;</span>          <span class="Statement">-&gt;</span> <span class="Constant">`blue</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;magenta&quot;</span>       <span class="Statement">-&gt;</span> <span class="Constant">`magenta</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;cyan&quot;</span>          <span class="Statement">-&gt;</span> <span class="Constant">`cyan</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;bold_red&quot;</span>      <span class="Statement">-&gt;</span> <span class="Constant">`bold_red</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;bold_green&quot;</span>    <span class="Statement">-&gt;</span> <span class="Constant">`bold_green</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;bold_yellow&quot;</span>   <span class="Statement">-&gt;</span> <span class="Constant">`bold_yellow</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;bold_blue&quot;</span>     <span class="Statement">-&gt;</span> <span class="Constant">`bold_blue</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;bold_magenta&quot;</span>  <span class="Statement">-&gt;</span> <span class="Constant">`bold_magenta</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;bold_cyan&quot;</span>     <span class="Statement">-&gt;</span> <span class="Constant">`bold_cyan</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;bg_red&quot;</span>        <span class="Statement">-&gt;</span> <span class="Constant">`bg_red</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;bg_green&quot;</span>      <span class="Statement">-&gt;</span> <span class="Constant">`bg_green</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;bg_yellow&quot;</span>     <span class="Statement">-&gt;</span> <span class="Constant">`bg_yellow</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;bg_blue&quot;</span>       <span class="Statement">-&gt;</span> <span class="Constant">`bg_blue</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;bg_magenta&quot;</span>    <span class="Statement">-&gt;</span> <span class="Constant">`bg_magenta</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;bg_cyan&quot;</span>       <span class="Statement">-&gt;</span> <span class="Constant">`bg_cyan</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;black_on_white&quot;</span>    <span class="Statement">-&gt;</span> <span class="Constant">`black_on_white</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;black_on_red&quot;</span>      <span class="Statement">-&gt;</span> <span class="Constant">`black_on_red</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;black_on_green&quot;</span>    <span class="Statement">-&gt;</span> <span class="Constant">`black_on_green</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;black_on_yellow&quot;</span>   <span class="Statement">-&gt;</span> <span class="Constant">`black_on_yellow</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;black_on_blue&quot;</span>     <span class="Statement">-&gt;</span> <span class="Constant">`black_on_blue</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;black_on_magenta&quot;</span>  <span class="Statement">-&gt;</span> <span class="Constant">`black_on_magenta</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;black_on_cyan&quot;</span>     <span class="Statement">-&gt;</span> <span class="Constant">`black_on_cyan</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;black_on_bold_red&quot;</span>      <span class="Statement">-&gt;</span> <span class="Constant">`black_on_bold_red</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;black_on_bold_green&quot;</span>    <span class="Statement">-&gt;</span> <span class="Constant">`black_on_bold_green</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;black_on_bold_yellow&quot;</span>   <span class="Statement">-&gt;</span> <span class="Constant">`black_on_bold_yellow</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;black_on_bold_blue&quot;</span>     <span class="Statement">-&gt;</span> <span class="Constant">`black_on_bold_blue</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;black_on_bold_magenta&quot;</span>  <span class="Statement">-&gt;</span> <span class="Constant">`black_on_bold_magenta</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;black_on_bold_cyan&quot;</span>     <span class="Statement">-&gt;</span> <span class="Constant">`black_on_bold_cyan</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;rand&quot;</span>          <span class="Statement">-&gt;</span> color_rand <span class="Constant">()</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;bold_rand&quot;</span>     <span class="Statement">-&gt;</span> bold_rand <span class="Constant">()</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;bg_rand&quot;</span>       <span class="Statement">-&gt;</span> bg_rand <span class="Constant">()</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;black_on_rand&quot;</span> <span class="Statement">-&gt;</span> black_on_rand <span class="Constant">()</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;black_on_bold_rand&quot;</span>  <span class="Statement">-&gt;</span> black_on_bold_rand <span class="Constant">()</span>
+  <span class="Statement">|</span> <span class="Statement">_</span> <span class="Statement">-&gt;</span> invalid_arg <span class="Constant">&quot;color_of_string&quot;</span>
+
+
+<span class="Statement">let</span> color_s color_name s <span class="Statement">=</span>
+  color <span class="Statement">(</span>color_of_string color_name<span class="Statement">)</span> s
+
+
+<span class="Statement">let</span> print_avail_colors ec <span class="Statement">=</span>
+  print_endline <span class="Constant">&quot;</span>
+<span class="Constant">  The base colors are:</span>
+<span class="Constant">    red, green, yellow, blue, magenta, cyan</span>
+<span class="Constant">    (and rand for random)</span>
+
+<span class="Constant">  With these colors, here is what's available:</span>
+<span class="Constant">  * bg_&lt;color&gt;</span>
+<span class="Constant">  * bold_&lt;color&gt;</span>
+<span class="Constant">  * black_on_&lt;color&gt;</span>
+<span class="Constant">  * black_on_bold_&lt;color&gt;</span>
+
+<span class="Constant">  (bg stands for background)</span>
+<span class="Constant">&quot;</span><span class="Statement">;</span>
+  exit ec
+
+
+<span class="Statement">let</span> chop_extension s <span class="Statement">=</span>
+  <span class="Statement">try</span> <span class="PreProc">Filename</span>.chop_extension s
+  <span class="Statement">with</span> <span class="Constant">Invalid_argument</span> <span class="Statement">_</span> <span class="Statement">-&gt;</span> s
+
+<span class="Statement">let</span> days <span class="Statement">=</span> <span class="PreProc">Array</span>.map <span class="Statement">(</span>shorten <span class="Constant">2</span><span class="Statement">)</span> days
+
+<span class="Statement">let</span> indices ofs <span class="Statement">=</span>
+  <span class="Statement">(</span>ofs / <span class="Constant">7</span>, ofs <span class="Statement">mod</span> <span class="Constant">7</span><span class="Statement">)</span>
+
+<span class="Statement">let</span> t_same t1 t2 <span class="Statement">=</span>
+  <span class="Statement">(</span> t1.<span class="PreProc">Unix</span>.tm_year <span class="Statement">=</span> t2.<span class="PreProc">Unix</span>.tm_year &amp;&amp;
+    t1.<span class="PreProc">Unix</span>.tm_mon  <span class="Statement">=</span> t2.<span class="PreProc">Unix</span>.tm_mon &amp;&amp;
+    t1.<span class="PreProc">Unix</span>.tm_mday <span class="Statement">=</span> t2.<span class="PreProc">Unix</span>.tm_mday <span class="Statement">)</span>
+
+<span class="Statement">let</span> today <span class="Constant">()</span> <span class="Statement">=</span>
+  <span class="Statement">let</span> t <span class="Statement">=</span> <span class="PreProc">Unix</span>.localtime <span class="Statement">(</span><span class="PreProc">Unix</span>.time <span class="Constant">()</span><span class="Statement">)</span> <span class="Statement">in</span>
+  <span class="Statement">(</span>t<span class="Statement">)</span>
+
+<span class="Statement">let</span> is_today t1 <span class="Statement">=</span>
+  <span class="Statement">let</span> t2 <span class="Statement">=</span> today <span class="Constant">()</span> <span class="Statement">in</span>
+  <span class="Statement">(</span>t_same t1 t2<span class="Statement">)</span>
+
+<span class="Statement">let</span> next_t t <span class="Statement">=</span>
+  <span class="Statement">let</span> day <span class="Statement">=</span> t.<span class="PreProc">Unix</span>.tm_mday <span class="Statement">in</span>
+  <span class="Statement">let</span> t2 <span class="Statement">=</span> <span class="Statement">{</span> t <span class="Statement">with</span> <span class="PreProc">Unix</span>.tm_mday <span class="Statement">=</span> day + <span class="Constant">1</span> <span class="Statement">}</span> <span class="Statement">in</span>
+  <span class="Statement">let</span> <span class="Statement">_</span>, res <span class="Statement">=</span> <span class="PreProc">Unix</span>.mktime t2 <span class="Statement">in</span>
+  <span class="Statement">(</span>res<span class="Statement">)</span>
+
+<span class="Statement">let</span> to_string t <span class="Statement">=</span>
+  <span class="PreProc">Printf</span>.sprintf <span class="Constant">&quot;%d-%02d-%02d&quot;</span>
+    <span class="Statement">(</span>t.<span class="PreProc">Unix</span>.tm_year + <span class="Constant">1900</span><span class="Statement">)</span>
+    <span class="Statement">(</span>t.<span class="PreProc">Unix</span>.tm_mon + <span class="Constant">1</span><span class="Statement">)</span>
+    <span class="Statement">(</span>t.<span class="PreProc">Unix</span>.tm_mday<span class="Statement">)</span>
+
+<span class="Statement">let</span> print_t t <span class="Statement">=</span>
+  print_endline <span class="Statement">(</span>to_string t<span class="Statement">)</span>
+
+<span class="Statement">let</span> dt_of_string s <span class="Statement">=</span>
+  <span class="Statement">let</span> year, month, day <span class="Statement">=</span>
+    <span class="PreProc">Scanf</span>.sscanf s <span class="Constant">&quot;%d-%d-%d&quot;</span> <span class="Statement">(</span><span class="Statement">fun</span> y m d <span class="Statement">-&gt;</span> y, m, d<span class="Statement">)</span>
+  <span class="Statement">in</span>
+  <span class="Statement">(</span>year, month, day<span class="Statement">)</span>
+
+<span class="Statement">let</span> du_of_string s <span class="Statement">=</span>
+  <span class="Statement">let</span> year, month, day <span class="Statement">=</span> dt_of_string s <span class="Statement">in</span>
+  <span class="Statement">{</span> <span class="Statement">(</span><span class="PreProc">Unix</span>.gmtime <span class="Constant">0.0</span><span class="Statement">)</span> <span class="Statement">with</span>
+    <span class="PreProc">Unix</span>.tm_year <span class="Statement">=</span> year - <span class="Constant">1900</span><span class="Statement">;</span>
+    <span class="PreProc">Unix</span>.tm_mon <span class="Statement">=</span> month - <span class="Constant">1</span><span class="Statement">;</span>
+    <span class="PreProc">Unix</span>.tm_mday <span class="Statement">=</span> day<span class="Statement">;</span>
+  <span class="Statement">}</span>
+
+
+<span class="Statement">let</span> of_range_d s <span class="Statement">=</span>
+  <span class="Statement">let</span> year, month, day1, day2 <span class="Statement">=</span>
+    <span class="PreProc">Scanf</span>.sscanf s <span class="Constant">&quot;%d-%d-%d--%d&quot;</span> <span class="Statement">(</span><span class="Statement">fun</span> y m d1 d2 <span class="Statement">-&gt;</span> y, m, d1, d2<span class="Statement">)</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> t <span class="Statement">=</span> <span class="PreProc">Unix</span>.gmtime <span class="Constant">0.0</span> <span class="Statement">in</span>
+  <span class="Statement">{</span> t <span class="Statement">with</span>
+    <span class="PreProc">Unix</span>.tm_year <span class="Statement">=</span> year - <span class="Constant">1900</span><span class="Statement">;</span>
+    <span class="PreProc">Unix</span>.tm_mon <span class="Statement">=</span> month - <span class="Constant">1</span><span class="Statement">;</span>
+    <span class="PreProc">Unix</span>.tm_mday <span class="Statement">=</span> day1<span class="Statement">;</span>
+  <span class="Statement">}</span>,
+  <span class="Statement">{</span> t <span class="Statement">with</span>
+    <span class="PreProc">Unix</span>.tm_year <span class="Statement">=</span> year - <span class="Constant">1900</span><span class="Statement">;</span>
+    <span class="PreProc">Unix</span>.tm_mon <span class="Statement">=</span> month - <span class="Constant">1</span><span class="Statement">;</span>
+    <span class="PreProc">Unix</span>.tm_mday <span class="Statement">=</span> day2<span class="Statement">;</span>
+  <span class="Statement">}</span>
+
+<span class="Statement">let</span> of_range_m s <span class="Statement">=</span>
+  <span class="Statement">let</span> year, month1, month2, day1, day2 <span class="Statement">=</span>
+    <span class="PreProc">Scanf</span>.sscanf s <span class="Constant">&quot;%d-%d-%d--%d-%d&quot;</span>
+      <span class="Statement">(</span><span class="Statement">fun</span> y m1 d1 m2 d2 <span class="Statement">-&gt;</span> y, m1, m2, d1, d2<span class="Statement">)</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> t <span class="Statement">=</span> <span class="PreProc">Unix</span>.gmtime <span class="Constant">0.0</span> <span class="Statement">in</span>
+  <span class="Statement">{</span> t <span class="Statement">with</span>
+    <span class="PreProc">Unix</span>.tm_year <span class="Statement">=</span> year - <span class="Constant">1900</span><span class="Statement">;</span>
+    <span class="PreProc">Unix</span>.tm_mon <span class="Statement">=</span> month1 - <span class="Constant">1</span><span class="Statement">;</span>
+    <span class="PreProc">Unix</span>.tm_mday <span class="Statement">=</span> day1<span class="Statement">;</span>
+  <span class="Statement">}</span>,
+  <span class="Statement">{</span> t <span class="Statement">with</span>
+    <span class="PreProc">Unix</span>.tm_year <span class="Statement">=</span> year - <span class="Constant">1900</span><span class="Statement">;</span>
+    <span class="PreProc">Unix</span>.tm_mon <span class="Statement">=</span> month2 - <span class="Constant">1</span><span class="Statement">;</span>
+    <span class="PreProc">Unix</span>.tm_mday <span class="Statement">=</span> day2<span class="Statement">;</span>
+  <span class="Statement">}</span>
+
+<span class="Statement">let</span> of_range_y s <span class="Statement">=</span>
+  <span class="Statement">let</span> year1, year2, month1, month2, day1, day2 <span class="Statement">=</span>
+    <span class="PreProc">Scanf</span>.sscanf s <span class="Constant">&quot;%d-%d-%d--%d-%d-%d&quot;</span> <span class="Statement">(</span><span class="Statement">fun</span> y1 m1 d1 y2 m2 d2 <span class="Statement">-&gt;</span>
+      y1, y2, m1, m2, d1, d2<span class="Statement">)</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> t <span class="Statement">=</span> <span class="PreProc">Unix</span>.gmtime <span class="Constant">0.0</span> <span class="Statement">in</span>
+  <span class="Statement">{</span> t <span class="Statement">with</span>
+    <span class="PreProc">Unix</span>.tm_year <span class="Statement">=</span> year1 - <span class="Constant">1900</span><span class="Statement">;</span>
+    <span class="PreProc">Unix</span>.tm_mon <span class="Statement">=</span> month1 - <span class="Constant">1</span><span class="Statement">;</span>
+    <span class="PreProc">Unix</span>.tm_mday <span class="Statement">=</span> day1<span class="Statement">;</span>
+  <span class="Statement">}</span>,
+  <span class="Statement">{</span> t <span class="Statement">with</span>
+    <span class="PreProc">Unix</span>.tm_year <span class="Statement">=</span> year2 - <span class="Constant">1900</span><span class="Statement">;</span>
+    <span class="PreProc">Unix</span>.tm_mon <span class="Statement">=</span> month2 - <span class="Constant">1</span><span class="Statement">;</span>
+    <span class="PreProc">Unix</span>.tm_mday <span class="Statement">=</span> day2<span class="Statement">;</span>
+  <span class="Statement">}</span>
+
+
+<span class="Statement">let</span> of_range s <span class="Statement">=</span>
+  <span class="Statement">try</span> of_range_y s
+  <span class="Statement">with</span> <span class="Statement">_</span> <span class="Statement">-&gt;</span>
+    <span class="Statement">try</span> of_range_m s
+    <span class="Statement">with</span> <span class="Statement">_</span> <span class="Statement">-&gt;</span>
+      <span class="Statement">try</span> of_range_d s
+      <span class="Statement">with</span> <span class="Statement">_</span> <span class="Statement">-&gt;</span>
+        invalid_arg <span class="Constant">&quot;of_range&quot;</span>
+
+
+<span class="Statement">let</span> mk_range s <span class="Statement">=</span>
+  <span class="Statement">let</span> t1, t2 <span class="Statement">=</span> of_range s <span class="Statement">in</span>
+  <span class="Statement">let</span> <span class="Statement">rec</span> aux acc ti <span class="Statement">=</span>
+    <span class="Statement">if</span> t_same ti t2 <span class="Statement">then</span> <span class="PreProc">List</span>.rev <span class="Statement">(</span>t2::acc<span class="Statement">)</span>
+    <span class="Statement">else</span> <span class="Statement">let</span> tj <span class="Statement">=</span> next_t ti <span class="Statement">in</span> aux <span class="Statement">(</span>ti::acc<span class="Statement">)</span> tj
+  <span class="Statement">in</span>
+  aux <span class="Constant">[]</span> t1
+<span class="Statement">;;</span>
+
+<span class="Statement">let</span> in_range t ts <span class="Statement">=</span>
+  <span class="PreProc">List</span>.exists <span class="Statement">(</span><span class="Statement">fun</span> ti <span class="Statement">-&gt;</span> t_same ti t<span class="Statement">)</span> ts
+<span class="Statement">;;</span>
+
+<span class="Statement">let</span> in_ranges t rs <span class="Statement">=</span>
+  <span class="PreProc">List</span>.exists <span class="Statement">(</span><span class="Statement">fun</span> <span class="Statement">(</span>cl, ts<span class="Statement">)</span> <span class="Statement">-&gt;</span>
+    in_range t ts
+  <span class="Statement">)</span> rs
+
+<span class="Statement">let</span> range_color t rs <span class="Statement">=</span>
+  <span class="Statement">let</span> <span class="Statement">(</span>cl, ts<span class="Statement">)</span> <span class="Statement">=</span>
+    <span class="PreProc">List</span>.find <span class="Statement">(</span><span class="Statement">fun</span> <span class="Statement">(</span>cl, ts<span class="Statement">)</span> <span class="Statement">-&gt;</span>
+      in_range t ts
+    <span class="Statement">)</span> rs
+  <span class="Statement">in</span>
+  <span class="Statement">(</span>cl<span class="Statement">)</span>
+
+<span class="Statement">let</span> not_in_range t ts <span class="Statement">=</span>
+  not <span class="Statement">(</span>in_range t ts<span class="Statement">)</span>
+
+
+<span class="Statement">let</span> current_year <span class="Constant">()</span> <span class="Statement">=</span>
+  <span class="Statement">let</span> t <span class="Statement">=</span> <span class="PreProc">Unix</span>.localtime <span class="Statement">(</span><span class="PreProc">Unix</span>.time <span class="Constant">()</span><span class="Statement">)</span> <span class="Statement">in</span>
+  string_of_int <span class="Statement">(</span>t.<span class="PreProc">Unix</span>.tm_year  + <span class="Constant">1900</span><span class="Statement">)</span>
+
+<span class="Statement">type</span> day <span class="Statement">=</span> <span class="Statement">{</span>
+  d<span class="Statement">:</span> <span class="Type">int</span><span class="Statement">;</span>
+  ev<span class="Statement">:</span> <span class="Type">string</span> <span class="Type">option</span><span class="Statement">;</span>
+  t<span class="Statement">:</span> <span class="PreProc">Unix.</span>tm<span class="Statement">;</span>
+<span class="Statement">}</span>
+
+<span class="Statement">let</span> there_event evs tm <span class="Statement">=</span>
+  <span class="Statement">try</span> <span class="Constant">Some</span> <span class="Statement">(</span><span class="PreProc">List</span>.assoc <span class="Statement">(</span>to_string tm<span class="Statement">)</span> evs<span class="Statement">)</span>
+  <span class="Statement">with</span> <span class="Statement">_</span> <span class="Statement">-&gt;</span> <span class="Constant">None</span>
+
+
+<span class="Statement">let</span> make_month t evs year month <span class="Statement">=</span>
+  <span class="Statement">let</span> empty_day <span class="Statement">=</span> <span class="Statement">{</span> d <span class="Statement">=</span> <span class="Constant">0</span><span class="Statement">;</span> t <span class="Statement">=</span> t<span class="Statement">;</span> ev <span class="Statement">=</span> <span class="Constant">None</span> <span class="Statement">}</span> <span class="Statement">in</span>
+  <span class="Statement">let</span> m <span class="Statement">=</span> <span class="PreProc">Array</span>.make_matrix <span class="Constant">6</span> <span class="Constant">7</span> empty_day <span class="Statement">in</span>
+  <span class="Statement">let</span> ofs <span class="Statement">=</span> ref <span class="Constant">0</span> <span class="Statement">in</span>
+  <span class="Statement">for</span> day <span class="Statement">=</span> <span class="Constant">1</span> <span class="Statement">to</span> <span class="Constant">31</span> <span class="Statement">do</span>
+    <span class="Statement">let</span> tm <span class="Statement">=</span>
+      <span class="Statement">{</span> t <span class="Statement">with</span>
+        <span class="PreProc">Unix</span>.tm_year <span class="Statement">=</span> year - <span class="Constant">1900</span><span class="Statement">;</span>
+        <span class="PreProc">Unix</span>.tm_mon <span class="Statement">=</span> month<span class="Statement">;</span>
+        <span class="PreProc">Unix</span>.tm_mday <span class="Statement">=</span> day<span class="Statement">;</span>
+      <span class="Statement">}</span>
+    <span class="Statement">in</span>
+    <span class="Statement">let</span> <span class="Statement">_</span>, this <span class="Statement">=</span> <span class="PreProc">Unix</span>.mktime tm <span class="Statement">in</span>
+    <span class="Statement">if</span> !ofs <span class="Statement">=</span> <span class="Constant">0</span> <span class="Statement">then</span> ofs <span class="Statement">:=</span> <span class="Statement">(</span>this.<span class="PreProc">Unix</span>.tm_wday + off<span class="Statement">)</span> <span class="Statement">mod</span> <span class="Constant">7</span><span class="Statement">;</span>
+    <span class="Statement">if</span> t_same this tm <span class="Statement">then</span>
+      <span class="Statement">let</span> i, j <span class="Statement">=</span> indices !ofs <span class="Statement">in</span>
+      m.<span class="Statement">(</span>i<span class="Statement">)</span>.<span class="Statement">(</span>j<span class="Statement">)</span> <span class="Statement">&lt;-</span> <span class="Statement">{</span> d <span class="Statement">=</span> day<span class="Statement">;</span> t <span class="Statement">=</span> this<span class="Statement">;</span> ev <span class="Statement">=</span> there_event evs tm <span class="Statement">}</span><span class="Statement">;</span>
+    incr ofs<span class="Statement">;</span>
+  <span class="Statement">done</span><span class="Statement">;</span>
+  <span class="Statement">(</span>m<span class="Statement">)</span>
+
+
+<span class="Statement">let</span> cal evs <span class="Identifier">~year</span> <span class="Statement">=</span>
+  <span class="Statement">let</span> empty <span class="Statement">=</span> <span class="Statement">[|</span> <span class="Statement">[|</span> <span class="Statement">|]</span> <span class="Statement">|]</span> <span class="Statement">in</span>
+  <span class="Statement">let</span> months <span class="Statement">=</span> <span class="PreProc">Array</span>.make <span class="Constant">12</span> empty <span class="Statement">in</span>
+  <span class="Statement">let</span> t <span class="Statement">=</span> <span class="PreProc">Unix</span>.gmtime <span class="Constant">0.0</span> <span class="Statement">in</span>
+  <span class="Statement">let</span> y <span class="Statement">=</span> int_of_string year <span class="Statement">in</span>
+  <span class="Statement">for</span> mon <span class="Statement">=</span> <span class="Constant">0</span> <span class="Statement">to</span> <span class="Constant">11</span> <span class="Statement">do</span>
+    months.<span class="Statement">(</span>mon<span class="Statement">)</span> <span class="Statement">&lt;-</span> make_month t evs y mon<span class="Statement">;</span>
+  <span class="Statement">done</span><span class="Statement">;</span>
+  <span class="Statement">(</span>months<span class="Statement">)</span>
+
+
+<span class="Statement">let</span> print_month_label is cs <span class="Statement">=</span>
+  <span class="PreProc">List</span>.iter <span class="Statement">(</span><span class="Statement">fun</span> i <span class="Statement">-&gt;</span>
+    <span class="Statement">let</span> mon <span class="Statement">=</span> pad <span class="Constant">20</span> <span class="Constant">' '</span> month.<span class="Statement">(</span>i<span class="Statement">)</span> <span class="Statement">in</span>
+    <span class="PreProc">Printf</span>.printf <span class="Constant">&quot; %s  &quot;</span> <span class="Statement">(</span>color_s <span class="Statement">(</span>month_label_color cs<span class="Statement">)</span> mon<span class="Statement">)</span>
+  <span class="Statement">)</span> is<span class="Statement">;</span>
+  print_newline <span class="Constant">()</span>
+
+
+<span class="Statement">let</span> print_day_label is cs <span class="Statement">=</span>
+  <span class="PreProc">List</span>.iter <span class="Statement">(</span><span class="Statement">fun</span> <span class="Statement">_</span> <span class="Statement">-&gt;</span>
+    <span class="PreProc">Array</span>.iter <span class="Statement">(</span><span class="Statement">fun</span> i <span class="Statement">-&gt;</span>
+      <span class="PreProc">Printf</span>.printf <span class="Constant">&quot; %s&quot;</span> <span class="Statement">(</span>color_s <span class="Statement">(</span>day_label_color cs<span class="Statement">)</span> days.<span class="Statement">(</span>i<span class="Statement">))</span>
+    <span class="Statement">)</span> days_order
+    <span class="Statement">;</span> print_string <span class="Constant">&quot;  &quot;</span>
+  <span class="Statement">)</span> is<span class="Statement">;</span>
+  print_newline <span class="Constant">()</span>
+
+
+
+<span class="Statement">let</span> print_month m is cs rs <span class="Statement">=</span>
+  print_month_label is cs<span class="Statement">;</span>
+  print_day_label is cs<span class="Statement">;</span>
+  <span class="Statement">for</span> w <span class="Statement">=</span> <span class="Constant">0</span> <span class="Statement">to</span> pred <span class="Constant">6</span> <span class="Statement">do</span>
+    <span class="PreProc">List</span>.iter <span class="Statement">(</span><span class="Statement">fun</span> i <span class="Statement">-&gt;</span>
+      <span class="Statement">for</span> d <span class="Statement">=</span> <span class="Constant">0</span> <span class="Statement">to</span> pred <span class="Constant">7</span> <span class="Statement">do</span>
+        <span class="Statement">match</span> m.<span class="Statement">(</span>i<span class="Statement">)</span>.<span class="Statement">(</span>w<span class="Statement">)</span>.<span class="Statement">(</span>d<span class="Statement">)</span> <span class="Statement">with</span>
+        <span class="Statement">|</span> <span class="Statement">{</span> d <span class="Statement">=</span> <span class="Constant">0</span><span class="Statement">;</span> t <span class="Statement">=</span> t<span class="Statement">;</span> ev <span class="Statement">=</span> <span class="Constant">None</span> <span class="Statement">}</span> <span class="Statement">-&gt;</span>
+            <span class="Statement">if</span> in_ranges t rs
+            <span class="Statement">then</span> <span class="PreProc">Printf</span>.printf <span class="Constant">&quot;%s&quot;</span> <span class="Statement">(</span>color <span class="Statement">(</span>range_color t rs<span class="Statement">)</span> <span class="Constant">&quot;   &quot;</span><span class="Statement">)</span>
+            <span class="Statement">else</span> print_string <span class="Constant">&quot;   &quot;</span>
+        <span class="Statement">|</span> <span class="Statement">{</span> d <span class="Statement">=</span> <span class="Constant">0</span><span class="Statement">;</span> t <span class="Statement">=</span> t<span class="Statement">;</span> ev <span class="Statement">=</span> <span class="Constant">Some</span> <span class="Statement">_</span> <span class="Statement">}</span> <span class="Statement">-&gt;</span>
+            <span class="PreProc">Printf</span>.printf <span class="Constant">&quot; %s&quot;</span> <span class="Statement">(</span>color <span class="Constant">`red</span> <span class="Constant">&quot;XX&quot;</span><span class="Statement">)</span>
+        <span class="Statement">|</span> md <span class="Statement">-&gt;</span>
+            <span class="Statement">let</span> sp <span class="Statement">=</span> <span class="Statement">if</span> is_today md.t <span class="Statement">then</span> <span class="Constant">&quot;&gt;&quot;</span> <span class="Statement">else</span> <span class="Constant">&quot; &quot;</span> <span class="Statement">in</span>
+            <span class="Statement">if</span> in_ranges md.t rs  &amp;&amp;  d &lt;&gt; <span class="Constant">0</span>
+            <span class="Statement">then</span> print_string <span class="Statement">(</span>color <span class="Statement">(</span>range_color md.t rs<span class="Statement">)</span> sp<span class="Statement">)</span>
+            <span class="Statement">else</span> print_string sp<span class="Statement">;</span>
+            <span class="Statement">begin</span>
+            <span class="Statement">match</span> md.ev, in_ranges md.t rs  <span class="Statement">with</span>
+            <span class="Statement">|</span> <span class="Constant">None</span>, <span class="Constant">false</span> <span class="Statement">-&gt;</span>
+                <span class="PreProc">Printf</span>.printf <span class="Constant">&quot;%2d&quot;</span> md.d
+            <span class="Statement">|</span> <span class="Constant">None</span>, <span class="Constant">true</span> <span class="Statement">-&gt;</span>
+                <span class="PreProc">Printf</span>.printf <span class="Constant">&quot;%s&quot;</span> <span class="Statement">(</span>color <span class="Statement">(</span>range_color md.t rs<span class="Statement">)</span>
+                    <span class="Statement">(</span><span class="PreProc">Printf</span>.sprintf <span class="Constant">&quot;%2d&quot;</span> md.d<span class="Statement">)</span>
+                  <span class="Statement">)</span>
+            <span class="Statement">|</span> <span class="Constant">Some</span> <span class="Statement">_</span>, <span class="Statement">_</span> <span class="Statement">-&gt;</span>
+                 <span class="PreProc">Printf</span>.printf <span class="Constant">&quot;%s&quot;</span>
+                   <span class="Statement">(</span>color_s <span class="Statement">(</span>event_color cs<span class="Statement">)</span>
+                      <span class="Statement">(</span>padl <span class="Constant">2</span> <span class="Constant">' '</span> <span class="Statement">(</span>string_of_int md.d<span class="Statement">)))</span>
+            <span class="Statement">end</span>
+      <span class="Statement">done</span>
+      <span class="Statement">;</span> print_string <span class="Constant">&quot;  &quot;</span>
+    <span class="Statement">)</span> is
+    <span class="Statement">;</span> print_newline <span class="Constant">()</span>
+  <span class="Statement">done</span>
+
+
+<span class="Statement">let</span> print_cal cs rs m <span class="Statement">=</span>
+  <span class="PreProc">List</span>.iter <span class="Statement">(</span><span class="Statement">fun</span> mon_row <span class="Statement">-&gt;</span>
+    print_month m mon_row cs rs
+  <span class="Statement">)</span> <span class="Statement">[</span>
+      <span class="Statement">[</span> <span class="Constant">0</span><span class="Statement">;</span>  <span class="Constant">1</span><span class="Statement">;</span>  <span class="Constant">2</span><span class="Statement">;</span>  <span class="Constant">3</span> <span class="Statement">]</span><span class="Statement">;</span>
+      <span class="Statement">[</span> <span class="Constant">4</span><span class="Statement">;</span>  <span class="Constant">5</span><span class="Statement">;</span>  <span class="Constant">6</span><span class="Statement">;</span>  <span class="Constant">7</span> <span class="Statement">]</span><span class="Statement">;</span>
+      <span class="Statement">[</span> <span class="Constant">8</span><span class="Statement">;</span>  <span class="Constant">9</span><span class="Statement">;</span> <span class="Constant">10</span><span class="Statement">;</span> <span class="Constant">11</span> <span class="Statement">]</span><span class="Statement">;</span>
+
+      <span class="Comment">(*</span>
+<span class="Comment">      [  0;  1;  2 ];</span>
+<span class="Comment">      [  3;  4;  5 ];</span>
+<span class="Comment">      [  6;  7;  8 ];</span>
+<span class="Comment">      [  9; 10; 11 ];</span>
+<span class="Comment">      *)</span>
+
+      <span class="Comment">(*</span>
+<span class="Comment">      [ 0;  3;  6;  9 ];</span>
+<span class="Comment">      [ 1;  4;  7; 10 ];</span>
+<span class="Comment">      [ 2;  5;  8; 11 ];</span>
+<span class="Comment">      *)</span>
+    <span class="Statement">]</span>
+
+
+
+<span class="Statement">let</span> load_file f <span class="Statement">=</span>
+  <span class="Statement">let</span> ic <span class="Statement">=</span> open_in f <span class="Statement">in</span>
+  <span class="Statement">let</span> n <span class="Statement">=</span> in_channel_length ic <span class="Statement">in</span>
+  <span class="Statement">let</span> s <span class="Statement">=</span> <span class="PreProc">Bytes</span>.create n <span class="Statement">in</span>
+  really_input ic s <span class="Constant">0</span> n<span class="Statement">;</span>
+  close_in ic<span class="Statement">;</span>
+  <span class="Statement">(</span><span class="PreProc">Bytes</span>.unsafe_to_string s<span class="Statement">)</span>
+
+<span class="Statement">let</span> load_lines f <span class="Statement">=</span>
+  <span class="Statement">let</span> ic <span class="Statement">=</span> open_in f <span class="Statement">in</span>
+  <span class="Statement">let</span> <span class="Statement">rec</span> aux acc <span class="Statement">=</span>
+    <span class="Statement">try</span>
+      <span class="Statement">let</span> s <span class="Statement">=</span> input_line ic <span class="Statement">in</span>
+      aux <span class="Statement">(</span>s::acc<span class="Statement">)</span>
+    <span class="Statement">with</span> <span class="Statement">_</span> <span class="Statement">-&gt;</span>
+      close_in ic<span class="Statement">;</span>
+      <span class="Statement">(</span><span class="PreProc">List</span>.rev acc<span class="Statement">)</span>
+  <span class="Statement">in</span>
+  aux <span class="Constant">[]</span>
+
+
+<span class="Statement">let</span> read_events dir <span class="Statement">=</span>
+  <span class="Statement">let</span> ev_files <span class="Statement">=</span> <span class="PreProc">Array</span>.to_list <span class="Statement">(</span><span class="PreProc">Sys</span>.readdir dir<span class="Statement">)</span> <span class="Statement">in</span>
+  <span class="Statement">let</span> f ev_file <span class="Statement">=</span>
+    <span class="Statement">let</span> date <span class="Statement">=</span> chop_extension ev_file <span class="Statement">in</span>
+    <span class="Statement">let</span> content <span class="Statement">=</span> load_file <span class="Statement">(</span><span class="PreProc">Filename</span>.concat dir ev_file<span class="Statement">)</span> <span class="Statement">in</span>
+    <span class="Statement">(</span>date, content<span class="Statement">)</span>
+  <span class="Statement">in</span>
+  <span class="Statement">(</span><span class="PreProc">List</span>.map f ev_files<span class="Statement">)</span>
+
+<span class="Statement">let</span> read_events dir <span class="Statement">=</span>
+  <span class="Statement">try</span> read_events dir
+  <span class="Statement">with</span> <span class="Constant">Sys_error</span> <span class="Statement">_</span> <span class="Statement">-&gt;</span> <span class="Constant">[]</span>
+
+
+<span class="Statement">let</span> print_events cs evs <span class="Identifier">~year</span> <span class="Statement">=</span>
+  <span class="Statement">let</span> _year <span class="Statement">=</span> int_of_string year <span class="Statement">in</span>
+  <span class="Statement">let</span> filter_date <span class="Statement">(</span>date, <span class="Statement">_</span><span class="Statement">)</span> <span class="Statement">=</span>
+    <span class="Statement">let</span> y, <span class="Statement">_</span>, <span class="Statement">_</span> <span class="Statement">=</span> dt_of_string date <span class="Statement">in</span>
+    <span class="Statement">(</span>y <span class="Statement">=</span> _year<span class="Statement">)</span>
+  <span class="Statement">in</span>
+  <span class="Statement">let</span> compare_date <span class="Statement">(</span>date1, <span class="Statement">_</span><span class="Statement">)</span> <span class="Statement">(</span>date2, <span class="Statement">_</span><span class="Statement">)</span> <span class="Statement">=</span> compare date1 date2 <span class="Statement">in</span>
+  <span class="Statement">let</span> evs <span class="Statement">=</span> <span class="PreProc">List</span>.filter filter_date evs <span class="Statement">in</span>
+  <span class="Statement">let</span> evs <span class="Statement">=</span> <span class="PreProc">List</span>.sort compare_date evs <span class="Statement">in</span>
+  <span class="PreProc">List</span>.iter <span class="Statement">(</span><span class="Statement">fun</span> <span class="Statement">(</span>date, content<span class="Statement">)</span> <span class="Statement">-&gt;</span>
+    <span class="Statement">if</span> content &lt;&gt; <span class="Constant">&quot;&quot;</span> <span class="Statement">then</span>
+      <span class="PreProc">Printf</span>.printf <span class="Constant">&quot;%s: %s&quot;</span>
+        <span class="Statement">(</span>color_s <span class="Statement">(</span>event_color cs<span class="Statement">)</span> date<span class="Statement">)</span>
+        <span class="Statement">(</span>color <span class="Constant">`normal</span> content<span class="Statement">)</span>
+  <span class="Statement">)</span> evs
+
+
+<span class="Statement">let</span> print_year_header cs <span class="Identifier">~year</span> <span class="Statement">=</span>
+  <span class="Statement">let</span> year_lbl <span class="Statement">=</span> pad <span class="Statement">(</span><span class="Constant">23</span>*<span class="Constant">4-3</span><span class="Statement">)</span> <span class="Constant">' '</span> year <span class="Statement">in</span>
+  <span class="PreProc">Printf</span>.printf <span class="Constant">&quot; %s\n&quot;</span> <span class="Statement">(</span>color_s <span class="Statement">(</span>month_label_color cs<span class="Statement">)</span> year_lbl<span class="Statement">)</span><span class="Statement">;</span>
+  print_newline <span class="Constant">()</span>
+
+
+<span class="Statement">let</span> default_params <span class="Statement">=</span> <span class="Statement">[</span>
+  <span class="Statement">(</span><span class="Constant">&quot;detri_dir&quot;</span>, default_detri_dir<span class="Statement">)</span><span class="Statement">;</span>
+  <span class="Statement">(</span><span class="Constant">&quot;year&quot;</span>, current_year <span class="Constant">()</span><span class="Statement">)</span><span class="Statement">;</span>
+  <span class="Statement">(</span><span class="Constant">&quot;event_color&quot;</span>, default_event_color<span class="Statement">)</span><span class="Statement">;</span>
+  <span class="Statement">(</span><span class="Constant">&quot;range_color&quot;</span>, default_range_color<span class="Statement">)</span><span class="Statement">;</span>
+  <span class="Statement">(</span><span class="Constant">&quot;range_file&quot;</span>, default_range_file<span class="Statement">)</span><span class="Statement">;</span>
+  <span class="Statement">(</span><span class="Constant">&quot;day_label_color&quot;</span>, default_day_label_color<span class="Statement">)</span><span class="Statement">;</span>
+  <span class="Statement">(</span><span class="Constant">&quot;month_label_color&quot;</span>, default_month_label_color<span class="Statement">)</span><span class="Statement">;</span>
+<span class="Statement">]</span>
+
+
+<span class="Statement">let</span> <span class="Statement">rec</span> parse_args params <span class="Statement">=</span> <span class="Statement">function</span>
+  <span class="Statement">|</span> <span class="Constant">&quot;--year&quot;</span> :: year :: args <span class="Statement">-&gt;</span>
+      <span class="Statement">let</span> params <span class="Statement">=</span> list_assoc_replace <span class="Constant">&quot;year&quot;</span> year params <span class="Statement">in</span>
+      parse_args params args
+
+  <span class="Statement">|</span> <span class="Constant">&quot;--detri-dir&quot;</span> :: detri_dir :: args <span class="Statement">-&gt;</span>
+      <span class="Statement">let</span> params <span class="Statement">=</span> list_assoc_replace <span class="Constant">&quot;detri_dir&quot;</span> detri_dir params <span class="Statement">in</span>
+      parse_args params args
+
+  <span class="Statement">|</span> <span class="Constant">&quot;--event-color&quot;</span> :: event_color :: args <span class="Statement">-&gt;</span>
+      <span class="Statement">let</span> params <span class="Statement">=</span> list_assoc_replace <span class="Constant">&quot;event_color&quot;</span> event_color params <span class="Statement">in</span>
+      parse_args params args
+
+  <span class="Statement">|</span> <span class="Constant">&quot;--range-color&quot;</span> :: range_color :: args <span class="Statement">-&gt;</span>
+      <span class="Statement">let</span> params <span class="Statement">=</span> list_assoc_replace <span class="Constant">&quot;range_color&quot;</span> range_color params <span class="Statement">in</span>
+      parse_args params args
+
+  <span class="Statement">|</span> <span class="Constant">&quot;--range-file&quot;</span> :: range_file :: args <span class="Statement">-&gt;</span>
+      <span class="Statement">let</span> params <span class="Statement">=</span> list_assoc_replace <span class="Constant">&quot;range_file&quot;</span> range_file params <span class="Statement">in</span>
+      parse_args params args
+
+  <span class="Statement">|</span> <span class="Constant">&quot;--day-label-color&quot;</span> :: day_label_color :: args <span class="Statement">-&gt;</span>
+      <span class="Statement">let</span> params <span class="Statement">=</span>
+        list_assoc_replace <span class="Constant">&quot;day_label_color&quot;</span> day_label_color params
+      <span class="Statement">in</span>
+      parse_args params args
+
+  <span class="Statement">|</span> <span class="Constant">&quot;--month-label-color&quot;</span> :: month_label_color :: args <span class="Statement">-&gt;</span>
+      <span class="Statement">let</span> params <span class="Statement">=</span>
+        list_assoc_replace <span class="Constant">&quot;month_label_color&quot;</span> month_label_color params
+      <span class="Statement">in</span>
+      parse_args params args
+
+  <span class="Statement">|</span> <span class="Constant">&quot;--print-avail-colors&quot;</span> :: <span class="Statement">_</span> <span class="Statement">-&gt;</span>
+      print_avail_colors <span class="Constant">0</span>
+
+  <span class="Statement">|</span> <span class="Constant">&quot;--help&quot;</span>::<span class="Constant">[]</span> <span class="Statement">|</span> <span class="Constant">&quot;-help&quot;</span>::<span class="Constant">[]</span> <span class="Statement">|</span> <span class="Constant">&quot;-h&quot;</span>::<span class="Constant">[]</span> <span class="Statement">-&gt;</span> usage <span class="Constant">0</span>
+
+  <span class="Statement">|</span> <span class="Constant">[]</span> <span class="Statement">-&gt;</span> params
+
+  <span class="Statement">|</span> <span class="Statement">_</span> <span class="Statement">-&gt;</span> usage <span class="Constant">1</span>
+
+
+
+<span class="Statement">let</span> <span class="Constant">()</span> <span class="Statement">=</span>
+  <span class="PreProc">Random</span>.self_init <span class="Constant">()</span><span class="Statement">;</span>
+  <span class="Statement">let</span> args <span class="Statement">=</span> <span class="PreProc">List</span>.tl <span class="Statement">(</span><span class="PreProc">Array</span>.to_list <span class="PreProc">Sys</span>.argv<span class="Statement">)</span> <span class="Statement">in</span>
+  <span class="Statement">let</span> params <span class="Statement">=</span> parse_args default_params args <span class="Statement">in</span>
+  <span class="Statement">let</span> get_param param <span class="Statement">=</span> <span class="PreProc">List</span>.assoc param params <span class="Statement">in</span>
+
+  <span class="Statement">let</span> year <span class="Statement">=</span> get_param <span class="Constant">&quot;year&quot;</span> <span class="Statement">in</span>
+  <span class="Statement">let</span> detri_dir <span class="Statement">=</span> get_param <span class="Constant">&quot;detri_dir&quot;</span> <span class="Statement">in</span>
+
+  <span class="Statement">let</span> event_color <span class="Statement">=</span> get_param <span class="Constant">&quot;event_color&quot;</span> <span class="Statement">in</span>
+  <span class="Statement">let</span> range_color <span class="Statement">=</span> get_param <span class="Constant">&quot;range_color&quot;</span> <span class="Statement">in</span>
+  <span class="Statement">let</span> range_file <span class="Statement">=</span> get_param <span class="Constant">&quot;range_file&quot;</span> <span class="Statement">in</span>
+  <span class="Statement">let</span> day_label_color <span class="Statement">=</span> get_param <span class="Constant">&quot;day_label_color&quot;</span> <span class="Statement">in</span>
+  <span class="Statement">let</span> month_label_color <span class="Statement">=</span> get_param <span class="Constant">&quot;month_label_color&quot;</span> <span class="Statement">in</span>
+  <span class="Statement">let</span> cs <span class="Statement">=</span> <span class="Statement">(</span>event_color, day_label_color, month_label_color<span class="Statement">)</span> <span class="Statement">in</span>
+
+  <span class="Statement">let</span> rs <span class="Statement">=</span>
+    <span class="Statement">try</span>
+      <span class="Statement">let</span> ranges <span class="Statement">=</span> load_lines range_file <span class="Statement">in</span>
+      <span class="PreProc">List</span>.map <span class="Statement">(</span><span class="Statement">fun</span> r <span class="Statement">-&gt;</span> <span class="Statement">(</span>color_of_string range_color, mk_range r<span class="Statement">))</span> ranges
+    <span class="Statement">with</span> <span class="Statement">_</span> <span class="Statement">-&gt;</span> <span class="Constant">[]</span>
+  <span class="Statement">in</span>
+
+  <span class="Statement">let</span> evs <span class="Statement">=</span> read_events detri_dir <span class="Statement">in</span>
+
+  print_newline <span class="Constant">()</span><span class="Statement">;</span>
+  print_year_header cs <span class="Identifier">~year</span><span class="Statement">;</span>
+  print_cal cs rs <span class="Statement">(</span>cal evs <span class="Identifier">~year</span><span class="Statement">)</span><span class="Statement">;</span>
+  print_events cs evs <span class="Identifier">~year</span><span class="Statement">;</span>
+<span class="Statement">;;</span>
+
+</pre>
+</body>
+</html>
