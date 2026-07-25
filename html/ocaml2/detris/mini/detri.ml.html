@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>/detris/mini/detri.ml.html</title>
+<meta name="Generator" content="Vim/9.1" />
+<meta name="plugin-version" content="vim9.0_v2" />
+<meta name="syntax" content="ocaml" />
+<meta name="settings" content="use_css,no_foldcolumn,expand_tabs,pre_wrap,prevent_copy=,use_input_for_pc=none" />
+<meta name="colorscheme" content="none" />
+<style>
+<!--
+pre { border:1px solid #000; }
+/*
+pre { white-space:pre-wrap; font-family:monospace; color:#000000; background-color:#ffffff; }
+body { font-family:monospace; color:#000000; background-color:#ffffff; }
+* { font-size:1em; }
+a { color:inherit; }
+.Statement { color:#af5f00; }
+.PreProc { color:#c000c0; }
+.Constant { color:#c00000; }
+.Comment { color:#0000c0; }
+.Identifier { color:#008080; }
+*/
+-->
+</style>
+</head>
+<body>
+<pre id='vimCodeElement'>
+<span class="PreProc">#directory</span> <span class="Constant">&quot;+unix&quot;</span>
+<span class="PreProc">#load</span> <span class="Constant">&quot;unix.cma&quot;</span>
+<span class="Statement">let</span> lang <span class="Statement">=</span> <span class="Constant">&quot;en&quot;</span>  <span class="Comment">(* language: English *)</span>
+
+<span class="Statement">let</span> usage <span class="Constant">()</span> <span class="Statement">=</span>
+  <span class="PreProc">Printf</span>.printf <span class="Constant">&quot;Usage:\n%s\n&quot;</span> <span class="PreProc">Sys</span>.argv.<span class="Statement">(</span><span class="Constant">0</span><span class="Statement">)</span>
+
+<span class="Statement">let</span> month_pattern <span class="Statement">=</span>
+  <span class="Statement">[</span>
+    <span class="Statement">[</span>  <span class="Constant">0</span><span class="Statement">;</span>  <span class="Constant">1</span><span class="Statement">;</span>  <span class="Constant">2</span><span class="Statement">;</span>  <span class="Constant">3</span> <span class="Statement">]</span><span class="Statement">;</span>
+    <span class="Statement">[</span>  <span class="Constant">4</span><span class="Statement">;</span>  <span class="Constant">5</span><span class="Statement">;</span>  <span class="Constant">6</span><span class="Statement">;</span>  <span class="Constant">7</span> <span class="Statement">]</span><span class="Statement">;</span>
+    <span class="Statement">[</span>  <span class="Constant">8</span><span class="Statement">;</span>  <span class="Constant">9</span><span class="Statement">;</span> <span class="Constant">10</span><span class="Statement">;</span> <span class="Constant">11</span> <span class="Statement">]</span><span class="Statement">;</span>
+
+    <span class="Comment">(*</span>
+<span class="Comment">    [  0;  1;  2 ];</span>
+<span class="Comment">    [  3;  4;  5 ];</span>
+<span class="Comment">    [  6;  7;  8 ];</span>
+<span class="Comment">    [  9; 10; 11 ];</span>
+
+<span class="Comment">    [  0;  4;  8 ];</span>
+<span class="Comment">    [  1;  5;  9 ];</span>
+<span class="Comment">    [  2;  6; 10 ];</span>
+<span class="Comment">    [  3;  7; 11 ];</span>
+<span class="Comment">    *)</span>
+  <span class="Statement">]</span>
+
+<span class="Statement">let</span> month_langs <span class="Statement">=</span> <span class="Statement">[</span>
+  <span class="Constant">&quot;en&quot;</span>, <span class="Statement">[|</span>
+    <span class="Constant">&quot;January&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;February&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;March&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;April&quot;</span><span class="Statement">;</span>
+    <span class="Constant">&quot;May&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;June&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;July&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;August&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;September&quot;</span><span class="Statement">;</span>
+    <span class="Constant">&quot;October&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;November&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;December&quot;</span><span class="Statement">;</span>
+  <span class="Statement">|]</span><span class="Statement">;</span>
+  <span class="Constant">&quot;fr&quot;</span>, <span class="Statement">[|</span>
+    <span class="Constant">&quot;janvier&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;février&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;mars&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;avril&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;mai&quot;</span><span class="Statement">;</span>
+    <span class="Constant">&quot;juin&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;juillet&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;août&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;septembre&quot;</span><span class="Statement">;</span>
+    <span class="Constant">&quot;octobre&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;novembre&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;décembre&quot;</span><span class="Statement">;</span>
+  <span class="Statement">|]</span><span class="Statement">;</span>
+<span class="Statement">]</span>
+
+<span class="Statement">let</span> days_lang <span class="Statement">=</span> <span class="Statement">[</span>
+  <span class="Constant">&quot;en&quot;</span>, <span class="Statement">[|</span> <span class="Constant">&quot;Monday&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Tuesday&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Wednesday&quot;</span><span class="Statement">;</span>
+    <span class="Constant">&quot;Thursday&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Friday&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Saturday&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;Sunday&quot;</span> <span class="Statement">|]</span><span class="Statement">;</span>
+  <span class="Constant">&quot;fr&quot;</span>, <span class="Statement">[|</span> <span class="Constant">&quot;lundi&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;mardi&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;mercredi&quot;</span><span class="Statement">;</span>
+    <span class="Constant">&quot;jeudi&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;vendredi&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;samedi&quot;</span><span class="Statement">;</span> <span class="Constant">&quot;dimanche&quot;</span> <span class="Statement">|]</span><span class="Statement">;</span>
+<span class="Statement">]</span>
+
+<span class="Statement">let</span> days <span class="Statement">=</span> <span class="PreProc">List</span>.assoc lang days_lang
+<span class="Statement">let</span> month <span class="Statement">=</span> <span class="PreProc">List</span>.assoc lang month_langs
+
+<span class="Statement">let</span> monday_first <span class="Statement">=</span> <span class="Constant">6</span>, <span class="Statement">[|</span> <span class="Constant">0</span><span class="Statement">;</span> <span class="Constant">1</span><span class="Statement">;</span> <span class="Constant">2</span><span class="Statement">;</span> <span class="Constant">3</span><span class="Statement">;</span> <span class="Constant">4</span><span class="Statement">;</span> <span class="Constant">5</span><span class="Statement">;</span> <span class="Constant">6</span> <span class="Statement">|]</span>
+<span class="Statement">let</span> sunday_first <span class="Statement">=</span> <span class="Constant">0</span>, <span class="Statement">[|</span> <span class="Constant">6</span><span class="Statement">;</span> <span class="Constant">0</span><span class="Statement">;</span> <span class="Constant">1</span><span class="Statement">;</span> <span class="Constant">2</span><span class="Statement">;</span> <span class="Constant">3</span><span class="Statement">;</span> <span class="Constant">4</span><span class="Statement">;</span> <span class="Constant">5</span> <span class="Statement">|]</span>
+
+<span class="Statement">let</span> off, days_order <span class="Statement">=</span> sunday_first
+<span class="Statement">let</span> off, days_order <span class="Statement">=</span> monday_first
+
+
+<span class="Statement">let</span> shorten n s <span class="Statement">=</span>
+  <span class="Statement">let</span> len <span class="Statement">=</span> <span class="PreProc">String</span>.length s <span class="Statement">in</span>
+  <span class="Statement">if</span> n &gt;= len <span class="Statement">then</span> s <span class="Statement">else</span>
+    <span class="Statement">let</span> n <span class="Statement">=</span> <span class="Statement">if</span> s.<span class="Statement">[</span>n<span class="Constant">-1</span><span class="Statement">]</span> <span class="Statement">=</span> <span class="Constant">'\xC3'</span> <span class="Statement">then</span> n+<span class="Constant">1</span> <span class="Statement">else</span> n <span class="Statement">in</span>
+    <span class="Statement">if</span> n &gt;= len <span class="Statement">then</span> s <span class="Statement">else</span>
+      <span class="Statement">(</span><span class="PreProc">String</span>.sub s <span class="Constant">0</span> n<span class="Statement">)</span>
+
+
+<span class="Statement">let</span> pad size c s <span class="Statement">=</span>
+  <span class="Statement">let</span> len <span class="Statement">=</span> <span class="PreProc">String</span>.length s <span class="Statement">in</span>
+  <span class="Statement">let</span> n1 <span class="Statement">=</span> <span class="Statement">(</span>size - len<span class="Statement">)</span> / <span class="Constant">2</span> <span class="Statement">in</span>
+  <span class="Statement">let</span> n2 <span class="Statement">=</span> size - len - n1 <span class="Statement">in</span>
+  <span class="PreProc">String</span>.make n1 c ^ s ^
+  <span class="PreProc">String</span>.make n2 c
+
+
+<span class="Statement">let</span> days <span class="Statement">=</span> <span class="PreProc">Array</span>.map <span class="Statement">(</span>shorten <span class="Constant">2</span><span class="Statement">)</span> days
+
+
+<span class="Statement">let</span> indices ofs <span class="Statement">=</span>
+  <span class="Statement">(</span>ofs / <span class="Constant">7</span>, ofs <span class="Statement">mod</span> <span class="Constant">7</span><span class="Statement">)</span>
+
+
+<span class="Statement">let</span> t_same t1 t2 <span class="Statement">=</span>
+  <span class="Statement">(</span> t1.<span class="PreProc">Unix</span>.tm_year <span class="Statement">=</span> t2.<span class="PreProc">Unix</span>.tm_year &amp;&amp;
+    t1.<span class="PreProc">Unix</span>.tm_mon  <span class="Statement">=</span> t2.<span class="PreProc">Unix</span>.tm_mon &amp;&amp;
+    t1.<span class="PreProc">Unix</span>.tm_mday <span class="Statement">=</span> t2.<span class="PreProc">Unix</span>.tm_mday <span class="Statement">)</span>
+
+
+<span class="Statement">let</span> current_year <span class="Constant">()</span> <span class="Statement">=</span>
+  <span class="Statement">let</span> t <span class="Statement">=</span> <span class="PreProc">Unix</span>.localtime <span class="Statement">(</span><span class="PreProc">Unix</span>.time <span class="Constant">()</span><span class="Statement">)</span> <span class="Statement">in</span>
+  <span class="Statement">(</span>t.<span class="PreProc">Unix</span>.tm_year + <span class="Constant">1900</span><span class="Statement">)</span>
+
+
+<span class="Statement">let</span> make_month t year month <span class="Statement">=</span>
+  <span class="Statement">let</span> empty_day <span class="Statement">=</span> <span class="Constant">0</span> <span class="Statement">in</span>
+  <span class="Statement">let</span> m <span class="Statement">=</span> <span class="PreProc">Array</span>.make_matrix <span class="Constant">6</span> <span class="Constant">7</span> empty_day <span class="Statement">in</span>
+  <span class="Statement">let</span> ofs <span class="Statement">=</span> ref <span class="Constant">0</span> <span class="Statement">in</span>
+  <span class="Statement">for</span> day <span class="Statement">=</span> <span class="Constant">1</span> <span class="Statement">to</span> <span class="Constant">31</span> <span class="Statement">do</span>
+    <span class="Statement">let</span> tm <span class="Statement">=</span>
+      <span class="Statement">{</span> t <span class="Statement">with</span>
+        <span class="PreProc">Unix</span>.tm_year <span class="Statement">=</span> year - <span class="Constant">1900</span><span class="Statement">;</span>
+        <span class="PreProc">Unix</span>.tm_mon <span class="Statement">=</span> month<span class="Statement">;</span>
+        <span class="PreProc">Unix</span>.tm_mday <span class="Statement">=</span> day<span class="Statement">;</span>
+      <span class="Statement">}</span>
+    <span class="Statement">in</span>
+    <span class="Statement">let</span> <span class="Statement">_</span>, this <span class="Statement">=</span> <span class="PreProc">Unix</span>.mktime tm <span class="Statement">in</span>
+    <span class="Statement">if</span> !ofs <span class="Statement">=</span> <span class="Constant">0</span> <span class="Statement">then</span> ofs <span class="Statement">:=</span> <span class="Statement">(</span>this.<span class="PreProc">Unix</span>.tm_wday + off<span class="Statement">)</span> <span class="Statement">mod</span> <span class="Constant">7</span><span class="Statement">;</span>
+    <span class="Statement">if</span> t_same this tm <span class="Statement">then</span>
+      <span class="Statement">let</span> i, j <span class="Statement">=</span> indices !ofs <span class="Statement">in</span>
+      m.<span class="Statement">(</span>i<span class="Statement">)</span>.<span class="Statement">(</span>j<span class="Statement">)</span> <span class="Statement">&lt;-</span> day<span class="Statement">;</span>
+    incr ofs<span class="Statement">;</span>
+  <span class="Statement">done</span><span class="Statement">;</span>
+  <span class="Statement">(</span>m<span class="Statement">)</span>
+
+
+<span class="Statement">let</span> cal <span class="Identifier">~year</span> <span class="Statement">=</span>
+  <span class="Statement">let</span> empty <span class="Statement">=</span> <span class="Statement">[|</span> <span class="Statement">[|</span> <span class="Statement">|]</span> <span class="Statement">|]</span> <span class="Statement">in</span>
+  <span class="Statement">let</span> months <span class="Statement">=</span> <span class="PreProc">Array</span>.make <span class="Constant">12</span> empty <span class="Statement">in</span>
+  <span class="Statement">let</span> t <span class="Statement">=</span> <span class="PreProc">Unix</span>.gmtime <span class="Constant">0.0</span> <span class="Statement">in</span>
+  <span class="Statement">for</span> mon <span class="Statement">=</span> <span class="Constant">0</span> <span class="Statement">to</span> <span class="Constant">11</span> <span class="Statement">do</span>
+    months.<span class="Statement">(</span>mon<span class="Statement">)</span> <span class="Statement">&lt;-</span> make_month t year mon<span class="Statement">;</span>
+  <span class="Statement">done</span><span class="Statement">;</span>
+  <span class="Statement">(</span>months<span class="Statement">)</span>
+
+
+<span class="Statement">let</span> print_month_label mp <span class="Statement">=</span>
+  <span class="PreProc">List</span>.iter <span class="Statement">(</span><span class="Statement">fun</span> i <span class="Statement">-&gt;</span>
+    <span class="Statement">let</span> mon <span class="Statement">=</span> pad <span class="Constant">20</span> <span class="Constant">' '</span> month.<span class="Statement">(</span>i<span class="Statement">)</span> <span class="Statement">in</span>
+    <span class="PreProc">Printf</span>.printf <span class="Constant">&quot; %s &quot;</span> mon
+  <span class="Statement">)</span> mp<span class="Statement">;</span>
+  print_newline <span class="Constant">()</span>
+
+
+<span class="Statement">let</span> print_day_label mp <span class="Statement">=</span>
+  <span class="PreProc">List</span>.iter <span class="Statement">(</span><span class="Statement">fun</span> <span class="Statement">_</span> <span class="Statement">-&gt;</span>
+    <span class="PreProc">Array</span>.iter <span class="Statement">(</span><span class="Statement">fun</span> i <span class="Statement">-&gt;</span>
+      <span class="PreProc">Printf</span>.printf <span class="Constant">&quot; %s&quot;</span> days.<span class="Statement">(</span>i<span class="Statement">)</span>
+    <span class="Statement">)</span> days_order
+    <span class="Statement">;</span> print_string <span class="Constant">&quot; &quot;</span>
+  <span class="Statement">)</span> mp<span class="Statement">;</span>
+  print_newline <span class="Constant">()</span>
+
+
+<span class="Statement">let</span> print_mon m mp <span class="Statement">=</span>
+  print_month_label mp<span class="Statement">;</span>
+  print_day_label mp<span class="Statement">;</span>
+  <span class="Statement">for</span> w <span class="Statement">=</span> <span class="Constant">0</span> <span class="Statement">to</span> pred <span class="Constant">6</span> <span class="Statement">do</span>
+    print_string <span class="Statement">begin</span>
+      <span class="PreProc">String</span>.concat <span class="Constant">&quot; &quot;</span> <span class="Statement">begin</span>
+        <span class="PreProc">List</span>.map <span class="Statement">(</span><span class="Statement">fun</span> i <span class="Statement">-&gt;</span>
+          <span class="Statement">let</span> b <span class="Statement">=</span> <span class="PreProc">Buffer</span>.create <span class="Constant">132</span> <span class="Statement">in</span>
+          <span class="Statement">for</span> d <span class="Statement">=</span> <span class="Constant">0</span> <span class="Statement">to</span> pred <span class="Constant">7</span> <span class="Statement">do</span>
+            <span class="Statement">match</span> m.<span class="Statement">(</span>i<span class="Statement">)</span>.<span class="Statement">(</span>w<span class="Statement">)</span>.<span class="Statement">(</span>d<span class="Statement">)</span> <span class="Statement">with</span>
+            <span class="Statement">|</span> <span class="Constant">0</span> <span class="Statement">-&gt;</span> <span class="PreProc">Buffer</span>.add_string b <span class="Constant">&quot;   &quot;</span>
+            <span class="Statement">|</span> d <span class="Statement">-&gt;</span> <span class="PreProc">Printf</span>.ksprintf <span class="Statement">(</span><span class="PreProc">Buffer</span>.add_string b<span class="Statement">)</span> <span class="Constant">&quot; %2d&quot;</span> d
+          <span class="Statement">done</span><span class="Statement">;</span>
+          <span class="Statement">(</span><span class="PreProc">Buffer</span>.contents b<span class="Statement">)</span>
+        <span class="Statement">)</span> mp
+      <span class="Statement">end</span>
+    <span class="Statement">end</span>
+    <span class="Statement">;</span> print_string <span class="Constant">&quot;\n&quot;</span>
+  <span class="Statement">done</span>
+
+
+<span class="Statement">let</span> print_cal <span class="Identifier">~y:</span>m <span class="Statement">=</span>
+  <span class="PreProc">List</span>.iter <span class="Statement">(</span><span class="Statement">fun</span> mon_row <span class="Statement">-&gt;</span>
+    print_mon m mon_row
+  <span class="Statement">)</span> month_pattern
+
+
+<span class="Statement">let</span> print_header lbl <span class="Statement">=</span>
+  <span class="Statement">let</span> n <span class="Statement">=</span> <span class="PreProc">List</span>.length <span class="Statement">(</span><span class="PreProc">List</span>.hd month_pattern<span class="Statement">)</span> <span class="Statement">in</span>
+  <span class="Statement">let</span> year_lbl <span class="Statement">=</span> pad <span class="Statement">(</span><span class="Constant">23</span>*n<span class="Constant">-7</span><span class="Statement">)</span> <span class="Constant">' '</span> lbl <span class="Statement">in</span>
+  <span class="PreProc">Printf</span>.printf <span class="Constant">&quot; %s\n&quot;</span> year_lbl
+
+
+<span class="Statement">let</span> print_calendar <span class="Identifier">~year</span> <span class="Statement">=</span>
+  print_header <span class="Statement">(</span>string_of_int year<span class="Statement">)</span><span class="Statement">;</span>
+  print_cal <span class="Identifier">~y:</span><span class="Statement">(</span>cal <span class="Identifier">~year</span><span class="Statement">)</span>
+
+
+<span class="Statement">let</span> <span class="Constant">()</span> <span class="Statement">=</span>
+  <span class="Statement">let</span> args <span class="Statement">=</span> <span class="PreProc">List</span>.tl <span class="Statement">(</span><span class="PreProc">Array</span>.to_list <span class="PreProc">Sys</span>.argv<span class="Statement">)</span> <span class="Statement">in</span>
+  <span class="Statement">match</span> args <span class="Statement">with</span>
+  <span class="Statement">|</span> <span class="Constant">[]</span> <span class="Statement">-&gt;</span>
+      <span class="Statement">let</span> year <span class="Statement">=</span> current_year <span class="Constant">()</span> <span class="Statement">in</span>
+      print_calendar <span class="Identifier">~year</span>
+
+  <span class="Statement">|</span> <span class="Statement">[</span><span class="Constant">&quot;--year&quot;</span><span class="Statement">;</span> _year<span class="Statement">]</span> <span class="Statement">-&gt;</span>
+      <span class="Statement">let</span> year <span class="Statement">=</span> int_of_string _year <span class="Statement">in</span>
+      print_calendar <span class="Identifier">~year</span>
+
+  <span class="Statement">|</span> <span class="Statement">_</span> <span class="Statement">-&gt;</span>
+      usage <span class="Constant">()</span>
+</pre>
+</body>
+</html>

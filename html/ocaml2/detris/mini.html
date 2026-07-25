@@ -1,10 +1,11 @@
+<!DOCTYPE html>
 <html>
 <head>
-<title>ocaml-sdl2</title>
+<title>command line calendar, for the console</title>
 <link href="../../icon/ocaml-icon.png" rel="shortcut icon" />
 <style type="text/css">
 body {
-  background: #BBB;
+  background: #CCC;
   color: #555;
 }
 body > div {
@@ -23,7 +24,7 @@ ul {
 .grp {
   border-top: 1px solid #999;
   border-left: 1px solid #999;
-  width:70%;
+  width:68%;
   margin-left:6%;
   padding:0 1em 0.5em 1em;
 }
@@ -44,59 +45,54 @@ ul li {
   margin-left:3em;
   font-size:small;
 }
+#logo {
+  text-align:right;
+  margin-top:3em;
+  border:0;
+}
 </style>
 </head>
 <body>
 
 <div style="border:0;">
 
-  <h2>OCaml interface for SDL2</h2>
+  <h2>Detri, a calendar for the console</h2>
 
   <div class='grp'>
-    <p>ocaml-sdl2 is an OCaml interface for the SDL2 library.</p>
+    <p>Detri is a simple program with a command-line user interface written in OCaml
+      that displays a calendar into a console.</p>
+    <p>This current version is a minimal version (so that easier to extend).</p>
   </div>
 
   <div class='grp'>
-    <p>
-      For licensing informations, see the file:<br />
-      - <a href="./LICENSE.txt">LICENSE.txt</a>
-    </p>
+    <p>Download:</p>
+    <ul><li><a href="./mini/detri.ml.html">detri.ml</a></li></ul>
   </div>
 
   <div class='grp'>
-    <p>git: <a href="http://github.com/fccm2/OCamlSDL2">github</a></p>
+    <p>This program is provided under the following conditions:<br />
+      <code>[To the extent permitted by law],<br />spdx=any</code></p>
   </div>
 
   <div class='grp'>
-    <p>manual: <a href="https://fccm2.github.io//fccm-ocaml-manuals/man/sdl2/manual.pdf">manual.pdf</a></p>
-  </div>
-
-  <div class='grp'>
-    <p>download: <a href="./download/">download</a></p>
-  </div>
-
-  <div class='grp'>
-    <p>
-      patch: <a href="./patch/OCamlSDL2-0.01b-ChangeLog.patch.gz">patch-1</a>
-      <a href="./patch/OCamlSDL2-0.01c-contact.patch.gz">patch-2</a>
-    </p>
+    <p>Screenshot:</p>
+    <p><a href="./mini/detri.png"><img src="./mini/detri.png" width="821" height="512" /></a></p>
   </div>
 
 </div>
 
-<!-- footer -->
-
-<div style="margin-top:3.2em;border:0;">
+<div id="logo">
   <a href="http://ocaml.org/" title="OCaml website"
-    ><img src="../../icon/ocaml-logo.png"
-       alt="The OCaml Language" style="border:none;" /></a>
+   ><img src="../../icon/ocaml-logo.png"
+     alt="The OCaml Language" style="border:none;" /></a>
 </div>
 
 <div id='footer'>
   <ul>
     <li><img border="0" src="../../icon/back.png" />
       <a href="https://fccm2.github.io/fccm-home/html/home.html">home</a></li>
-    <li>/ &nbsp; <a href="../../ocaml.html">my ocaml home</a></li>
+    <li>/ <a href="../../ocaml.html">my ocaml home</a></li>
+    <li>/ <a href="../../ocaml2.html">2</a></li>
   </ul>
 </div>
 
