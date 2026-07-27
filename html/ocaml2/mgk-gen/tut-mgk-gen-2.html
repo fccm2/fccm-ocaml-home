@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>tut-mgk-gen-2</title>
+<meta name="keywords" content="tutorial, magick-core, ocaml" />
+<meta name="description" content="How to use the magick-core from the ocaml programming language." />
+<meta name="auhtor" content="Florent Monnier, 2025" />
+<meta name="license" content="fdl, cc-by-sa_2.5 OR Later, spdx:Any" />
+<style></style>
+</head>
+<body>
+<h1>tut-mgk-gen-2</h1>
+<p>If you already followed the <a href="./tut-mgk-gen.html">first tutorial</a>,
+you can now try to use it to continue, here is the beginning to create a new
+image:</p>
+<pre>open Magick
+let () =
+  let color = (65_000, 1_000, 0, 65_535) in
+  let img = Magick.new_image 210 120 (color) in
+  Magick.image_display img;
+;;</pre>
+<pre>$ \ocaml -I +magick magick.cma script.ml</pre>
+<p>And here is how to draw your first <code>primitive</code>:</p>
+<pre>open Magick
+let () =
+  let color = (65_000, 1_000, 0, 65_535) in
+  let img = Magick.new_image 210 120 (color) in
+  let prim = Magick.Prim.draw_rectangle (10, 10) (100, 60) in
+  let color = Magick.Color.map8 (0, 0, 0, 255) in
+  Magick.fill_primitive img ~prim:prim ~fill:color ();
+  Magick.image_display img;
+;;</pre>
+</body>
+</html>

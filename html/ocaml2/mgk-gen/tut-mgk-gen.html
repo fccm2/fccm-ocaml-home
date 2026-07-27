@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>tut-mgk-gen</title>
+<meta name="keywords" content="tutorial, magick-core, ocaml" />
+<meta name="description" content="How to use the magick-core from the ocaml programming language." />
+<meta name="auhtor" content="Florent Monnier, 2025" />
+<meta name="license" content="fdl, cc-by-sa_2.5 OR Later, spdx:Any" />
+<style></style>
+</head>
+<body>
+<h1>tut-mgk-gen</h1>
+<p>There are two version for <code>mgk-gen</code>,
+the first one
+<a href="https://github.com/fccm2/mgk-gen">mgk-gen</a>
+wraps the magick-core version 6, and
+<a href="https://github.com/fccm2/mgk-gen2">mgk-gen2</a>
+wraps the version 7 of the magick-core.</p>
+<p>After you installed it you should be able to run your
+script with:<br /><code>\ocaml -I +magick magick.cma script.ml</code>.</p>
+<p>There are two interfaces, the low-level interface (low),
+and the high-level interface (high).</p>
+<p>Both are named: <code>Magick</code>.
+The second one is inside the first one.</p>
+<p>The low-level interface can be started with:</p>
+<pre>Magick.magick_core_genesis () ;;</pre>
+<p>And the other one can be initialised by:</p>
+<pre>open Magick</pre>
+<p>With the low-level interface, an <code>exception_info</code>
+and an <code>image_info</code>, can be respectivelly
+<code>acquired</code> and <code>cloned</code> by:</p>
+<pre>  let e = Magick.magick_exception_info_acquire () in
+  let nf = Magick.magick_image_info_clone () in</pre>
+<p>In the high-level interface:</p>
+<pre>open Magick
+let () =
+  let img = Magick.image_read "./some.png" in
+  Magick.image_display img;
+;;</pre>
+<p>And the methods that can be applied to the loaded image
+are: <a href="./doc/Magick.Magick.html">doc-high</a>.</p>
+</body>
+</html>
