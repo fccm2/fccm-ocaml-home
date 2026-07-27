@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>/mnt/chromeos/MyFiles/Ramdisk2/ocaml-sdl3-0.00a/src/sdl3.mli.html</title>
+<meta name="Generator" content="Vim/9.0" />
+<meta name="plugin-version" content="vim9.0_v1" />
+<meta name="syntax" content="ocaml" />
+<meta name="settings" content="use_css,no_foldcolumn,expand_tabs,pre_wrap,prevent_copy=,use_input_for_pc=fallback" />
+<meta name="colorscheme" content="none" />
+<style>
+<!--
+pre { white-space:pre-wrap; font-family:monospace; color:#ffffff; background-color:#000000; }
+body { font-family:monospace; color:#ffffff; background-color:#000000; }
+* { font-size:1em; }
+.Statement { color:#ffff00; }
+.Type { color:#87ffaf; }
+.Constant { color:#ff40ff; }
+.PreProc { color:#5fd7ff; }
+pre { border:1px solid #444; padding:1px 2px; }
+-->
+</style>
+</head>
+<body>
+<pre id='vimCodeElement'>
+<span class="Statement">type</span> window
+<span class="Statement">type</span> renderer
+<span class="Statement">type</span> texture
+<span class="Statement">type</span> surface
+
+<span class="Statement">module</span><span class="PreProc"> Scancode</span> : <span class="PreProc">sig</span>
+<span class="Statement">type</span> t <span class="Statement">=</span>
+  <span class="Statement">|</span> <span class="Constant">Left</span>
+  <span class="Statement">|</span> <span class="Constant">Right</span>
+  <span class="Statement">|</span> <span class="Constant">Up</span>
+  <span class="Statement">|</span> <span class="Constant">Down</span>
+  <span class="Statement">|</span> <span class="Constant">A</span> <span class="Statement">|</span> <span class="Constant">B</span> <span class="Statement">|</span> <span class="Constant">C</span> <span class="Statement">|</span> <span class="Constant">D</span> <span class="Statement">|</span> <span class="Constant">E</span> <span class="Statement">|</span> <span class="Constant">F</span>
+  <span class="Statement">|</span> <span class="Constant">G</span> <span class="Statement">|</span> <span class="Constant">H</span> <span class="Statement">|</span> <span class="Constant">I</span> <span class="Statement">|</span> <span class="Constant">J</span> <span class="Statement">|</span> <span class="Constant">K</span> <span class="Statement">|</span> <span class="Constant">L</span>
+  <span class="Statement">|</span> <span class="Constant">M</span> <span class="Statement">|</span> <span class="Constant">N</span> <span class="Statement">|</span> <span class="Constant">O</span> <span class="Statement">|</span> <span class="Constant">P</span> <span class="Statement">|</span> <span class="Constant">Q</span> <span class="Statement">|</span> <span class="Constant">R</span>
+  <span class="Statement">|</span> <span class="Constant">S</span> <span class="Statement">|</span> <span class="Constant">T</span> <span class="Statement">|</span> <span class="Constant">U</span> <span class="Statement">|</span> <span class="Constant">V</span> <span class="Statement">|</span> <span class="Constant">W</span> <span class="Statement">|</span> <span class="Constant">X</span>
+  <span class="Statement">|</span> <span class="Constant">Y</span> <span class="Statement">|</span> <span class="Constant">Z</span>
+  <span class="Statement">|</span> <span class="Constant">N_0</span> <span class="Statement">|</span> <span class="Constant">N_1</span> <span class="Statement">|</span> <span class="Constant">N_2</span> <span class="Statement">|</span> <span class="Constant">N_3</span> <span class="Statement">|</span> <span class="Constant">N_4</span>
+  <span class="Statement">|</span> <span class="Constant">N_5</span> <span class="Statement">|</span> <span class="Constant">N_6</span> <span class="Statement">|</span> <span class="Constant">N_7</span> <span class="Statement">|</span> <span class="Constant">N_8</span> <span class="Statement">|</span> <span class="Constant">N_9</span>
+  <span class="Statement">|</span> <span class="Constant">Space</span>
+  <span class="Statement">|</span> <span class="Constant">PageUp</span>
+  <span class="Statement">|</span> <span class="Constant">PageDown</span>
+  <span class="Statement">|</span> <span class="Constant">Escape</span>
+<span class="PreProc">end</span>
+
+<span class="Statement">type</span> event <span class="Statement">=</span>
+  <span class="Statement">|</span> <span class="Constant">Unhandled_event</span>
+  <span class="Statement">|</span> <span class="Constant">Key_down_event</span> <span class="Statement">of</span> <span class="PreProc">Scancode</span>.t
+  <span class="Statement">|</span> <span class="Constant">Mouse_motion_event</span> <span class="Statement">of</span> <span class="Type">int</span> * <span class="Type">int</span>
+  <span class="Statement">|</span> <span class="Constant">Mouse_button_event</span> <span class="Statement">of</span> <span class="Type">int</span> * <span class="Type">int</span> * <span class="Type">bool</span>
+  <span class="Statement">|</span> <span class="Constant">Quit_event</span>
+
+<span class="Statement">val</span> init : <span class="Type">unit</span> <span class="Statement">-&gt;</span> <span class="Type">unit</span>
+<span class="Statement">val</span> quit : <span class="Type">unit</span> <span class="Statement">-&gt;</span> <span class="Type">unit</span>
+
+<span class="Statement">module</span><span class="PreProc"> Render</span> : <span class="PreProc">sig</span>
+  <span class="Statement">val</span> create_window_and_renderer : <span class="Type">int</span> * <span class="Type">int</span> <span class="Statement">-&gt;</span> window * renderer
+  <span class="Statement">val</span> set_draw_color : renderer <span class="Statement">-&gt;</span> <span class="Type">int</span> * <span class="Type">int</span> * <span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">unit</span>
+  <span class="Statement">val</span> fill_rect : renderer <span class="Statement">-&gt;</span> <span class="Type">int</span> * <span class="Type">int</span> * <span class="Type">int</span> * <span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">unit</span>
+  <span class="Statement">val</span> draw_rect : renderer <span class="Statement">-&gt;</span> <span class="Type">int</span> * <span class="Type">int</span> * <span class="Type">int</span> * <span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">unit</span>
+  <span class="Statement">val</span> render_texture : renderer <span class="Statement">-&gt;</span> texture <span class="Statement">-&gt;</span> <span class="Type">int</span> * <span class="Type">int</span> * <span class="Type">int</span> * <span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">int</span> * <span class="Type">int</span> * <span class="Type">int</span> * <span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">unit</span>
+  <span class="Statement">val</span> clear : renderer <span class="Statement">-&gt;</span> <span class="Type">unit</span>
+  <span class="Statement">val</span> present : renderer <span class="Statement">-&gt;</span> <span class="Type">unit</span>
+  <span class="Statement">val</span> destroy_renderer : renderer <span class="Statement">-&gt;</span> <span class="Type">unit</span>
+  <span class="Statement">val</span> destroy_window : window <span class="Statement">-&gt;</span> <span class="Type">unit</span>
+<span class="PreProc">end</span>
+
+<span class="Statement">module</span><span class="PreProc"> Events</span> : <span class="PreProc">sig</span>
+  <span class="Statement">val</span> poll_event : <span class="Type">unit</span> <span class="Statement">-&gt;</span> event <span class="Type">option</span>
+<span class="PreProc">end</span>
+
+<span class="Statement">module</span><span class="PreProc"> Timer</span> : <span class="PreProc">sig</span>
+  <span class="Statement">val</span> get_ticks : <span class="Type">unit</span> <span class="Statement">-&gt;</span> <span class="Type">int</span>
+  <span class="Statement">val</span> delay : <span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">unit</span>
+<span class="PreProc">end</span>
+
+<span class="Statement">module</span><span class="PreProc"> Surface</span> : <span class="PreProc">sig</span>
+  <span class="Statement">val</span> load_bmp : file:<span class="Type">string</span> <span class="Statement">-&gt;</span> surface
+  <span class="Statement">val</span> load_bmp_s : s:<span class="Type">string</span> <span class="Statement">-&gt;</span> surface
+  <span class="Statement">val</span> destroy : surface <span class="Statement">-&gt;</span> <span class="Type">unit</span>
+  <span class="Statement">val</span> set_color_key : surface <span class="Statement">-&gt;</span> <span class="Type">int</span> * <span class="Type">int</span> * <span class="Type">int</span> <span class="Statement">-&gt;</span> <span class="Type">unit</span>
+<span class="PreProc">end</span>
+
+<span class="Statement">module</span><span class="PreProc"> Texture</span> : <span class="PreProc">sig</span>
+  <span class="Statement">val</span> create_texture_from_surface : renderer <span class="Statement">-&gt;</span> surface <span class="Statement">-&gt;</span> texture
+  <span class="Statement">val</span> destroy : texture <span class="Statement">-&gt;</span> <span class="Type">unit</span>
+<span class="PreProc">end</span>
+
+<span class="Statement">module type </span><span class="PreProc">APP</span> = <span class="PreProc">sig</span>
+  <span class="Statement">type</span> state
+  <span class="Statement">type</span> app_calls <span class="Statement">=</span> <span class="Statement">{</span>
+    app_init : <span class="Type">unit</span> <span class="Statement">-&gt;</span> window * renderer * state<span class="Statement">;</span>
+    app_iterate : renderer <span class="Statement">-&gt;</span> state <span class="Statement">-&gt;</span> <span class="Type">unit</span><span class="Statement">;</span>
+    app_event : event <span class="Statement">-&gt;</span> state <span class="Statement">-&gt;</span> state<span class="Statement">;</span>
+    app_quit : window <span class="Statement">-&gt;</span> renderer <span class="Statement">-&gt;</span> state <span class="Statement">-&gt;</span> <span class="Type">unit</span><span class="Statement">;</span>
+  <span class="Statement">}</span>
+  <span class="Statement">val</span> app : app_calls
+<span class="PreProc">end</span>
+
+<span class="Statement">module</span><span class="PreProc"> MakeApp</span> : functor <span class="Statement">(</span><span class="Constant">App</span> : <span class="Constant">APP</span><span class="Statement">)</span> <span class="Statement">-&gt;</span> <span class="PreProc">sig</span>
+  <span class="Statement">val</span> run : <span class="Type">unit</span> <span class="Statement">-&gt;</span> <span class="Type">unit</span>
+<span class="PreProc">end</span>
+
+</pre>
+</body>
+</html>
+<!-- vim: set foldmethod=manual : -->
