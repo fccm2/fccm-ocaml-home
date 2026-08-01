@@ -1,0 +1,11 @@
+--- random.ml.orig      2025-12-12 21:31:55.844377486 +0100
++++ random.ml   2025-12-12 21:34:10.881373264 +0100
+@@ -226,7 +226,7 @@
+ 
+ let full_init seed = State.full_init default seed
+ let init seed = State.full_init default [| seed |]
+-let self_init () = full_init (random_seed())
++let self_init () = let seed = random_seed () in full_init (seed)
+ 
+ (* Manipulating the current state. *)
+

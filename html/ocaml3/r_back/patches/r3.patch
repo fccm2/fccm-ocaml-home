@@ -1,0 +1,23 @@
+--- random.ml.orig	2025-12-12 22:38:03.557300831 +0100
++++ random.ml	2025-12-22 22:23:22.827647786 +0100
+@@ -17,6 +17,11 @@
+ (* Pseudo-random number generator *)
+ 
+ external random_seed: unit -> int array = "caml_sys_random_seed"
++let print_int_array ia =
++  print_string " [|";
++  Array.iter (Printf.printf " %d") ia;
++  print_string " |]";
++  print_newline ()
+ 
+ module State = struct
+ 
+@@ -362,7 +367,7 @@
+ 
+ let full_init seed = State.reinit (Domain.DLS.get random_key) seed
+ let init seed = full_init [| seed |]
+-let self_init () = full_init (random_seed())
++let self_init () = let seed = random_seed () in print_int_array seed; full_init (seed)
+ 
+ (* Splitting *)
+ 

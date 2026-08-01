@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link href="../../icon/ocaml-icon.1.png" rel="shortcut icon" />
+<title>random-feedback</title>
+<meta name="keywords" content="random, feedback, ocaml" />
+<meta name="description" content="feedback for the random module of ocaml" />
+<meta name="auhtor" content="Florent Monnier, dec-2025" />
+<meta name="license" content="fdl, cc-by-sa_2.5 OR Later, spdx:any" />
+<style>
+body { color:#555; background:#ccc; }
+pre { border:1px solid #000; margin-right:1%; }
+body { margin-right:49%; }
+code { border:1px solid #000; }
+p { margin-left:6%; }
+pre, code { background:#ddd; }
+pre { margin-left:7%; padding-left:1px; }
+ul { margin-left:8%; }
+</style>
+</head>
+<body>
+
+<h2>random-feedback</h2>
+<h4>feedback for the random module of ocaml</h4>
+
+<p>With ocaml, when you call the function <code>Random.self_init ()</code>,
+it is not possible to know what was the seed used.</p>
+
+<p>In some situations, it would be usefull to know what was this seed, in
+order to call again the script, in case there was an error, and to try to
+see how to fix it. Indeed sometimes, it is usefull to call the script again
+with the same seed, to find the fix.</p>
+
+<p>Files:</p>
+
+<ul>
+<li><a href="./patches/Makefile">Makefile</a></li>
+<li><a href="./patches/r1.patch">r1.patch</a>, <a href="./patches/r1.patch.html">html</a></li>
+<li><a href="./patches/r2.patch">r2.patch</a>, <a href="./patches/r2.patch.html">html</a></li>
+<li><a href="./patches/random.ml">random.ml</a></li>
+<li><a href="./patches/random.mli">random.mli</a></li>
+<li><a href="./patches/random.ml.orig">random.ml.orig</a></li>
+<li><a href="./patches/test.txt">test.txt</a></li>
+</ul>
+
+<pre>$ diff -u random.ml.orig random.ml</pre>
+
+<pre>$ \ocaml -I . random.cmo
+OCaml version 4.14.1
+
+# Random.self_init () ;;
+ [| 72; 108; 133; 114; 205; 237; 152; 187; 115; 248; 99; 231; |]
+
+- : unit = ()
+
+#
+
+</pre>
+
+<p>With this seed, we can then call <code>Random.full_init</code>,
+and we will have exactly the same sequence:</p>
+
+<pre>$ \ocaml -I . random.cmo
+OCaml version 4.14.1
+
+# Random.self_init () ;;
+ [| 11; 253; 220; 109; 226; 195; 177; 136; 0; 142; 103; 197; |]
+- : unit = ()
+
+# Random.int 100 ;;
+- : int = 17
+
+#
+</pre>
+
+<p>Another session:</p>
+
+<pre>$ \ocaml -I . random.cmo
+OCaml version 4.14.1
+
+# Random.full_init ;;
+- : int array -&gt; unit = &lt;fun&gt;
+
+# Random.full_init [| 11; 253; 220; 109; 226; 195; 177; 136; 0; 142; 103; 197; |] ;;
+- : unit = ()
+
+# Random.int 100 ;;
+- : int = 17
+
+#
+</pre>
+
+<hr />
+
+<p>For <code>5.4.0</code>:</p>
+
+<ul>
+<li><a href="./patches/r3.patch">r3.patch</a>, <a href="./patches/r3.patch.html">html</a></li>
+</ul>
+
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>/mnt/chromeos/MyFiles/Ramdisk2/.rand/4.14.1/r1.patch.html</title>
+<meta name="Generator" content="Vim/9.0">
+<meta name="plugin-version" content="vim9.0_v1">
+<meta name="syntax" content="diff">
+<meta name="settings" content="use_css,no_foldcolumn,pre_wrap,prevent_copy=,use_input_for_pc=fallback">
+<meta name="colorscheme" content="none">
+<style>
+<!--
+pre { white-space: pre-wrap; font-family: monospace; color: #ffffff; background-color: #000000; }
+body { font-family: monospace; color: #ffffff; background-color: #000000; }
+* { font-size: 1em; }
+.Special { color: #ffd7d7; }
+.Statement { color: #ffff00; }
+.Identifier { color: #00ffff; font-weight: bold; }
+.Type { color: #87ffaf; }
+-->
+</style>
+</head>
+<body>
+<pre id='vimCodeElement'>
+<span class="Type">--- random.ml.orig      2025-12-12 21:31:55.844377486 +0100</span>
+<span class="Type">+++ random.ml   2025-12-12 21:34:10.881373264 +0100</span>
+<span class="Statement">@@ -226,7 +226,7 @@</span>
+
+ let full_init seed = State.full_init default seed
+ let init seed = State.full_init default [| seed |]
+<span class="Special">-let self_init () = full_init (random_seed())</span>
+<span class="Identifier">+let self_init () = let seed = random_seed () in full_init (seed)</span>
+
+ (* Manipulating the current state. *)
+
+</pre>
+</body>
+</html>
+<!-- vim: set foldmethod=manual : -->
