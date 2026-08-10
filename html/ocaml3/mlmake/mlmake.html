@@ -31,11 +31,11 @@ you can automaticaly recompile the bytecode result, with the
 <p>It is also possible to create a generic reciepy-rule:</p>
 <pre>%.cmo: %.ml
         ocamlc -c $&lt;</pre>
-<p>(replace the 8 spaces by a tab '\t')<br />
+<p>(replace the 8 spaces by a tab <code>'\t'</code>)<br />
 <p>The characters <code>$&lt;</code> can be used for the input file,
 after the <code>':'</code> colon character.</p>
 <p>With this generic reciepy, you can call the command:</p>
-<pre>make source.cmo</pre>
+<pre>$ make source.cmo</pre>
 <p>It will compile the source-file, with the same basename,
 and the <code>.ml</code>, file extension.</p>
 </body>
